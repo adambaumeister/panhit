@@ -42,6 +42,7 @@ class HostList:
                 raise ValueError("Missing field ip in host list.")
 
             h = Host(ip=hd['ip'], mods_enabled=self.mods_enabled)
+            h.add_data_dict(hd)
             hosts.append(h)
 
         return hosts
@@ -65,6 +66,7 @@ class Host:
         self.mods_enabled = mods_enabled
         self.ip = ip
         self.result = {}
+        self.attributes = {}
 
     def add_data(self, k, v):
         """
@@ -72,7 +74,11 @@ class Host:
         :param k: Key
         :param v: Value
         """
-        self.__setattr__(k, v)
+        self.attributes[k] = v
+
+    def add_data_dict(self, d):
+        for k, v in d.items():
+            self.attributes[k] = v
 
     def run_all_mods(self):
         """
@@ -85,3 +91,6 @@ class Host:
 
     def dump_mod_results(self):
         print(self.result)
+
+    def dump_attributes(self):
+        return(self.attributes)
