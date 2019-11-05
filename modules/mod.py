@@ -1,14 +1,19 @@
 
+CACHE_OPT = 'MOD_CACHE'
 class ModuleOptions:
     """
     Options available to a module
     """
     def __init__(self, required_opts=None, optional_opts=None):
+
+        # Cache option allows a dict to act as a simple k/v cache
+        # Cache is implemented on a per-module basis
+
         self.REQUIRED = []
+        self.OPTIONAL = [CACHE_OPT]
         if required_opts:
             self.REQUIRED = required_opts
 
-        self.OPTIONAL = []
         if optional_opts:
             self.OPTIONAL = optional_opts
 

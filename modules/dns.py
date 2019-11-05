@@ -16,8 +16,11 @@ class DNSHost(Module):
         self.name = 'dns'
 
     def Get(self, host):
-        hostname = socket.gethostbyaddr(host.ip)
-        if socket.gethostbyaddr(host.ip):
+        try:
+            hostname = socket.gethostbyaddr(host.ip)
             self.data['hostname'] = hostname[0]
+        except socket.herror as err:
+            self.data['hostname'] = err
+
 
         return self.data

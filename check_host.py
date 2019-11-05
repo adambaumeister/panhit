@@ -27,7 +27,6 @@ def env_or_prompt(prompt, args, prompt_long=None, secret=False):
 
 def as_table(host_list, mod_opts=None):
     for h in host_list.get_all_hosts():
-        h.run_all_mods(mod_opts)
         headers = []
         values = []
         for attr, value in h.attributes.items():
