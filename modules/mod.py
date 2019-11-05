@@ -25,15 +25,18 @@ class ModuleOptions:
             if k in d:
                 self.options[k] = d[k]
 
+    def get_opt(self, opt):
+        return self.options[opt]
 
 class Module:
     """
     A module represents a discrete set of tools for enriching a host with additional data
     """
-    def __init__(self):
+    def __init__(self, opts):
         self.name = 'module'
         self.data = {}
-        pass
+        self.opts = opts
+        self.parse_options()
 
     def get_name(self):
         return self.name
@@ -41,3 +44,8 @@ class Module:
     def Get(self, host):
         pass
 
+    def parse_options(self):
+        if self.opts:
+            # If this module has defined module options
+            if self.module_options:
+                self.module_options.parse_dict(self.opts)

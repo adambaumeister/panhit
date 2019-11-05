@@ -10,8 +10,9 @@ class DNSHost(Module):
     Produces
         'hostname'
     """
-    def __init__(self):
-        super(DNSHost, self).__init__()
+    def __init__(self, mod_opts=None):
+        self.module_options = None
+        super(DNSHost, self).__init__(mod_opts)
         self.name = 'dns'
 
     def Get(self, host):

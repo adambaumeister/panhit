@@ -5,4 +5,4 @@ class Config:
         pass
 
     def init_modules(self):
-        return [DNSHost]
+        return [DNSHost, Panfw]

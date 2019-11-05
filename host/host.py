@@ -50,6 +50,9 @@ class HostList:
     def get_all_hosts(self):
         return self.hosts
 
+    def run_all_hosts(self, mod_opts):
+        for h in self.get_all_hosts():
+            h.run_all_mods(mod_opts)
 
 class Host:
     """
@@ -80,12 +83,12 @@ class Host:
         for k, v in d.items():
             self.attributes[k] = v
 
-    def run_all_mods(self):
+    def run_all_mods(self, mod_opts=None):
         """
         Run all mods and enrich this object with the results
         """
         for mod in self.mods_enabled:
-            m = mod()
+            m = mod(mod_opts)
             data = m.Get(self)
             self.result[m.get_name()] = data
 
@@ -94,3 +97,10 @@ class Host:
 
     def dump_attributes(self):
         return(self.attributes)
+
+    def pickle(self):
+        d = {
+            'attributes': self.attributes,
+            'mods_enabled': self.result
+        }
+        return d
