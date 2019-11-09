@@ -1,5 +1,5 @@
 from host import HostList
-from config import Config
+from config import ConfigFile
 from tabulate import tabulate
 import getpass
 import os
@@ -50,6 +50,7 @@ if __name__ == '__main__':
 
     script_options = parser.add_argument_group("Script options")
 
+    script_options.add_argument("--config_file", help="Path to panhit configuration file.")
     script_options.add_argument("--address", help="Address/hostname of device to check")
     script_options.add_argument("--username", help="Firewall/Panorama username. Can also use envvar PCI_USERNAME.")
     script_options.add_argument("--password",
@@ -67,7 +68,7 @@ if __name__ == '__main__':
         'pw': pw
     }
 
-    c = Config()
+    c = ConfigFile(path=args.config_file)
     mods = c.init_modules(mod_opts)
 
     hl = HostList(source="./ipaddr.json", mods_enabled=mods)

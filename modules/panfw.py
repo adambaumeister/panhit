@@ -1,17 +1,15 @@
-from .mod import Module, ModuleOptions, CACHE_OPT
+from .mod import Module, ModuleOptions
 from panos import Panos
 from xml.etree import ElementTree
 
 class Panfw(Module):
     """
-    Query a host for DNS information.
-
-    Requires
-        'ip'
-    Produces
-        'hostname'
+    Query a PANOS Firewall for host information.
     """
     def __init__(self, mod_opts=None):
+        """
+        Initialize an instance of the panfw module.
+        """
         self.module_options = ModuleOptions(
             required_opts=['addr', 'user', 'pw']
         )
@@ -22,6 +20,8 @@ class Panfw(Module):
         self.cache = {}
 
     def Get(self, host):
+        """
+        """
         cache = self.cache
         if host.ip in cache:
             return cache[host.ip]
