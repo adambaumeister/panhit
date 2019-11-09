@@ -10,10 +10,10 @@ class ModuleOptions:
         # Cache is implemented on a per-module basis
 
         self.REQUIRED = []
-        self.OPTIONAL = [CACHE_OPT]
         if required_opts:
             self.REQUIRED = required_opts
 
+        self.OPTIONAL = []
         if optional_opts:
             self.OPTIONAL = optional_opts
 

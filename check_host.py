@@ -68,9 +68,9 @@ if __name__ == '__main__':
     }
 
     c = Config()
-    mods = c.init_modules()
+    mods = c.init_modules(mod_opts)
 
-    hl = HostList(source="./ipaddr.csv", mods_enabled=mods)
-    hl.run_all_hosts(mod_opts)
+    hl = HostList(source="./ipaddr.json", mods_enabled=mods)
+    hl.run_all_hosts()
 
-    as_table(hl, mod_opts)
+    as_table(hl)

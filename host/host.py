@@ -50,11 +50,9 @@ class HostList:
     def get_all_hosts(self):
         return self.hosts
 
-    def run_all_hosts(self, mod_opts):
-        cache = {}
-        mod_opts['MOD_CACHE'] = cache
+    def run_all_hosts(self):
         for h in self.get_all_hosts():
-            h.run_all_mods(mod_opts)
+            h.run_all_mods()
 
 class Host:
     """
@@ -90,9 +88,8 @@ class Host:
         Run all mods and enrich this object with the results
         """
         for mod in self.mods_enabled:
-            m = mod(mod_opts)
-            data = m.Get(self)
-            self.result[m.get_name()] = data
+            data = mod.Get(self)
+            self.result[mod.get_name()] = data
 
     def dump_mod_results(self):
         print(self.result)

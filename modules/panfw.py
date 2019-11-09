@@ -19,8 +19,10 @@ class Panfw(Module):
         self.name = 'panfw'
         self.module_options.get_opt('addr')
 
+        self.cache = {}
+
     def Get(self, host):
-        cache = self.module_options.get_opt(CACHE_OPT)
+        cache = self.cache
         if host.ip in cache:
             return cache[host.ip]
 
@@ -37,9 +39,10 @@ class Panfw(Module):
 
         arp_table = self.parse_arp_response(r.content)
         if host.ip in arp_table:
-            self.data = arp_table[host.ip]
+            data = arp_table[host.ip]
 
-        return self.data
+        self.cache = arp_table
+        return data
 
     def parse_arp_response(self, data):
         root = ElementTree.fromstring(data)
