@@ -19,7 +19,7 @@ class Panfw(Module):
         self.module_options.get_opt('addr')
 
         self.arp_cache = {}
-        self.route_cache = {}
+        self.route_cache = None
 
     def Get(self, host):
         """
@@ -28,7 +28,15 @@ class Panfw(Module):
         data = {}
         cache = self.arp_cache
         if host.ip in cache:
-            return cache[host.ip]
+            data = cache[host.ip]
+
+        if self.route_cache:
+            route = self.route_lookup(host.ip, self.route_cache)
+            for k, v in route.items():
+                data[k] = v
+
+        if len(data.keys()) >0:
+            return data
 
         panos = Panos(addr=self.module_options.get_opt('addr'),
                       user=self.module_options.get_opt('user'),
