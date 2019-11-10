@@ -65,7 +65,8 @@ if __name__ == '__main__':
     c = ConfigFile(path=args.config_file)
     mods = c.init_modules(mod_opts)
 
-    hl = HostList(source="./ipaddr.json", mods_enabled=mods)
+    input = c.get_input()
+    hl = HostList(source=input, mods_enabled=mods)
     hl.run_all_hosts()
 
     as_table(hl)

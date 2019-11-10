@@ -6,3 +6,7 @@ mod_options:
   panfw:
     user: admin
     addr: 192.168.1.140
+
+input:
+  type: file
+  location: ./ipaddr.json

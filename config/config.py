@@ -20,6 +20,7 @@ class ConfigFile:
         self.mod_options = {}
         # Enabled retrieval modules
         self.mods_enabled = []
+        self.input = {}
         r = yaml.safe_load(open(path))
         for k,v in r.items():
             self.__setattr__(k, v)
@@ -39,10 +40,13 @@ class ConfigFile:
                 new_opts = mod_opts
                 if mod in self.mod_options:
                     new_opts.update(self.mod_options[mod])
-                    print(new_opts)
                 mods.append(self.mods_available[mod](new_opts))
             else:
                 raise ValueError("{} is not a valid module.".format(mod))
 
 
         return mods
+
+    def get_input(self):
+        if self.input['type'] == 'file':
+            return self.input['location']
