@@ -1,3 +1,8 @@
 mods_enabled:
   - dns
   - panfw
+
+mod_options:
+  panfw:
+    user: admin
+    addr: 192.168.1.140

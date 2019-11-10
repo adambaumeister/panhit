@@ -51,20 +51,14 @@ if __name__ == '__main__':
     script_options = parser.add_argument_group("Script options")
 
     script_options.add_argument("--config_file", help="Path to panhit configuration file.")
-    script_options.add_argument("--address", help="Address/hostname of device to check")
-    script_options.add_argument("--username", help="Firewall/Panorama username. Can also use envvar PCI_USERNAME.")
     script_options.add_argument("--password",
                                 help="Firewall/Panorama login password. Can also use envvar PC_PASSWORD")
 
     args = parser.parse_args()
 
-    user = env_or_prompt("username", args)
     pw = env_or_prompt("password", args, secret=True)
-    addr = env_or_prompt("address", args)
 
     mod_opts = {
-        'user': user,
-        'addr': addr,
         'pw': pw
     }
 

@@ -35,7 +35,11 @@ class Panfw(Module):
             for k, v in route.items():
                 data[k] = v
 
-        if len(data.keys()) >0:
+        # If there's a result in the cache
+        if len(data.keys()) > 0:
+            return data
+        # If there isn't, but the caches are set, then assume there never will be
+        elif len(self.arp_cache.keys()) > 0:
             return data
 
         panos = Panos(addr=self.module_options.get_opt('addr'),
