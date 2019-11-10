@@ -1,6 +1,7 @@
 from .mod import Module, ModuleOptions
 from panos import Panos
 from xml.etree import ElementTree
+import ipaddress
 
 class Panfw(Module):
     """
@@ -17,12 +18,15 @@ class Panfw(Module):
         self.name = 'panfw'
         self.module_options.get_opt('addr')
 
-        self.cache = {}
+        self.arp_cache = {}
+        self.route_cache = {}
 
     def Get(self, host):
         """
+        Retreives ARP/Routing table information for the host to determine reachability
         """
-        cache = self.cache
+        data = {}
+        cache = self.arp_cache
         if host.ip in cache:
             return cache[host.ip]
 
@@ -30,6 +34,8 @@ class Panfw(Module):
                       user=self.module_options.get_opt('user'),
                       pw=self.module_options.get_opt('pw'),
                       )
+
+        # First we grab the arp table
         r = panos.send(params={
             "type": "op",
             "cmd": "<show><arp><entry name='all'/></arp></show>"
@@ -42,7 +48,34 @@ class Panfw(Module):
             data = arp_table[host.ip]
 
         self.cache = arp_table
+
+        # Next, we grab the routing table
+        r = panos.send(params={
+            "type": "op",
+            "cmd": "<show><routing><route></route></routing></show>"
+        })
+        if not panos.check_resp(r):
+            raise ConnectionError("Failed to retrieve response from panfw.")
+
+        route_table = self.parse_route_response(r.content)
+        self.route_cache = route_table
+
+        route = self.route_lookup(host.ip, route_table)
+        for k, v in route.items():
+            data[k] = v
         return data
+
+    def route_lookup(self, ip, route_table):
+        longest_match = 0
+        best_route = None
+        for subnet, route in route_table.items():
+            net = ipaddress.ip_network(subnet)
+            addr = ipaddress.ip_address(ip)
+            if addr in net:
+                if net.prefixlen >= longest_match:
+                    best_route = route
+
+        return best_route
 
     def parse_arp_response(self, data):
         root = ElementTree.fromstring(data)
@@ -50,6 +83,7 @@ class Panfw(Module):
 
         # Get the entries
         entries = root.findall("./result/entries/entry")
+
         for entry in entries:
             mac = entry.find("./mac").text
             ip = entry.find("./ip").text
@@ -60,6 +94,25 @@ class Panfw(Module):
             }
 
         return table
+
+    def parse_route_response(self, data):
+        root = ElementTree.fromstring(data)
+        table = {}
+
+        # Get the entries
+        entries = root.findall("./result/entry")
+        for entry in entries:
+            route = {}
+            nh = entry.find("./nexthop").text
+            dest = entry.find("./destination").text
+            interface = entry.find("./interface").text
+            route['nexthop'] = nh
+            route['destination'] = dest
+            route['interface'] = interface
+            table[dest] = route
+
+        return table
+
 
     def query_arp(self):
         pass
