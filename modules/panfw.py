@@ -56,10 +56,11 @@ class Panfw(Module):
             raise ConnectionError("Failed to retrieve response from panfw.")
 
         arp_table = self.parse_arp_response(r.content)
+
         if host.ip in arp_table:
             data = arp_table[host.ip]
 
-        self.cache = arp_table
+        self.arp_cache = arp_table
 
         # Next, we grab the routing table
         r = panos.send(params={
