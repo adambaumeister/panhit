@@ -79,12 +79,21 @@ class Panfw(Module):
 
     def route_lookup(self, ip, route_table):
         longest_match = 0
+        matched_routes = []
         best_route = None
-        for subnet, route in route_table.items():
-            net = ipaddress.ip_network(subnet)
-            addr = ipaddress.ip_address(ip)
-            if addr in net:
-                if net.prefixlen >= longest_match:
+        for vr, table in route_table.items():
+            for subnet, route in table.items():
+                net = ipaddress.ip_network(subnet)
+                addr = ipaddress.ip_address(ip)
+                if addr in net:
+                    if net.prefixlen >= longest_match:
+                        matched_routes.append(route)
+
+        for route in matched_routes:
+            if 'C' in route['flags']:
+                best_route = route
+            else:
+                if not best_route:
                     best_route = route
 
         return best_route
@@ -109,6 +118,7 @@ class Panfw(Module):
 
     def parse_route_response(self, data):
         root = ElementTree.fromstring(data)
+        tables = {}
         table = {}
 
         # Get the entries
@@ -116,14 +126,21 @@ class Panfw(Module):
         for entry in entries:
             route = {}
             nh = entry.find("./nexthop").text
+            flags = entry.find("./flags").text
+            vr = entry.find("./virtual-router").text
             dest = entry.find("./destination").text
             interface = entry.find("./interface").text
             route['nexthop'] = nh
             route['destination'] = dest
             route['interface'] = interface
-            table[dest] = route
+            route['vr'] = vr
+            route['flags'] = flags
+            if vr not in tables:
+                tables[vr] = { dest: route }
+            else:
+                tables[vr][dest] = route
 
-        return table
+        return tables
 
 
     def query_arp(self):
