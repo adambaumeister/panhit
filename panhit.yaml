@@ -10,3 +10,14 @@ mod_options:
 input:
   type: file
   location: ./ipaddr.json
+
+tags:
+  - name: Active
+    type: static
+    match:
+      hostname: exists
+      mac: exists
+
+  - name: Inactive
+    type: static
+    match_any: true

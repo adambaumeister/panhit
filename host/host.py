@@ -70,6 +70,7 @@ class Host:
         self.ip = ip
         self.result = {}
         self.attributes = {}
+        self.tag = ''
 
     def add_data(self, k, v):
         """
@@ -103,3 +104,18 @@ class Host:
             'mods_enabled': self.result
         }
         return d
+
+    def compare_attr(self, attr_name, attr_value):
+        for mod, results in self.result.items():
+            if attr_name in results:
+                if attr_value == "exists":
+                    return True
+                elif attr_value == results[attr_name]:
+                    return True
+
+                return False
+
+        return False
+
+    def set_tag(self, tag):
+        self.tag = tag

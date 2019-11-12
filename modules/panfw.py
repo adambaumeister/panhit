@@ -76,6 +76,7 @@ class Panfw(Module):
         route = self.route_lookup(host.ip, route_table)
         for k, v in route.items():
             data[k] = v
+
         return data
 
     def route_lookup(self, ip, route_table):

@@ -25,7 +25,7 @@ def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     e = input(prompt + ": ")
     return e
 
-def as_table(host_list, mod_opts=None):
+def as_table(host_list):
     for h in host_list.get_all_hosts():
         headers = []
         values = []
@@ -41,6 +41,23 @@ def as_table(host_list, mod_opts=None):
         table = tabulate([values], headers=headers)
         print(table)
 
+def tag(host_list, policy):
+    for h in host_list.get_all_hosts():
+        for t in reversed(policy):
+            if 'match_any' in t:
+                match = True
+            else:
+                match = True
+                for match_attr, match_value in t['match'].items():
+                    r = h.compare_attr(match_attr, match_value)
+                    if not r:
+                        match = False
+
+            if match:
+                h.set_tag(t['name'])
+
+    for h in host_list.get_all_hosts():
+        print("{} : {}".format(h.ip, h.tag))
 
 if __name__ == '__main__':
 
@@ -70,3 +87,4 @@ if __name__ == '__main__':
     hl.run_all_hosts()
 
     as_table(hl)
+    tag(hl, c.tags)
