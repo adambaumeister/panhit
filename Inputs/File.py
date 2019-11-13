@@ -30,3 +30,9 @@ class FileInput():
             host_dicts.append(ld)
 
         return host_dicts
+
+    def Output(self):
+        """
+        File Input type has no matching Output spec.
+        """
+        pass

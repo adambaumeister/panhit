@@ -103,3 +103,6 @@ if __name__ == '__main__':
 
     as_table(hl)
     tag(hl, c.tags)
+
+    output = c.get_output(mod_opts)
+    output.Output(hl)

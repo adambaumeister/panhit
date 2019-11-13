@@ -21,16 +21,25 @@ class Panfw(Module):
 
         self.arp_cache = {}
         self.route_cache = None
+        self.panos = None
+
+    def connect_if_not(self):
+        if not self.panos:
+            panos = Panos(addr=self.module_options.get_opt('addr'),
+                          user=self.module_options.get_opt('user'),
+                          pw=self.module_options.get_opt('pw'),
+                          )
+            self.panos = panos
+            return panos
+        else:
+            return self.panos
 
     def List(self):
         """
         Retrieve a HostList from this device.
         :return: HostList
         """
-        panos = Panos(addr=self.module_options.get_opt('addr'),
-                      user=self.module_options.get_opt('user'),
-                      pw=self.module_options.get_opt('pw'),
-                      )
+        panos = self.connect_if_not()
 
         params = {
             "type": "config",
@@ -63,10 +72,7 @@ class Panfw(Module):
         elif len(self.arp_cache.keys()) > 0:
             return data
 
-        panos = Panos(addr=self.module_options.get_opt('addr'),
-                      user=self.module_options.get_opt('user'),
-                      pw=self.module_options.get_opt('pw'),
-                      )
+        panos = self.connect_if_not()
 
         # First we grab the arp table
         r = panos.send(params={
@@ -99,6 +105,32 @@ class Panfw(Module):
             data[k] = v
 
         return data
+
+    def Output(self, host_list):
+        """
+        Output method for this class allows tagging of address objects
+        """
+        panos = self.connect_if_not()
+        xpath = self.module_options.get_opt('xpath')
+        element = """
+        <entry name="{}">
+            <tag><member>{}</member></tag>
+        </entry>
+        """
+        elements = []
+        for host in host_list.get_all_hosts():
+            new_element = element.format(host.attributes['name'], host.tag)
+            elements.append(new_element)
+
+        params = {
+            "type": "config",
+            "action": "set",
+            "xpath": xpath,
+            "element": "".join(elements),
+        }
+        r = panos.send(params)
+        print(r.content)
+        panos.check_resp(r)
 
     def route_lookup(self, ip, route_table):
         longest_match = 0
@@ -162,7 +194,6 @@ class Panfw(Module):
                 e['name'] = name
                 table.append(e)
 
-        print(table)
         return table
 
     def parse_route_response(self, data):

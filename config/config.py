@@ -57,3 +57,8 @@ class ConfigFile:
             p = Panfw(mod_opts)
             return p
 
+    def get_output(self, mod_opts):
+        if self.input['type'] == 'panfw':
+            mod_opts.update(self.output)
+            p = Panfw(mod_opts)
+            return p
