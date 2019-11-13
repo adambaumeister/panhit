@@ -71,6 +71,8 @@ def tag(host_list, policy):
             if match:
                 h.set_tag(t['name'])
 
+    for h in host_list.get_all_hosts():
+        print(h.attributes['name'], h.tag)
 
 if __name__ == '__main__':
 

@@ -17,11 +17,18 @@ mod_options:
     addr: 192.168.1.140
 
 tags:
+  # Match active hosts
   - name: Active
     type: static
     match:
-      hostname: exists
       mac: exists
+
+  # Match DNAT addresses (NO ARP)
+  - name: Outside
+    type: static
+    match:
+      interface: ethernet1/1
+      destination: 192.168.1.0/24
 
   - name: Inactive
     type: static

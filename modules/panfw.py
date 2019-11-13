@@ -12,7 +12,8 @@ class Panfw(Module):
         Initialize an instance of the panfw module.
         """
         self.module_options = ModuleOptions(
-            required_opts=['addr', 'user', 'pw']
+            required_opts=['addr', 'user', 'pw'],
+            optional_opts=['xpath']
         )
         super(Panfw, self).__init__(mod_opts)
         self.name = 'panfw'
@@ -34,7 +35,7 @@ class Panfw(Module):
         params = {
             "type": "config",
             "action": "get",
-            "xpath": "/config/shared/address",
+            "xpath": self.module_options.get_opt('xpath'),
         }
 
         r = panos.send(params=params)
@@ -114,6 +115,8 @@ class Panfw(Module):
                 if addr in net:
                     if net.prefixlen >= longest_match:
                         matched_routes.append(route)
+                if addr == net:
+                    matched_routes.append(route)
 
         for route in matched_routes:
             if 'C' in route['flags']:
@@ -165,8 +168,6 @@ class Panfw(Module):
     def parse_route_response(self, data):
         root = ElementTree.fromstring(data)
         tables = {}
-        table = {}
-
         # Get the entries
         entries = root.findall("./result/entry")
         for entry in entries:
