@@ -26,20 +26,35 @@ def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     return e
 
 def as_table(host_list):
+    headers = []
+    rows = []
     for h in host_list.get_all_hosts():
-        headers = []
-        values = []
         for attr, value in h.attributes.items():
-            headers.append(attr)
-            values.append(value)
+            if attr not in headers:
+                headers.append(attr)
 
         for mod, results in h.result.items():
             for k, v in results.items():
-                headers.append(k)
-                values.append(v)
+                if k not in headers:
+                    headers.append(k)
 
-        table = tabulate([values], headers=headers)
-        print(table)
+    for h in host_list.get_all_hosts():
+        row = []
+        for header in headers:
+            v = 'None'
+            if header in h.attributes:
+                v = h.attributes[header]
+            else:
+                for mod, results in h.result.items():
+                    if header in results:
+                        v = results[header]
+
+            row.append(v)
+
+        rows.append(row)
+
+    table = tabulate(rows, headers=headers)
+    print(table)
 
 def tag(host_list, policy):
     for h in host_list.get_all_hosts():

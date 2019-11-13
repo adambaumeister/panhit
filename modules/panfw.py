@@ -122,7 +122,6 @@ class Panfw(Module):
                 if not best_route:
                     best_route = route
 
-        print(best_route)
         return best_route
 
     def parse_arp_response(self, data):
