@@ -53,6 +53,7 @@ class ConfigFile:
             i = FileInput(self.input['location'])
             return i
         elif self.input['type'] == 'panfw':
+            mod_opts.update(self.input)
             p = Panfw(mod_opts)
             return p
 

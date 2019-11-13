@@ -22,6 +22,7 @@ class DNSHost(Module):
             data['hostname'] = hostname[0]
         except socket.herror as err:
             data = {}
-
+        except socket.gaierror as err:
+            data = {}
 
         return data

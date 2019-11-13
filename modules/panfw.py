@@ -26,7 +26,20 @@ class Panfw(Module):
         Retrieve a HostList from this device.
         :return: HostList
         """
+        panos = Panos(addr=self.module_options.get_opt('addr'),
+                      user=self.module_options.get_opt('user'),
+                      pw=self.module_options.get_opt('pw'),
+                      )
 
+        params = {
+            "type": "config",
+            "action": "get",
+            "xpath": "/config/shared/address",
+        }
+
+        r = panos.send(params=params)
+        host_dict = self.parse_addresses(r.content)
+        return host_dict
 
     def Get(self, host):
         """
@@ -89,11 +102,15 @@ class Panfw(Module):
     def route_lookup(self, ip, route_table):
         longest_match = 0
         matched_routes = []
-        best_route = None
+        best_route = {}
         for vr, table in route_table.items():
             for subnet, route in table.items():
                 net = ipaddress.ip_network(subnet)
-                addr = ipaddress.ip_address(ip)
+                if "/" in ip:
+                    addr = ipaddress.ip_network(ip, strict=False)
+                else:
+                    addr = ipaddress.ip_address(ip)
+
                 if addr in net:
                     if net.prefixlen >= longest_match:
                         matched_routes.append(route)
@@ -105,6 +122,7 @@ class Panfw(Module):
                 if not best_route:
                     best_route = route
 
+        print(best_route)
         return best_route
 
     def parse_arp_response(self, data):
@@ -123,6 +141,26 @@ class Panfw(Module):
                 'interface': interface
             }
 
+        return table
+
+    def parse_addresses(self, data):
+        root = ElementTree.fromstring(data)
+        table = []
+
+        # Get the entries
+        entries = root.findall("./result/address/entry")
+
+        for entry in entries:
+            e = {}
+            name = entry.attrib['name']
+            ipattr = entry.find("./ip-netmask")
+            if ipattr is not None:
+                ip = ipattr.text
+                e['ip'] = ip
+                e['name'] = name
+                table.append(e)
+
+        print(table)
         return table
 
     def parse_route_response(self, data):
