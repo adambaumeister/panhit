@@ -1,39 +1,13 @@
 import os
 import json
+
 class HostList:
     """
     List of Host Entries
     """
-    def __init__(self, source, mods_enabled=None):
-        self.source = source
+    def __init__(self, input, mods_enabled=None):
         self.mods_enabled = mods_enabled
-        if os.path.isfile(source):
-            self.hosts = self.parse_file(source)
-
-    def parse_file(self, source):
-        host_dicts = []
-        try:
-            # JSON format
-            r = json.load(open(source))
-            host_dicts = r['hosts']
-            return self.hosts_from_list(host_dicts)
-        except json.JSONDecodeError:
-            pass
-
-        f = open(source)
-        lines = f.readlines()
-        # CSV format
-        keys = lines[0].rstrip().split(",")
-        for line in lines[1:]:
-            values = line.rstrip().split(",")
-            ld = {}
-            i=0
-            for k in keys:
-                ld[k] = values[i]
-                i = i+1
-            host_dicts.append(ld)
-
-        return self.hosts_from_list(host_dicts)
+        self.hosts = self.hosts_from_list(input.List())
 
     def hosts_from_list(self, host_dicts):
         hosts = []

@@ -1,4 +1,5 @@
 from modules import *
+from Inputs import *
 import pathlib
 import os
 import yaml
@@ -47,6 +48,11 @@ class ConfigFile:
 
         return mods
 
-    def get_input(self):
+    def get_input(self, mod_opts):
         if self.input['type'] == 'file':
-            return self.input['location']
+            i = FileInput(self.input['location'])
+            return i
+        elif self.input['type'] == 'panfw':
+            p = Panfw(mod_opts)
+            return p
+

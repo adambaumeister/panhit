@@ -21,7 +21,7 @@ class DNSHost(Module):
             hostname = socket.gethostbyaddr(host.ip)
             data['hostname'] = hostname[0]
         except socket.herror as err:
-            data['hostname'] = err
+            data = {}
 
 
         return data

@@ -21,6 +21,13 @@ class Panfw(Module):
         self.arp_cache = {}
         self.route_cache = None
 
+    def List(self):
+        """
+        Retrieve a HostList from this device.
+        :return: HostList
+        """
+
+
     def Get(self, host):
         """
         Retreives ARP/Routing table information for the host to determine reachability
@@ -143,7 +150,6 @@ class Panfw(Module):
                 tables[vr][dest] = route
 
         return tables
-
 
     def query_arp(self):
         pass
