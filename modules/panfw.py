@@ -9,17 +9,21 @@ MAX_REPORT_QUERIES=10
 APPS_BY_IP_REPORT="""
         <type>
           <trsum>
+            <sortby>sessions</sortby>
             <aggregate-by>
-              <member>rule</member>
-              <member>dst</member>
+              <member>app</member>
             </aggregate-by>
+            <values>
+              <member>sessions</member>
+            </values>
           </trsum>
         </type>
-        <period>last-15-minutes</period>
+        <period >last-15-minutes</period>
         <topn>10</topn>
         <topm>10</topm>
-        <caption>test</caption>
-        <query>addr.src in 150.203.4.7</query>
+        <caption >test</caption>
+        <query>addr.src in {}</query>
+
 """
 
 class Panfw(Module):
@@ -123,7 +127,8 @@ class Panfw(Module):
         for k, v in route.items():
             data[k] = v
 
-        self.run_report(panos, APPS_BY_IP_REPORT)
+        report_spec = APPS_BY_IP_REPORT.format(host.ip)
+        self.run_report(panos, report_spec)
         # We grab apps seen for this host in the last 24hrs
         return data
 
@@ -271,11 +276,11 @@ class Panfw(Module):
             time.sleep(1)
             run = run+1
 
-        report = root.find("./result/report")
+        report = result.find("./result/report")
         entries = report.findall("./entry")
         for e in entries:
-            dst = e.find("./dst")
-            print(dst.text)
+            app = e.find("./app")
+            print(app.text)
 
 
     def query_arp(self):
