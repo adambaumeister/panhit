@@ -83,6 +83,7 @@ if __name__ == '__main__':
     script_options = parser.add_argument_group("Script options")
 
     script_options.add_argument("--config_file", help="Path to panhit configuration file.")
+    script_options.add_argument("--tag", help="Run tag output.")
     script_options.add_argument("--password",
                                 help="Firewall/Panorama login password. Can also use envvar PC_PASSWORD")
 
@@ -102,7 +103,8 @@ if __name__ == '__main__':
     hl.run_all_hosts()
 
     as_table(hl)
-    tag(hl, c.tags)
+    if args.tag:
+        tag(hl, c.tags)
 
-    output = c.get_output(mod_opts)
-    output.Output(hl)
+        output = c.get_output(mod_opts)
+        output.Output(hl)

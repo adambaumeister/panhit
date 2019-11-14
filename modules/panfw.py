@@ -2,6 +2,25 @@ from .mod import Module, ModuleOptions
 from panos import Panos
 from xml.etree import ElementTree
 import ipaddress
+import time
+
+MAX_REPORT_QUERIES=10
+
+APPS_BY_IP_REPORT="""
+        <type>
+          <trsum>
+            <aggregate-by>
+              <member>rule</member>
+              <member>dst</member>
+            </aggregate-by>
+          </trsum>
+        </type>
+        <period>last-15-minutes</period>
+        <topn>10</topn>
+        <topm>10</topm>
+        <caption>test</caption>
+        <query>addr.src in 150.203.4.7</query>
+"""
 
 class Panfw(Module):
     """
@@ -104,6 +123,8 @@ class Panfw(Module):
         for k, v in route.items():
             data[k] = v
 
+        self.run_report(panos, APPS_BY_IP_REPORT)
+        # We grab apps seen for this host in the last 24hrs
         return data
 
     def Output(self, host_list):
@@ -219,6 +240,43 @@ class Panfw(Module):
                 tables[vr][dest] = route
 
         return tables
+
+    def run_report(self, panos, report_spec):
+
+        # We grab apps seen for this host in the last 24hrs
+        r = panos.send(params={
+            "type": "report",
+            "reporttype": "dynamic",
+            "reportname": "api-dynamic",
+            "cmd": report_spec,
+        })
+
+        root = ElementTree.fromstring(r.content)
+        job = root.find("./result/job")
+
+        js = "ACT"
+        run = 0
+        while "ACT" in js:
+            if run > MAX_REPORT_QUERIES:
+                return {}
+            r = panos.send(params={
+                "type": "report",
+                "action": "get",
+                "job-id": job.text,
+            })
+            root = ElementTree.fromstring(r.content)
+            status = root.find("./result/job/status")
+            js = status.text
+            result = root
+            time.sleep(1)
+            run = run+1
+
+        report = root.find("./result/report")
+        entries = report.findall("./entry")
+        for e in entries:
+            dst = e.find("./dst")
+            print(dst.text)
+
 
     def query_arp(self):
         pass
