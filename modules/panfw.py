@@ -128,8 +128,8 @@ class Panfw(Module):
             data[k] = v
 
         report_spec = APPS_BY_IP_REPORT.format(host.ip)
-        self.run_report(panos, report_spec)
-        # We grab apps seen for this host in the last 24hrs
+        report_result  = self.run_report(panos, report_spec)
+        data.update(report_result)
         return data
 
     def Output(self, host_list):
@@ -248,6 +248,8 @@ class Panfw(Module):
 
     def run_report(self, panos, report_spec):
 
+        data = {}
+
         # We grab apps seen for this host in the last 24hrs
         r = panos.send(params={
             "type": "report",
@@ -263,7 +265,7 @@ class Panfw(Module):
         run = 0
         while "ACT" in js:
             if run > MAX_REPORT_QUERIES:
-                return {}
+                return data
             r = panos.send(params={
                 "type": "report",
                 "action": "get",
@@ -278,9 +280,16 @@ class Panfw(Module):
 
         report = result.find("./result/report")
         entries = report.findall("./entry")
+        apps = []
         for e in entries:
             app = e.find("./app")
-            print(app.text)
+            apps.append(app.text)
+
+        data['apps_seen'] = len(apps)
+        data['apps'] = ",".join(apps)
+        return data
+
+
 
 
     def query_arp(self):
