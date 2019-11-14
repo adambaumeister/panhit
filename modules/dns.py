@@ -18,6 +18,7 @@ class DNSHost(Module):
     def Get(self, host):
         data = {}
         try:
+            socket.setdefaulttimeout(1)
             hostname = socket.gethostbyaddr(host.ip)
             data['hostname'] = hostname[0]
         except socket.herror as err:

@@ -88,15 +88,21 @@ class Panfw(Module):
             for k, v in route.items():
                 data[k] = v
 
+        panos = self.connect_if_not()
+
+        report_spec = APPS_BY_IP_REPORT.format(host.ip)
+        report_result  = self.run_report(panos, report_spec)
+
         # If there's a result in the cache
         if len(data.keys()) > 0:
+            data.update(report_result)
             return data
         # If there isn't, but the caches are set, then assume there never will be
         elif len(self.arp_cache.keys()) > 0:
+            data.update(report_result)
             return data
 
-        panos = self.connect_if_not()
-
+        data.update(report_result)
         # First we grab the arp table
         r = panos.send(params={
             "type": "op",
