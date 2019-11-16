@@ -23,7 +23,7 @@ mod_options:
 
 tags:
   # Match active hosts
-  - name: Active
+  - name: Alive
     type: static
     match:
       mac: exists

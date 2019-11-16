@@ -150,9 +150,7 @@ class Panfw(Module):
         tag_xpath = xpath + "/tag"
 
         element = """
-        <entry name="{}">
             <tag><member>{}</member></tag>
-        </entry>
         """
         tag_element = """
         <entry name="{}">
@@ -160,10 +158,8 @@ class Panfw(Module):
         </entry>
         """
         tags = set()
-        elements = []
+
         for host in host_list.get_all_hosts():
-            new_element = element.format(host.attributes['name'], host.tag)
-            elements.append(new_element)
             tags.add(host.tag)
 
         tag_elements = []
@@ -171,20 +167,22 @@ class Panfw(Module):
             tag_elements.append(tag_element.format(tag))
 
         # First we add the tags
-        self.send_objects(panos, tag_elements, tag_xpath)
-        self.send_objects(panos, elements, address_xpath)
+        self.send_objects(panos, tag_elements, tag_xpath, 'set')
+
+        for host in host_list.get_all_hosts():
+            full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
+            e = element.format(host.tag)
+            self.send_objects(panos, e, full_xpath, 'edit')
 
 
-    def send_objects(self, panos, elements, xpath):
-        print(xpath, elements)
+    def send_objects(self, panos, elements, xpath, set_type):
         params = {
             "type": "config",
-            "action": "set",
+            "action": set_type,
             "xpath": xpath,
             "element": "".join(elements),
         }
         r = panos.send(params)
-        print(r.content)
         result = panos.check_resp(r)
         if not result:
             print("Error adding elements.")
