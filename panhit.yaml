@@ -10,7 +10,7 @@ output:
   type: panfw
   user: admin
   addr: 192.168.1.145
-  xpath: /config/shared/address
+  xpath: /config/shared
 
 mods_enabled:
   - dns

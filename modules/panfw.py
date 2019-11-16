@@ -146,16 +146,37 @@ class Panfw(Module):
         """
         panos = self.connect_if_not()
         xpath = self.module_options.get_opt('xpath')
+        address_xpath = xpath + "/address"
+        tag_xpath = xpath + "/tag"
+
         element = """
         <entry name="{}">
             <tag><member>{}</member></tag>
         </entry>
         """
+        tag_element = """
+        <entry name="{}">
+            <comments>Automatically added.</comments>
+        </entry>
+        """
+        tags = set()
         elements = []
         for host in host_list.get_all_hosts():
             new_element = element.format(host.attributes['name'], host.tag)
             elements.append(new_element)
+            tags.add(host.tag)
 
+        tag_elements = []
+        for tag in tags:
+            tag_elements.append(tag_element.format(tag))
+
+        # First we add the tags
+        self.send_objects(panos, tag_elements, tag_xpath)
+        self.send_objects(panos, elements, address_xpath)
+
+
+    def send_objects(self, panos, elements, xpath):
+        print(xpath, elements)
         params = {
             "type": "config",
             "action": "set",
@@ -164,7 +185,9 @@ class Panfw(Module):
         }
         r = panos.send(params)
         print(r.content)
-        panos.check_resp(r)
+        result = panos.check_resp(r)
+        if not result:
+            print("Error adding elements.")
 
     def route_lookup(self, ip, route_table):
         longest_match = 0
