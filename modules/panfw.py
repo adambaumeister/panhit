@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 import ipaddress
 import time
 
-MAX_REPORT_QUERIES=10
+MAX_REPORT_QUERIES=20
 
 APPS_BY_IP_REPORT="""
         <type>
@@ -18,7 +18,7 @@ APPS_BY_IP_REPORT="""
             </values>
           </trsum>
         </type>
-        <period >last-15-minutes</period>
+        <period >{}</period>
         <topn>10</topn>
         <topm>10</topm>
         <caption >test</caption>
@@ -36,7 +36,7 @@ class Panfw(Module):
         """
         self.module_options = ModuleOptions(
             required_opts=['addr', 'user', 'pw'],
-            optional_opts=['xpath']
+            optional_opts=['xpath', 'report_interval']
         )
         super(Panfw, self).__init__(mod_opts)
         self.name = 'panfw'
@@ -90,7 +90,11 @@ class Panfw(Module):
 
         panos = self.connect_if_not()
 
-        report_spec = APPS_BY_IP_REPORT.format(host.ip)
+        report_interval = self.module_options.get_opt("report_interval")
+        if not report_interval:
+            report_interval = "last-24-hrs"
+
+        report_spec = APPS_BY_IP_REPORT.format(report_interval, host.ip)
         report_result  = self.run_report(panos, report_spec)
 
         # If there's a result in the cache
@@ -102,7 +106,6 @@ class Panfw(Module):
             data.update(report_result)
             return data
 
-        data.update(report_result)
         # First we grab the arp table
         r = panos.send(params={
             "type": "op",
@@ -133,9 +136,8 @@ class Panfw(Module):
         for k, v in route.items():
             data[k] = v
 
-        report_spec = APPS_BY_IP_REPORT.format(host.ip)
-        report_result  = self.run_report(panos, report_spec)
         data.update(report_result)
+
         return data
 
     def Output(self, host_list):

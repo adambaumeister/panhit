@@ -31,6 +31,9 @@ class ModuleOptions:
                 self.options[k] = d[k]
 
     def get_opt(self, opt):
+        if opt not in self.options:
+            return None
+
         return self.options[opt]
 
 class Module:

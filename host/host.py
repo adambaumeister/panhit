@@ -25,8 +25,12 @@ class HostList:
         return self.hosts
 
     def run_all_hosts(self):
+        done = 0
+        total = len(self.get_all_hosts())
         for h in self.get_all_hosts():
             h.run_all_mods()
+            done = done+1
+            print("Done {}/{}".format(done, total))
 
 class Host:
     """

@@ -4,6 +4,7 @@ from tabulate import tabulate
 import getpass
 import os
 import argparse
+import requests
 
 def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     k = "PH_{}".format(prompt).upper()
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     script_options = parser.add_argument_group("Script options")
 
     script_options.add_argument("--config_file", help="Path to panhit configuration file.")
-    script_options.add_argument("--tag", help="Run tag output.")
+    script_options.add_argument("--tag", action="store_true", help="Run tag output.")
     script_options.add_argument("--password",
                                 help="Firewall/Panorama login password. Can also use envvar PC_PASSWORD")
 
@@ -94,6 +95,9 @@ if __name__ == '__main__':
     mod_opts = {
         'pw': pw
     }
+
+    print("""Warning: SSL validation of PANOS device is currently disabled. Use --validate to enable it.""")
+    requests.packages.urllib3.disable_warnings()
 
     c = ConfigFile(path=args.config_file)
     mods = c.init_modules(mod_opts)
