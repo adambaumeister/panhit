@@ -1,5 +1,5 @@
-from host import HostList
-from config import ConfigFile
+from phlibs.host import HostList
+from phlibs.config import ConfigFile
 from tabulate import tabulate
 import getpass
 import os

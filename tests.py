@@ -1,6 +1,6 @@
-from jqueue import Job
-from modules import Module
-from host import HostList
+from phlibs.jqueue import Job
+from phlibs.modules import Module
+from phlibs.host import HostList
 
 class DummyInput:
     def __init__(self, hosts):

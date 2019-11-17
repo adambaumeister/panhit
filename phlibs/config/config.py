@@ -1,5 +1,5 @@
-from modules import *
-from Inputs import *
+from phlibs.modules import *
+from phlibs.Inputs import *
 import pathlib
 import os
 import yaml
