@@ -75,6 +75,7 @@ def tag(host_list, policy):
     for h in host_list.get_all_hosts():
         print(h.attributes['name'], h.tag)
 
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(

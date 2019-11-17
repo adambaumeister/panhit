@@ -318,8 +318,5 @@ class Panfw(Module):
         data['apps'] = ",".join(apps)
         return data
 
-
-
-
     def query_arp(self):
         pass
