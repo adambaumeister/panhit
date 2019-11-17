@@ -5,9 +5,17 @@ class HostList:
     """
     List of Host Entries
     """
-    def __init__(self, input, mods_enabled=None):
+    def __init__(self, input, mods_enabled=None, db=None):
+        """
+        Instantiate a host list based on a given input type.
+        :param input: Class of type Input but can be anything with a List() function
+        :param mods_enabled: Discovery modules to use
+        :param db (optional): Run database. If provided, enables async processing./
+        """
         self.mods_enabled = mods_enabled
         self.hosts = self.hosts_from_list(input.List())
+        self.db = db
+
 
     def hosts_from_list(self, host_dicts):
         hosts = []
@@ -27,10 +35,17 @@ class HostList:
     def run_all_hosts(self):
         done = 0
         total = len(self.get_all_hosts())
+        if self.db:
+            for h in self.get_all_hosts():
+                h.set_db(self.db)
+                h.run_all_mods()
+            return
+
         for h in self.get_all_hosts():
             h.run_all_mods()
             done = done+1
             print("Done {}/{}".format(done, total))
+
 
 class Host:
     """
@@ -49,6 +64,10 @@ class Host:
         self.result = {}
         self.attributes = {}
         self.tag = ''
+
+    def set_db(self, db):
+        self.db = db
+
 
     def add_data(self, k, v):
         """
@@ -69,6 +88,8 @@ class Host:
         for mod in self.mods_enabled:
             data = mod.Get(self)
             self.result[mod.get_name()] = data
+
+        self.db.write(self.result)
 
     def dump_mod_results(self):
         print(self.result)

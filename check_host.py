@@ -1,5 +1,6 @@
 from phlibs.host import HostList
 from phlibs.config import ConfigFile
+from phlibs.db import JsonDB
 from tabulate import tabulate
 import getpass
 import os
@@ -103,8 +104,11 @@ if __name__ == '__main__':
     c = ConfigFile(path=args.config_file)
     mods = c.init_modules(mod_opts)
 
+    jdb = JsonDB("database")
+
+
     input = c.get_input(mod_opts)
-    hl = HostList(input, mods_enabled=mods)
+    hl = HostList(input, mods_enabled=mods, db=jdb)
     hl.run_all_hosts()
 
     as_table(hl)
