@@ -1,5 +1,6 @@
 import os
 import json
+from phlibs.jqueue import JobQueue, Job
 
 class HostList:
     """
@@ -36,9 +37,15 @@ class HostList:
         done = 0
         total = len(self.get_all_hosts())
         if self.db:
+            jq = JobQueue()
+
             for h in self.get_all_hosts():
                 h.set_db(self.db)
-                h.run_all_mods()
+                j = Job(h.run_all_mods, ())
+                jq.add_job(j)
+
+            jq.empty()
+
             return
 
         for h in self.get_all_hosts():

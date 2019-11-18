@@ -8,7 +8,7 @@ class JobQueue:
 
     JobQueue can also be used as the API to query job status, delete jobs, etc.
     """
-    def __init__(self, db=None):
+    def __init__(self):
         """
         Initialize a JobQueue
 
@@ -16,6 +16,20 @@ class JobQueue:
         """
 
         self.queue = []
+
+    def add_job(self, job):
+        self.queue.append(job)
+
+    def empty(self):
+        processes = []
+        for j in self.queue:
+            process = j.Run()
+            processes.append(process)
+
+        for process in processes:
+            process.join()
+
+
 
 class Job:
     """
@@ -28,4 +42,4 @@ class Job:
     def Run(self):
         p = Process(target=self.func, args=self.args)
         p.start()
-        p.join()
+        return p

@@ -5,7 +5,8 @@ from tabulate import tabulate
 import getpass
 import os
 import argparse
-import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     k = "PH_{}".format(prompt).upper()
@@ -99,7 +100,6 @@ if __name__ == '__main__':
     }
 
     print("""Warning: SSL validation of PANOS device is currently disabled. Use --validate to enable it.""")
-    requests.packages.urllib3.disable_warnings()
 
     c = ConfigFile(path=args.config_file)
     mods = c.init_modules(mod_opts)

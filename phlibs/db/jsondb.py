@@ -17,6 +17,7 @@ class JsonDB:
 
     def write(self, document):
         id = self.make_id()
+        print("writing id {}".format(id))
         id = str(id)
         full_path = self.path + os.sep + id + ".json"
         fp = open(full_path, 'w')
@@ -35,3 +36,13 @@ class JsonDB:
 
         max = sorted(ids, reverse=True)[0]
         return int(max) + 1
+
+    def get_all(self):
+        documents = []
+        for item in os.listdir(self.path):
+            fullpath = self.path + os.sep + item
+            if os.path.isfile(fullpath):
+                fp = open(fullpath)
+                j = json.load(fp)
+                documents.append(j)
+        return documents
