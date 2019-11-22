@@ -1,6 +1,7 @@
 import json
 import os
 import pathlib
+import uuid
 
 class JsonDB:
     """
@@ -24,18 +25,8 @@ class JsonDB:
         json.dump(document, fp)
 
     def make_id(self):
-        ids = []
-        for item in os.listdir(self.path):
-            fullpath = self.path + os.sep + item
-            if os.path.isfile(fullpath):
-                i = item.split(".")[0]
-                ids.append(i)
-
-        if len(ids) == 0:
-            return 1
-
-        max = sorted(ids, reverse=True)[0]
-        return int(max) + 1
+        id = uuid.uuid1()
+        return id
 
     def get_all(self):
         documents = []

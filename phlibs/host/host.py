@@ -31,15 +31,23 @@ class HostList:
         return hosts
 
     def get_all_hosts(self):
+        if self.db:
+            hosts = []
+            j = self.db.get_all()
+            for host_json in j:
+                h = unpickle_host(host_json)
+                hosts.append(h)
+            return hosts
+
         return self.hosts
 
     def run_all_hosts(self):
         done = 0
-        total = len(self.get_all_hosts())
+        total = len(self.hosts)
         if self.db:
             jq = JobQueue()
 
-            for h in self.get_all_hosts():
+            for h in self.hosts:
                 h.set_db(self.db)
                 j = Job(h.run_all_mods, ())
                 jq.add_job(j)
@@ -53,6 +61,10 @@ class HostList:
             done = done+1
             print("Done {}/{}".format(done, total))
 
+def unpickle_host(host_json):
+    host = Host(host_json['attributes']['ip'])
+    host.unpickle(host_json)
+    return host
 
 class Host:
     """
@@ -96,7 +108,8 @@ class Host:
             data = mod.Get(self)
             self.result[mod.get_name()] = data
 
-        self.db.write(self.result)
+        if self.db:
+            self.db.write(self.pickle())
 
     def dump_mod_results(self):
         print(self.result)
@@ -110,6 +123,10 @@ class Host:
             'mods_enabled': self.result
         }
         return d
+
+    def unpickle(self, host_json):
+        self.attributes = host_json['attributes']
+        self.result = host_json['mods_enabled']
 
     def compare_attr(self, attr_name, attr_value):
         for mod, results in self.result.items():
