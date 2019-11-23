@@ -16,6 +16,12 @@ class JsonDB:
         """
         self.path = path
 
+    def update_path(self, d):
+        self.path = self.path + os.sep + d
+        if not os.path.isdir(self.path):
+            print("Creating {}".format(self.path))
+            os.mkdir(self.path)
+
     def write(self, document):
         id = self.make_id()
         print("writing id {}".format(id))

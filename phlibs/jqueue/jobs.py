@@ -1,4 +1,5 @@
 from multiprocessing import Process
+from datetime import datetime
 
 class JobQueue:
     """
@@ -10,12 +11,21 @@ class JobQueue:
     """
     def __init__(self):
         """
-        Initialize a JobQueue
-
-        :param db: Database, if provided, in which to store job information.
+        Initialize a JobQueue object.
         """
 
         self.queue = []
+        now = datetime.now()
+        self.id = now.strftime("%d-%m-%Y_%H-%M-%S")
+
+
+    def get_id(self):
+        """
+        Retrieve the ID of this particular job queue.
+
+        :return: (str) id
+        """
+        return self.id
 
     def add_job(self, job):
         self.queue.append(job)

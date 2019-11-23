@@ -45,8 +45,9 @@ class HostList:
         done = 0
         total = len(self.hosts)
         if self.db:
-            jq = JobQueue()
 
+            jq = JobQueue()
+            self.db.update_path(jq.get_id())
             for h in self.hosts:
                 h.set_db(self.db)
                 j = Job(h.run_all_mods, ())
