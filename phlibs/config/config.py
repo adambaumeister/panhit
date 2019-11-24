@@ -16,6 +16,7 @@ class ConfigFile:
         """
         if not path:
             path=DEFAULT_CONFIG_PATH
+        self.tags = []
 
         # Dictionary of module + options from the configuration file
         self.mod_options = {}
@@ -58,7 +59,11 @@ class ConfigFile:
             return p
 
     def get_output(self, mod_opts):
-        if self.input['type'] == 'panfw':
+        if self.output['type'] == 'panfw':
             mod_opts.update(self.output)
             p = Panfw(mod_opts)
             return p
+        elif self.output['type'] == 'table':
+            output = Table()
+            return output
+

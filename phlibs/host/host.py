@@ -37,6 +37,8 @@ class HostList:
             for host_json in j:
                 h = unpickle_host(host_json)
                 hosts.append(h)
+
+            self.hosts = hosts
             return hosts
 
         return self.hosts
@@ -143,3 +145,4 @@ class Host:
 
     def set_tag(self, tag):
         self.tag = tag
+        self.attributes['tag'] = tag

@@ -28,37 +28,6 @@ def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     e = input(prompt + ": ")
     return e
 
-def as_table(host_list):
-    headers = []
-    rows = []
-    for h in host_list.get_all_hosts():
-        for attr, value in h.attributes.items():
-            if attr not in headers:
-                headers.append(attr)
-
-        for mod, results in h.result.items():
-            for k, v in results.items():
-                if k not in headers:
-                    headers.append(k)
-
-    for h in host_list.get_all_hosts():
-        row = []
-        for header in headers:
-            v = 'None'
-            if header in h.attributes:
-                v = h.attributes[header]
-            else:
-                for mod, results in h.result.items():
-                    if header in results:
-                        v = results[header]
-
-            row.append(v)
-
-        rows.append(row)
-
-    table = tabulate(rows, headers=headers)
-    print(table)
-
 def tag(host_list, policy):
     for h in host_list.get_all_hosts():
         for t in reversed(policy):
@@ -74,9 +43,6 @@ def tag(host_list, policy):
             if match:
                 h.set_tag(t['name'])
 
-    for h in host_list.get_all_hosts():
-        print(h.attributes['name'], h.tag)
-
 
 if __name__ == '__main__':
 
@@ -87,7 +53,7 @@ if __name__ == '__main__':
     script_options = parser.add_argument_group("Script options")
 
     script_options.add_argument("--config_file", help="Path to panhit configuration file.")
-    script_options.add_argument("--tag", action="store_true", help="Run tag output.")
+    script_options.add_argument("--daemon", action="store_true", help="Run panhhit as a daemon.")
     script_options.add_argument("--password",
                                 help="Firewall/Panorama login password. Can also use envvar PC_PASSWORD")
 
@@ -106,14 +72,11 @@ if __name__ == '__main__':
 
     jdb = JsonDB("database")
 
-
     input = c.get_input(mod_opts)
     hl = HostList(input, mods_enabled=mods, db=jdb)
     hl.run_all_hosts()
 
-    as_table(hl)
-    if args.tag:
-        tag(hl, c.tags)
+    tag(hl, c.tags)
 
-        output = c.get_output(mod_opts)
-        output.Output(hl)
+    output = c.get_output(mod_opts)
+    output.Output(hl)

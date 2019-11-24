@@ -7,10 +7,13 @@ input:
  # location: ./ipaddr.json
 
 output:
-  type: panfw
-  user: admin
-  addr: 192.168.1.145
-  xpath: /config/shared
+  type: table
+
+#output:
+#  type: panfw
+#  user: admin
+#  addr: 192.168.1.145
+#  xpath: /config/shared
 
 mods_enabled:
   - dns
