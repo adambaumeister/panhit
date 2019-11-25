@@ -159,7 +159,7 @@ class Panfw(Module):
         """
         tags = set()
 
-        for host in host_list.get_all_hosts():
+        for host in host_list.hosts:
             tags.add(host.tag)
 
         tag_elements = []
@@ -169,7 +169,7 @@ class Panfw(Module):
         # First we add the tags
         self.send_objects(panos, tag_elements, tag_xpath, 'set')
 
-        for host in host_list.get_all_hosts():
+        for host in host_list.hosts:
             full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
             e = element.format(host.tag)
             self.send_objects(panos, e, full_xpath, 'edit')

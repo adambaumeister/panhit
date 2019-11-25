@@ -30,6 +30,7 @@ tags:
     type: static
     match:
       mac: exists
+      apps_seen: ">1"
 
   # Match DNAT addresses (NO ARP)
   - name: Outside

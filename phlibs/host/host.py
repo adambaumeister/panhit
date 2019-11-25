@@ -136,6 +136,10 @@ class Host:
             if attr_name in results:
                 if attr_value == "exists":
                     return True
+                elif ">" in attr_value:
+                    v = attr_value[1:]
+                    if int(v) > results[attr_name]:
+                        return True
                 elif attr_value == results[attr_name]:
                     return True
 
