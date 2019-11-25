@@ -1,5 +1,6 @@
 from phlibs.modules import *
 from phlibs.Inputs import *
+from phlibs.db import JsonDB
 import pathlib
 import os
 import yaml
@@ -16,6 +17,8 @@ class ConfigFile:
         """
         if not path:
             path=DEFAULT_CONFIG_PATH
+
+        self.db = None
         self.tags = []
 
         # Dictionary of module + options from the configuration file
@@ -67,3 +70,10 @@ class ConfigFile:
             output = Table()
             return output
 
+
+    def get_db(self):
+        if self.db:
+            if self.db['type'] == 'JsonDB':
+                db_path = self.db['path']
+                jdb = JsonDB(db_path)
+                return jdb

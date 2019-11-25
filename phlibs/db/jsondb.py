@@ -24,7 +24,6 @@ class JsonDB:
 
     def write(self, document):
         id = self.make_id()
-        print("writing id {}".format(id))
         id = str(id)
         full_path = self.path + os.sep + id + ".json"
         fp = open(full_path, 'w')

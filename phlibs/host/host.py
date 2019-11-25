@@ -86,6 +86,7 @@ class Host:
         self.result = {}
         self.attributes = {}
         self.tag = ''
+        self.db = None
 
     def set_db(self, db):
         self.db = db

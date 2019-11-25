@@ -1,19 +1,54 @@
+# Database #
+# Database allows panhit to run using multiprocessing, by storing data on disk instead of in-mem.
+# Example
+# db:
+#  type: JsonDB
+#  path: database
+db:
+  type: JsonDB
+  path: database
+
+# Input #
+# Input defines where the list of hosts to check resides
+# It can be of type file, which indicates it's a simple list
+# Or it can be address objects (type panfw) sourced from a firewall.
+# PANFW Example
+# input:
+#   type: panfw
+#   user: admin
+#   addr: 192.168.1.145
+#   xpath: /config/shared/address
+#
+# FILE example
 input:
-  type: panfw
-  user: admin
-  addr: 192.168.1.145
-  xpath: /config/shared/address
-#  type: file
- # location: ./ipaddr.json
+  type: file
+  location: ./ipaddr.json
+#input:
+#  type: panfw
+#  user: admin
+#  addr: 192.168.1.145
+#  xpath: /config/shared/address
 
-output:
-  type: table
-
+# Output #
+# Output defines what to do with the enriched host information.
+# It can be simply displayed (printed to stdout) or written back into the support types.
+# TABLE example
+# Type 'table' simply outputs the enriched data to a nicely formatted table on stdout.
+#
+#output:
+#  type: table
+#
+# PANFW Example
+# Type 'panfw' tags matching address objects on the given PANOS device.
+#
 #output:
 #  type: panfw
 #  user: admin
 #  addr: 192.168.1.145
 #  xpath: /config/shared
+
+output:
+  type: table
 
 mods_enabled:
   - dns

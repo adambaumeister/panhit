@@ -17,6 +17,7 @@ class JobQueue:
         self.queue = []
         now = datetime.now()
         self.id = now.strftime("%d-%m-%Y_%H-%M-%S")
+        self.limit = 5
 
 
     def get_id(self):
@@ -31,15 +32,24 @@ class JobQueue:
         self.queue.append(job)
 
     def empty(self):
+        """
+        Run all jobs in the queue.
+        """
         processes = []
         for j in self.queue:
+            if len(processes) >= self.limit:
+                for process in processes:
+                    print("joining..")
+                    process.join()
+                    processes = []
+
+            print("running...")
             process = j.Run()
             processes.append(process)
 
         for process in processes:
+            print("joining..")
             process.join()
-
-
 
 class Job:
     """

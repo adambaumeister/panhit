@@ -70,10 +70,9 @@ if __name__ == '__main__':
     c = ConfigFile(path=args.config_file)
     mods = c.init_modules(mod_opts)
 
-    jdb = JsonDB("database")
-
+    db = c.get_db()
     input = c.get_input(mod_opts)
-    hl = HostList(input, mods_enabled=mods, db=jdb)
+    hl = HostList(input, mods_enabled=mods, db=db)
     hl.run_all_hosts()
 
     tag(hl, c.tags)
