@@ -139,7 +139,7 @@ class Host:
                     return True
                 elif ">" in attr_value:
                     v = attr_value[1:]
-                    if int(v) > results[attr_name]:
+                    if results[attr_name] > int(v):
                         return True
                 elif attr_value == results[attr_name]:
                     return True
