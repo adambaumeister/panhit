@@ -1,13 +1,22 @@
 import os
 import json
+from phlibs.jqueue import JobQueue, Job
 
 class HostList:
     """
     List of Host Entries
     """
-    def __init__(self, input, mods_enabled=None):
+    def __init__(self, input, mods_enabled=None, db=None):
+        """
+        Instantiate a host list based on a given input type.
+        :param input: Class of type Input but can be anything with a List() function
+        :param mods_enabled: Discovery modules to use
+        :param db (optional): Run database. If provided, enables async processing./
+        """
         self.mods_enabled = mods_enabled
         self.hosts = self.hosts_from_list(input.List())
+        self.db = db
+
 
     def hosts_from_list(self, host_dicts):
         hosts = []
@@ -22,15 +31,43 @@ class HostList:
         return hosts
 
     def get_all_hosts(self):
+        if self.db:
+            hosts = []
+            j = self.db.get_all()
+            for host_json in j:
+                h = unpickle_host(host_json)
+                hosts.append(h)
+
+            self.hosts = hosts
+            return hosts
+
         return self.hosts
 
     def run_all_hosts(self):
         done = 0
-        total = len(self.get_all_hosts())
+        total = len(self.hosts)
+        if self.db:
+
+            jq = JobQueue()
+            self.db.update_path(jq.get_id())
+            for h in self.hosts:
+                h.set_db(self.db)
+                j = Job(h.run_all_mods, ())
+                jq.add_job(j)
+
+            jq.empty()
+
+            return
+
         for h in self.get_all_hosts():
             h.run_all_mods()
             done = done+1
             print("Done {}/{}".format(done, total))
+
+def unpickle_host(host_json):
+    host = Host(host_json['attributes']['ip'])
+    host.unpickle(host_json)
+    return host
 
 class Host:
     """
@@ -49,6 +86,11 @@ class Host:
         self.result = {}
         self.attributes = {}
         self.tag = ''
+        self.db = None
+
+    def set_db(self, db):
+        self.db = db
+
 
     def add_data(self, k, v):
         """
@@ -70,6 +112,9 @@ class Host:
             data = mod.Get(self)
             self.result[mod.get_name()] = data
 
+        if self.db:
+            self.db.write(self.pickle())
+
     def dump_mod_results(self):
         print(self.result)
 
@@ -83,11 +128,19 @@ class Host:
         }
         return d
 
+    def unpickle(self, host_json):
+        self.attributes = host_json['attributes']
+        self.result = host_json['mods_enabled']
+
     def compare_attr(self, attr_name, attr_value):
         for mod, results in self.result.items():
             if attr_name in results:
                 if attr_value == "exists":
                     return True
+                elif ">" in attr_value:
+                    v = attr_value[1:]
+                    if results[attr_name] > int(v):
+                        return True
                 elif attr_value == results[attr_name]:
                     return True
 
@@ -97,3 +150,4 @@ class Host:
 
     def set_tag(self, tag):
         self.tag = tag
+        self.attributes['tag'] = tag
