@@ -8,6 +8,8 @@ import argparse
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
+
 def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     k = "PH_{}".format(prompt).upper()
     e = os.getenv(k)
@@ -44,6 +46,8 @@ def tag(host_list, policy):
                 h.set_tag(t['name'])
 
 
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(
@@ -67,7 +71,8 @@ if __name__ == '__main__':
 
     print("""Warning: SSL validation of PANOS device is currently disabled. Use --validate to enable it.""")
 
-    c = ConfigFile(path=args.config_file)
+    c = ConfigFile()
+    c.load_from_file(args.config_file)
     mods = c.init_modules(mod_opts)
 
     db = c.get_db()

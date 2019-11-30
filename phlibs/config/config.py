@@ -8,15 +8,14 @@ import yaml
 DEFAULT_CONFIG_PATH=str(pathlib.Path.home()) + os.sep + "panhit.yaml"
 
 class ConfigFile:
-    def __init__(self, path):
+    def __init__(self):
         """
         Initialize the yaml/json panhit configuration file.
 
         The configuration
         :param path: (DEFAULT: ~/panhit.yamlPath to configuration file
         """
-        if not path:
-            path=DEFAULT_CONFIG_PATH
+
 
         self.db = None
         self.tags = []
@@ -26,10 +25,6 @@ class ConfigFile:
         # Enabled retrieval modules
         self.mods_enabled = []
         self.input = {}
-        r = yaml.safe_load(open(path))
-        for k,v in r.items():
-            self.__setattr__(k, v)
-
         self.mods_available = {
             'dns': DNSHost,
             'panfw': Panfw,
@@ -37,6 +32,19 @@ class ConfigFile:
 
 
         pass
+
+    def load_from_file(self, path=None):
+        if not path:
+            path=DEFAULT_CONFIG_PATH
+
+        if os.path.isfile(path):
+            r = yaml.safe_load(open(path))
+            self.unpickle(r)
+            return r
+
+    def unpickle(self, r):
+        for k, v in r.items():
+            self.__setattr__(k, v)
 
     def init_modules(self, mod_opts):
         mods = []
@@ -60,6 +68,9 @@ class ConfigFile:
             mod_opts.update(self.input)
             p = Panfw(mod_opts)
             return p
+        elif self.input['type'] == 'dict':
+            l = ListInput(self.input['hosts'])
+            return l
 
     def get_output(self, mod_opts):
         if self.output['type'] == 'panfw':

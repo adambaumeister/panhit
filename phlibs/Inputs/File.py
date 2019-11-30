@@ -1,5 +1,15 @@
 import json
 
+class ListInput():
+    def __init__(self, data):
+        self.data = data
+
+    def List(self):
+        return self.data
+
+    def Output(self):
+        pass
+
 class FileInput():
     def __init__(self, source):
         self.source = source
