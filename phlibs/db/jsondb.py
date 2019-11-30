@@ -23,8 +23,22 @@ class JsonDB:
             os.mkdir(self.path)
 
     def write(self, document):
+        """
+        Write a json document to disk.
+        :param document: (dict) Dictionary to write to JSON
+        """
         id = self.make_id()
         id = str(id)
+        full_path = self.path + os.sep + id + ".json"
+        fp = open(full_path, 'w')
+        json.dump(document, fp)
+
+    def write_id(self, id, document):
+        """
+        Same as Write function but allows specifying the document ID
+        :param id: (str) document id
+        :param document: (dict) Dictionary to write to JSON
+        """
         full_path = self.path + os.sep + id + ".json"
         fp = open(full_path, 'w')
         json.dump(document, fp)
@@ -42,3 +56,10 @@ class JsonDB:
                 j = json.load(fp)
                 documents.append(j)
         return documents
+
+    def get(self, id):
+        fullpath = self.path + os.sep + id + ".json"
+        if os.path.isfile(fullpath):
+            fp = open(fullpath)
+            j = json.load(fp)
+            return j

@@ -1,6 +1,6 @@
 from phlibs.host import HostList
 from phlibs.config import ConfigFile
-from phlibs.db import JsonDB
+from phlibs.jqueue import JobQueue
 from tabulate import tabulate
 import getpass
 import os
@@ -78,7 +78,9 @@ if __name__ == '__main__':
     db = c.get_db()
     input = c.get_input(mod_opts)
     hl = HostList(input, mods_enabled=mods, db=db)
-    hl.run_all_hosts()
+
+    jq = JobQueue()
+    hl.run_all_hosts(jq)
 
     tag(hl, c.tags)
 

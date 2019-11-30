@@ -7,6 +7,7 @@ import os
 import argparse
 import urllib3
 from flask import Flask, escape, request
+from phlibs.jqueue import Job
 
 # Default path to the configuration file for PANHIT
 DEFAULT_CONFIG_FILE="panhit.yaml"
@@ -47,5 +48,8 @@ def run():
             "Error": str(e)
         }
 
-    hl.run_all_hosts()
+    # Run the actual job in the background and return immediately
+    j = Job(hl.run_all_hosts, args=())
+    j.Run()
+
     return c.db

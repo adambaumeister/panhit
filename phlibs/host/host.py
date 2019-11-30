@@ -16,7 +16,7 @@ class HostList:
         self.mods_enabled = mods_enabled
         self.hosts = self.hosts_from_list(input.List())
         self.db = db
-
+        self.index = []
 
     def hosts_from_list(self, host_dicts):
         hosts = []
@@ -32,9 +32,10 @@ class HostList:
 
     def get_all_hosts(self):
         if self.db:
+            index = self.db.get("index")
             hosts = []
-            j = self.db.get_all()
-            for host_json in j:
+            for hid in index:
+                host_json = self.db.get(hid)
                 h = unpickle_host(host_json)
                 hosts.append(h)
 
@@ -43,17 +44,30 @@ class HostList:
 
         return self.hosts
 
-    def run_all_hosts(self):
+    def run_all_hosts(self, jq=None):
+        """
+        Run all the modules for all hosts
+        if a JobQueue object is specified, this will run async
+        :param jq: JobQueue instance
+        """
         done = 0
         total = len(self.hosts)
         if self.db:
-
-            jq = JobQueue()
+            # Set the path to store this run
             self.db.update_path(jq.get_id())
+            # Pass the db object to the JsonDB so it can write
+            jq.set_db(self.db)
+
             for h in self.hosts:
+                # Create a uid for each host
+                hid = self.db.make_id()
+                self.index.append(str(hid))
+
                 h.set_db(self.db)
-                j = Job(h.run_all_mods, ())
+                j = Job(h.run_all_mods, (hid,))
                 jq.add_job(j)
+
+            self.db.write_id("index", self.index)
 
             jq.empty()
 
@@ -104,7 +118,7 @@ class Host:
         for k, v in d.items():
             self.attributes[k] = v
 
-    def run_all_mods(self, mod_opts=None):
+    def run_all_mods(self, hid):
         """
         Run all mods and enrich this object with the results
         """
@@ -113,7 +127,7 @@ class Host:
             self.result[mod.get_name()] = data
 
         if self.db:
-            self.db.write(self.pickle())
+            self.db.write_id(str(hid), self.pickle())
 
     def dump_mod_results(self):
         print(self.result)
