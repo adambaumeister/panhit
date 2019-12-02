@@ -34,3 +34,19 @@ class JobStatus(Message):
 
     def GetMsg(self):
         return self.json_job
+
+class JobList(Message):
+    def __init__(self):
+        super(JobList, self).__init__()
+        self.count = 0
+        self.result = []
+
+    def set_from_json(self, j):
+        self.count = len(j)
+        self.result = j
+
+    def GetMsg(self):
+        return {
+            "count": self.count,
+            "result": self.result
+        }

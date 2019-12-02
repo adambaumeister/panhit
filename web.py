@@ -1,6 +1,6 @@
 from phlibs.host import HostList
 from phlibs.config import ConfigFile
-from phlibs.messages import JobStarted, JobStatus
+from phlibs.messages import *
 
 from flask import Flask, escape, request
 from phlibs.jqueue import Job, JobQueue
@@ -37,6 +37,12 @@ def configure(j):
 
 @app.route('/run', methods=['POST'])
 def run():
+    """
+    Primary job schedular
+    This route takes a complete job spec from the API and outputs the scheduled job ID as a valid JobQueue ID, which
+    it then runs.
+    :return: JobStarted JSON message type
+    """
     try:
         c, hl = configure(request.get_json())
     except ValueError as e:
@@ -56,8 +62,15 @@ def run():
 
     return m.GetMsg()
 
+
 @app.route('/jobs/get/<job_id>', methods=['GET'])
-def get(job_id):
+def get_job(job_id):
+    """
+    Individual job retrieval
+    This route retreives a job, either current or historical, from the configured database type.
+    :param job_id: ID of job, either running, scheduled, or existing.
+    :return: JobStatus JSON message type.
+    """
     c = ConfigFile()
     # First load in all the configuration from the provided configuration file, if it exists
     c.load_from_file(DEFAULT_CONFIG_FILE)
@@ -69,3 +82,23 @@ def get(job_id):
     m.set_from_json(jqstatus)
 
     return m.GetMsg()
+
+@app.route('/jobs/list', methods=['GET'])
+def list_jobs():
+    """
+    List all current and past jobs.
+    This call can be paginated but is not by default
+    :return: JobList JSON message type
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+    j = db.get_all_in_subdir_sorted('jqstatus')
+
+    m = JobList()
+    m.set_from_json(j)
+
+    return m.GetMsg()
+
+

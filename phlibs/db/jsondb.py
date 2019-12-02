@@ -12,11 +12,15 @@ class JsonDB:
         """
         Initalize a datastore
         :param dbname: Name of the datastore
-        :param path: Full system path to the datastore
+        :param path: Full system path to the datastore, this also becomes the root datastore path
         """
         self.path = path
+        self.root = path
 
     def update_path(self, d):
+        """
+        Update the current path of the datastore
+        """
         self.path = self.path + os.sep + d
         if not os.path.isdir(self.path):
             print("Creating {}".format(self.path))
@@ -63,3 +67,19 @@ class JsonDB:
             fp = open(fullpath)
             j = json.load(fp)
             return j
+
+    def get_all_in_subdir_sorted(self, doc_id):
+        """
+        Retrieve a document with the same ID from all the sub-databases (directories within the root)
+        :param doc_id: id of document
+        :return: (list) Document objects
+        """
+        docs = []
+        for item in os.listdir(self.root):
+            fullpath = self.root + os.sep + item + os.sep + doc_id + ".json"
+            if os.path.isfile(fullpath):
+                fp = open(fullpath)
+                j = json.load(fp)
+                docs.append(j)
+
+        return docs
