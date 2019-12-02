@@ -1,13 +1,9 @@
 from phlibs.host import HostList
 from phlibs.config import ConfigFile
-from phlibs.db import JsonDB
-from tabulate import tabulate
-import getpass
-import os
-import argparse
-import urllib3
+from phlibs.messages import JobStarted
+
 from flask import Flask, escape, request
-from phlibs.jqueue import Job
+from phlibs.jqueue import Job, JobQueue
 
 # Default path to the configuration file for PANHIT
 DEFAULT_CONFIG_FILE="panhit.yaml"
@@ -39,7 +35,7 @@ def configure(j):
     return c, hl
 
 
-@app.route('/', methods=['POST'])
+@app.route('/run', methods=['POST'])
 def run():
     try:
         c, hl = configure(request.get_json())
@@ -49,7 +45,13 @@ def run():
         }
 
     # Run the actual job in the background and return immediately
-    j = Job(hl.run_all_hosts, args=())
+    jq = JobQueue()
+    j = Job(hl.run_all_hosts, args=(jq,))
+
+    m = JobStarted()
+    m.status = "started"
+    m.jid = jq.id
+
     j.Run()
 
-    return c.db
+    return m.GetMsg()

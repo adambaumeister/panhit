@@ -42,9 +42,14 @@ class JobQueue:
         """
         Run all jobs in the queue.
         """
+        started = datetime.now().timestamp()
+        completed = 0
+
         d = {
             "id": self.id,
-            "queued": len(self.queue)
+            "queued": len(self.queue),
+            "start_time": started,
+            "completed": 0,
         }
         self.db.write_id('jqstatus', d)
 
@@ -53,15 +58,20 @@ class JobQueue:
             if len(processes) >= self.limit:
                 for process in processes:
                     process.join()
-                    processes = []
+                    completed = completed+1
+                    d['completed'] = completed
+                    self.db.write_id('jqstatus', d)
+
+                processes = []
 
             process = j.Run()
             processes.append(process)
 
-        # If nowait is not specified, do not rejoin the processes and run them independently in the bg.
-        if not nowait:
-            for process in processes:
-                process.join()
+        for process in processes:
+            process.join()
+            completed = completed + 1
+            d['completed'] = completed
+            self.db.write_id('jqstatus', d)
 
 class Job:
     """
