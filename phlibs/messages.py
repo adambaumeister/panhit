@@ -23,3 +23,14 @@ class JobStarted(Message):
             "id": self.jid,
             "status": self.status
         }
+
+class JobStatus(Message):
+    def __init__(self):
+        super(JobStatus, self).__init__()
+        self.json_job = {}
+
+    def set_from_json(self, j):
+        self.json_job = j
+
+    def GetMsg(self):
+        return self.json_job

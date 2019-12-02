@@ -1,6 +1,6 @@
 from phlibs.host import HostList
 from phlibs.config import ConfigFile
-from phlibs.messages import JobStarted
+from phlibs.messages import JobStarted, JobStatus
 
 from flask import Flask, escape, request
 from phlibs.jqueue import Job, JobQueue
@@ -53,5 +53,19 @@ def run():
     m.jid = jq.id
 
     j.Run()
+
+    return m.GetMsg()
+
+@app.route('/jobs/get/<job_id>', methods=['GET'])
+def get(job_id):
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+    db.update_path(job_id)
+
+    jqstatus = db.get('jqstatus')
+    m = JobStatus()
+    m.set_from_json(jqstatus)
 
     return m.GetMsg()
