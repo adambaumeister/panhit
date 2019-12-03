@@ -6,7 +6,7 @@ from flask import Flask, escape, request
 from phlibs.jqueue import Job, JobQueue
 
 # Default path to the configuration file for PANHIT
-DEFAULT_CONFIG_FILE="panhit.yaml"
+DEFAULT_CONFIG_FILE="server.yaml"
 
 app = Flask(__name__)
 
@@ -102,3 +102,25 @@ def list_jobs():
     return m.GetMsg()
 
 
+@app.route('/config/<config_type>', methods=['POST'])
+def add_config(config_type):
+    """
+    Add a configuration object of the given type with the given object value
+    Object is expected as JSON.
+    :param config_type: Type of configuration object to add
+    :return: ConfigStatus
+    """
+    c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_cdb()
+    db.update_path(config_type)
+    input_json = request.get_json()
+
+    name = input_json['name']
+
+    db.write_id(name, input_json)
+
+    m = ConfigStatus()
+    m.set_name(name)
+    m.set_status('Added.')
+    return m.GetMsg()

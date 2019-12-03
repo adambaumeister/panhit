@@ -7,3 +7,7 @@
 db:
   type: JsonDB
   path: database
+
+configdb:
+  type: JsonDB
+  path: configdb

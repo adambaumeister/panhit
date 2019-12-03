@@ -88,3 +88,10 @@ class ConfigFile:
                 db_path = self.db['path']
                 jdb = JsonDB(db_path)
                 return jdb
+
+    def get_cdb(self):
+        if self.configdb:
+            if self.configdb['type'] == 'JsonDB':
+                db_path = self.configdb['path']
+                jdb = JsonDB(db_path)
+                return jdb

@@ -50,3 +50,21 @@ class JobList(Message):
             "count": self.count,
             "result": self.result
         }
+
+class ConfigStatus(Message):
+    def __init__(self):
+        super(ConfigStatus, self).__init__()
+        self.status = ''
+        self.name = None
+
+    def set_status(self, status):
+        self.status = status
+
+    def set_name(self, name):
+        self.name = name
+
+    def GetMsg(self):
+        return {
+            "status": self.status,
+            "name": self.name
+        }
