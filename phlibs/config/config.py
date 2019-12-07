@@ -46,13 +46,28 @@ class ConfigFile:
         for k, v in r.items():
             self.__setattr__(k, v)
 
+    def load_if_str(self, data):
+        """
+        If the passed param data is a str, load it from the database, otherwise, return it directly
+        :param data: (str or dict)
+        :return: (dict) data
+        """
+        cdb = self.get_cdb()
+        if type(data) is str:
+            data = cdb.get_in_sub(self.input, "input")
+            return data
+        else:
+            return data
+
+
     def init_modules(self, mod_opts):
         mods = []
         for mod in self.mods_enabled:
             if mod in self.mods_available:
                 new_opts = mod_opts
                 if mod in self.mod_options:
-                    new_opts.update(self.mod_options[mod])
+                    data = self.load_if_str(self.mod_options[mod])
+                    new_opts.update(data)
                 mods.append(self.mods_available[mod](new_opts))
             else:
                 raise ValueError("{} is not a valid module.".format(mod))
@@ -61,15 +76,19 @@ class ConfigFile:
         return mods
 
     def get_input(self, mod_opts):
-        if self.input['type'] == 'file':
-            i = FileInput(self.input['location'])
+        data = self.input  
+        # If we're passed a string instead of a dictionary, look it up in the database
+        data = self.load_if_str(data)
+
+        if data['type'] == 'file':
+            i = FileInput(data['location'])
             return i
-        elif self.input['type'] == 'panfw':
-            mod_opts.update(self.input)
+        elif data['type'] == 'panfw':
+            mod_opts.update(data)
             p = Panfw(mod_opts)
             return p
-        elif self.input['type'] == 'dict':
-            l = ListInput(self.input['hosts'])
+        elif data['type'] == 'dict':
+            l = ListInput(data['hosts'])
             return l
 
     def get_output(self, mod_opts):

@@ -124,3 +124,23 @@ def add_config(config_type):
     m.set_name(name)
     m.set_status('Added.')
     return m.GetMsg()
+
+@app.route('/config/<config_type>', methods=['GET'])
+def get_config(config_type):
+    """
+    Retrieve all the configuration objects matching the provided type
+    :param config_type: Type of configuration object to retrieve
+    :return: ConfigGet
+    """
+    c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_cdb()
+    db.update_path(config_type)
+
+    names = []
+    for item in db.get_all():
+        names.append(item['name'])
+
+    m = ConfigGet()
+    m.set_items(names)
+    return m.GetMsg()

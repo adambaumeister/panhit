@@ -68,6 +68,19 @@ class JsonDB:
             j = json.load(fp)
             return j
 
+    def get_in_sub(self, id, sub):
+        """
+        Get a document from a subdir within the db
+        :param id: Document ID
+        :param sub: Subdirectory name
+        :return: document
+        """
+        fullpath = self.root + os.sep + sub + os.sep + id + ".json"
+        if os.path.isfile(fullpath):
+            fp = open(fullpath)
+            j = json.load(fp)
+            return j
+
     def get_all_in_subdir_sorted(self, doc_id):
         """
         Retrieve a document with the same ID from all the sub-databases (directories within the root)

@@ -68,3 +68,16 @@ class ConfigStatus(Message):
             "status": self.status,
             "name": self.name
         }
+
+class ConfigGet(Message):
+    def __init__(self):
+        super(ConfigGet, self).__init__()
+        self.items = []
+
+    def set_items(self, items):
+        self.items = items
+
+    def GetMsg(self):
+        return {
+            "items": self.items,
+        }
