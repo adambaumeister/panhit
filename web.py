@@ -4,6 +4,7 @@ from phlibs.messages import *
 
 from flask import Flask, escape, request
 from phlibs.jqueue import Job, JobQueue
+from phlibs.outputs import JsonOutput
 
 # Default path to the configuration file for PANHIT
 DEFAULT_CONFIG_FILE="server.yaml"
@@ -82,6 +83,29 @@ def get_job(job_id):
     m.set_from_json(jqstatus)
 
     return m.GetMsg()
+
+@app.route('/jobs/get/<job_id>/result', methods=['GET'])
+def get_job_result(job_id):
+    """
+    Job result retrieval
+    This route retreives a job, either current or historical, from the configured database type.
+    :param job_id: ID of completed job.
+    :return: JobResult message type
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+    db.update_path(job_id)
+    data = {}
+    jqstatus = db.get('jqstatus')
+
+    o = JsonOutput()
+    if jqstatus['completed'] == jqstatus['queued']:
+        hl = HostList(db=db)
+        data = o.Output(hl)
+
+    return data
 
 @app.route('/jobs/list', methods=['GET'])
 def list_jobs():

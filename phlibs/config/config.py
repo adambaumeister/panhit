@@ -18,6 +18,7 @@ class ConfigFile:
 
 
         self.db = None
+        self.configdb = None
         self.tags = []
 
         # Dictionary of module + options from the configuration file
@@ -44,9 +45,10 @@ class ConfigFile:
 
     def unpickle(self, r):
         for k, v in r.items():
+
             self.__setattr__(k, v)
 
-    def load_if_str(self, data):
+    def load_if_str(self, data, loc):
         """
         If the passed param data is a str, load it from the database, otherwise, return it directly
         :param data: (str or dict)
@@ -54,7 +56,8 @@ class ConfigFile:
         """
         cdb = self.get_cdb()
         if type(data) is str:
-            data = cdb.get_in_sub(self.input, "input")
+            data = cdb.get_in_sub(data, loc)
+            print(data)
             return data
         else:
             return data
@@ -66,7 +69,7 @@ class ConfigFile:
             if mod in self.mods_available:
                 new_opts = mod_opts
                 if mod in self.mod_options:
-                    data = self.load_if_str(self.mod_options[mod])
+                    data = self.load_if_str(self.mod_options[mod], loc="modules")
                     new_opts.update(data)
                 mods.append(self.mods_available[mod](new_opts))
             else:
@@ -78,7 +81,7 @@ class ConfigFile:
     def get_input(self, mod_opts):
         data = self.input  
         # If we're passed a string instead of a dictionary, look it up in the database
-        data = self.load_if_str(data)
+        data = self.load_if_str(data, "input")
 
         if data['type'] == 'file':
             i = FileInput(data['location'])

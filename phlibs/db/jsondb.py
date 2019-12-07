@@ -76,6 +76,7 @@ class JsonDB:
         :return: document
         """
         fullpath = self.root + os.sep + sub + os.sep + id + ".json"
+        print(fullpath)
         if os.path.isfile(fullpath):
             fp = open(fullpath)
             j = json.load(fp)

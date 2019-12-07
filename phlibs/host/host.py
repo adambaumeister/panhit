@@ -6,7 +6,7 @@ class HostList:
     """
     List of Host Entries
     """
-    def __init__(self, input, mods_enabled=None, db=None):
+    def __init__(self, input=None, mods_enabled=None, db=None):
         """
         Instantiate a host list based on a given input type.
         :param input: Class of type Input but can be anything with a List() function
@@ -14,7 +14,10 @@ class HostList:
         :param db (optional): Run database. If provided, enables async processing./
         """
         self.mods_enabled = mods_enabled
-        self.hosts = self.hosts_from_list(input.List())
+        if input:
+            self.hosts = self.hosts_from_list(input.List())
+        else:
+            self.hosts = []
         self.db = db
         self.index = []
 
