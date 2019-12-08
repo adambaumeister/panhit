@@ -76,7 +76,6 @@ class JsonDB:
         :return: document
         """
         fullpath = self.root + os.sep + sub + os.sep + id + ".json"
-        print(fullpath)
         if os.path.isfile(fullpath):
             fp = open(fullpath)
             j = json.load(fp)
@@ -97,3 +96,26 @@ class JsonDB:
                 docs.append(j)
 
         return docs
+
+    def summary(self):
+        """
+        Get a summary of all current database objects
+        :return: Summary
+        """
+        subs = []
+        latest_time = 0
+        latest = None
+        for dir in os.listdir(self.root):
+            subs.append(dir)
+            if self.get_in_sub("jqstatus", dir):
+                data = self.get_in_sub("jqstatus", dir)
+                time = data['start_time']
+                if time > latest_time:
+                    latest_time = time
+                    latest = dir
+
+        return {
+            "latest": latest,
+            "sub_count": len(subs),
+            "latest_time": latest_time
+        }

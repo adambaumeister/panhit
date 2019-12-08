@@ -37,7 +37,14 @@ def configure(j):
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+
+    db = c.get_db()
+    summary = db.summary()
+    print(summary)
+    return render_template('index.html', summary=summary)
 
 @app.route('/run', methods=['POST'])
 def run():
