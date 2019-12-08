@@ -1,34 +1,37 @@
 
-CACHE_OPT = 'MOD_CACHE'
+
+class ModuleOption:
+    """
+    A single option, passed to a module.
+    """
+    def __init__(self, name):
+        self.name = name
+        self.required = False
+        self.secret = False
+        # Default option type is str
+        self.type = str
+
+
 class ModuleOptions:
     """
     Options available to a module
     """
-    def __init__(self, required_opts=None, optional_opts=None):
+    def __init__(self, module_options):
 
-        # Cache option allows a dict to act as a simple k/v cache
-        # Cache is implemented on a per-module basis
-
-        self.REQUIRED = []
-        if required_opts:
-            self.REQUIRED = required_opts
-
-        self.OPTIONAL = []
-        if optional_opts:
-            self.OPTIONAL = optional_opts
+        self.module_options = {}
+        for option in module_options:
+            self.module_options[option.name] = option
 
         self.options = {}
 
     def parse_dict(self, d):
-        for k in self.REQUIRED:
-            if k not in d:
-                raise ValueError("Invalid module options; missing {}".format(k))
+        for name, option in self.module_options.items():
+            if name not in d:
+                if option.required:
+                    raise ValueError("Missing module option: {}".format(name))
             else:
-                self.options[k] = d[k]
+                self.options[name] = d[name]
 
-        for k in self.OPTIONAL:
-            if k in d:
-                self.options[k] = d[k]
 
     def get_opt(self, opt):
         if opt not in self.options:

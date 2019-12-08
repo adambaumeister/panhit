@@ -1,4 +1,4 @@
-from .mod import Module, ModuleOptions
+from .mod import Module, ModuleOptions, ModuleOption
 from panos import Panos
 from xml.etree import ElementTree
 import ipaddress
@@ -34,10 +34,21 @@ class Panfw(Module):
         """
         Initialize an instance of the panfw module.
         """
-        self.module_options = ModuleOptions(
-            required_opts=['addr', 'user', 'pw'],
-            optional_opts=['xpath', 'report_interval']
-        )
+        # Initialize this modules options
+        addr_option = ModuleOption('addr')
+        addr_option.required = True
+        user_option = ModuleOption('user')
+        user_option.required = True
+        pw_option = ModuleOption('pw')
+        pw_option.required = True
+
+        xpath_option = ModuleOption('xpath')
+        report_interval = ModuleOption('report_interval')
+
+        self.module_options = ModuleOptions([
+            addr_option, user_option, pw_option,
+            xpath_option, report_interval,
+        ])
         super(Panfw, self).__init__(mod_opts)
         self.name = 'panfw'
         self.module_options.get_opt('addr')
