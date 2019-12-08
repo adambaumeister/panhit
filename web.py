@@ -2,7 +2,7 @@ from phlibs.host import HostList
 from phlibs.config import ConfigFile
 from phlibs.messages import *
 
-from flask import Flask, escape, request
+from flask import Flask, escape, request, render_template
 from phlibs.jqueue import Job, JobQueue
 from phlibs.outputs import JsonOutput
 
@@ -35,6 +35,9 @@ def configure(j):
     hl = HostList(input, mods_enabled=mods, db=db)
     return c, hl
 
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
 @app.route('/run', methods=['POST'])
 def run():
