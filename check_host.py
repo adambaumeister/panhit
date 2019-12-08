@@ -1,7 +1,6 @@
 from phlibs.host import HostList
 from phlibs.config import ConfigFile
 from phlibs.jqueue import JobQueue
-from tabulate import tabulate
 import getpass
 import os
 import argparse
