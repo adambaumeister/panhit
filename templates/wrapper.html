@@ -7,12 +7,13 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
     <title>Hello, world!</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">PANHIT</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+      <a class="navbar-brand text-light" href="#">PANHIT</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -20,13 +21,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/">Run</a>
+            <a class="nav-link text-light" href="/">Run</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/">Config</a>
+            <a class="nav-link text-light" href="/configure">Config</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/">Jobs</a>
+            <a class="nav-link text-light" href="/">Jobs</a>
           </li>
         </ul>
         <div class="form-inline my-2 my-lg-0">

@@ -35,8 +35,15 @@ def configure(j):
     hl = HostList(input, mods_enabled=mods, db=db)
     return c, hl
 
+################
+# VIEW METHODS #
+################
 @app.route('/', methods=['GET'])
 def index():
+    """
+    Basic index and welcome page.
+    :return: index.html
+    """
     c = ConfigFile()
     # First load in all the configuration from the provided configuration file, if it exists
     c.load_from_file(DEFAULT_CONFIG_FILE)
@@ -46,6 +53,19 @@ def index():
     print(summary)
     return render_template('index.html', summary=summary)
 
+@app.route('/configure', methods=['GET'])
+def config_page():
+    """
+    Configuration landing page
+    :return: config.html
+    """
+    return render_template('config.html')
+
+
+
+###############
+# API METHODS #
+###############
 @app.route('/run', methods=['POST'])
 def run():
     """
