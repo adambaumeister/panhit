@@ -6,6 +6,7 @@ class ModuleOption:
     """
     def __init__(self, name):
         self.name = name
+        self.nice_name = name
         self.required = False
         self.secret = False
         # Default option type is str
@@ -38,6 +39,22 @@ class ModuleOptions:
             return None
 
         return self.options[opt]
+
+    def get_options(self):
+        return self.options.keys()
+
+    def get_all_nice(self):
+        r = {}
+        for name, option in self.module_options.items():
+            key = option.nice_name
+            if option.secret:
+                value = "*******"
+            else:
+                value = self.get_opt(name)
+
+            r[key] = value
+        return r
+
 
 class Module:
     """

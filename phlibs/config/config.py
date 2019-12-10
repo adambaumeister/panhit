@@ -58,7 +58,6 @@ class ConfigFile:
         cdb = self.get_cdb()
         if type(data) is str:
             data = cdb.get_in_sub(data, loc)
-            print(data)
             return data
         else:
             return data
@@ -84,12 +83,16 @@ class ConfigFile:
         # If we're passed a string instead of a dictionary, look it up in the database
         data = self.load_if_str(data, "input")
 
+        data.update(mod_opts)
+
+        return self.get_input_from_data(data)
+
+    def get_input_from_data(self, data):
         if data['type'] == 'file':
             i = FileInput(data['location'])
             return i
         elif data['type'] == 'panfw':
-            mod_opts.update(data)
-            p = Panfw(mod_opts)
+            p = Panfw(data)
             return p
         elif data['type'] == 'dict':
             l = ListInput(data['hosts'])

@@ -41,6 +41,7 @@ class Panfw(Module):
         user_option.required = True
         pw_option = ModuleOption('pw')
         pw_option.required = True
+        pw_option.secret = True
 
         xpath_option = ModuleOption('xpath')
         report_interval = ModuleOption('report_interval')

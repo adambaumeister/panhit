@@ -53,20 +53,32 @@ def index():
     print(summary)
     return render_template('index.html', summary=summary)
 
-@app.route('/configure', methods=['GET'])
-def config_page():
+@app.route('/config/<config_type>', methods=['GET'])
+def config_page(config_type):
     """
     Configuration landing page
     :return: config.html
     """
-    return render_template('config.html')
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+
+    cdb = c.get_cdb()
+    cdb.update_path(config_type)
+    docs = cdb.get_all()
+    inputs = []
+    for doc in docs:
+        i = c.get_input(doc)
+        inputs.append(i)
+
+    return render_template('config.html', inputs=inputs)
 
 
 
 ###############
 # API METHODS #
 ###############
-@app.route('/run', methods=['POST'])
+@app.route('/api/run', methods=['POST'])
 def run():
     """
     Primary job schedular
@@ -94,7 +106,7 @@ def run():
     return m.GetMsg()
 
 
-@app.route('/jobs/get/<job_id>', methods=['GET'])
+@app.route('/api/jobs/get/<job_id>', methods=['GET'])
 def get_job(job_id):
     """
     Individual job retrieval
@@ -114,7 +126,7 @@ def get_job(job_id):
 
     return m.GetMsg()
 
-@app.route('/jobs/get/<job_id>/result', methods=['GET'])
+@app.route('/api/jobs/get/<job_id>/result', methods=['GET'])
 def get_job_result(job_id):
     """
     Job result retrieval
@@ -137,7 +149,7 @@ def get_job_result(job_id):
 
     return data
 
-@app.route('/jobs/list', methods=['GET'])
+@app.route('/api/jobs/list', methods=['GET'])
 def list_jobs():
     """
     List all current and past jobs.
@@ -156,7 +168,7 @@ def list_jobs():
     return m.GetMsg()
 
 
-@app.route('/config/<config_type>', methods=['POST'])
+@app.route('/api/config/<config_type>', methods=['POST'])
 def add_config(config_type):
     """
     Add a configuration object of the given type with the given object value
@@ -179,7 +191,7 @@ def add_config(config_type):
     m.set_status('Added.')
     return m.GetMsg()
 
-@app.route('/config/<config_type>', methods=['GET'])
+@app.route('/api/config/<config_type>', methods=['GET'])
 def get_config(config_type):
     """
     Retrieve all the configuration objects matching the provided type
