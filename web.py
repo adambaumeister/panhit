@@ -53,12 +53,14 @@ def index():
     print(summary)
     return render_template('index.html', summary=summary)
 
-@app.route('/config/<config_type>', methods=['GET'])
-def config_page(config_type):
+@app.route('/config/input', methods=['GET'])
+def config_input_page():
     """
     Configuration landing page
     :return: config.html
     """
+    config_type = "input"
+
     c = ConfigFile()
     # First load in all the configuration from the provided configuration file, if it exists
     c.load_from_file(DEFAULT_CONFIG_FILE)
@@ -71,7 +73,9 @@ def config_page(config_type):
         i = c.get_input(doc)
         inputs.append(i)
 
-    return render_template('config.html', inputs=inputs)
+    input_types = c.get_inputs_available()
+
+    return render_template('config.html', items=inputs, config_type=config_type, item_types=input_types)
 
 
 

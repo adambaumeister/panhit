@@ -32,8 +32,17 @@ class ConfigFile:
             'panfw': Panfw,
         }
 
+        self.inputs_available = {
+            "panfw": Panfw,
+            "dict": ListInput,
+            "file": FileInput,
+        }
+
 
         pass
+
+    def get_inputs_available(self):
+        return self.inputs_available
 
     def load_from_file(self, path=None):
         if not path:

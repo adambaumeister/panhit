@@ -5,14 +5,14 @@
         <div class="sidebar-sticky">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/config/input">
+                    <a class="nav-link active" href="/config/items">
                         <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor"
                              xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
                                   d="M3.646 6.646a.5.5 0 01.708 0L10 12.293l5.646-5.647a.5.5 0 01.708.708l-6 6a.5.5 0 01-.708 0l-6-6a.5.5 0 010-.708z"
                                   clip-rule="evenodd"></path>
                         </svg>
-                        Inputs
+                        itemss
                     </a>
                 </li>
 
@@ -45,21 +45,31 @@
 
     </nav>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Input definitions</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-                <button type="button" class="btn btn-outline-secondary">+</button>
+            <h1 class="h2">{{ config_type }} definitions</h1>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dropdown button
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for item_type, item_obj in item_types.items() %}
+                    <a class="dropdown-item add-item" data-type="{{ config_type }}">{{ item_type }}</a>
+                    {% endfor %}
+                </div>
             </div>
+
         </div>
-        {% for input in inputs %}
+        {% for items in items %}
         <div class="card flex-row flex-wrap">
             <div class="card-header border-0">
                 <img src="//placehold.it/200" alt="">
             </div>
             <div class="card-block px-3">
-                <h4 class="card-title">{{ input.name }}</h4>
+                <h4 class="card-title">{{ items.name }}</h4>
                 <p class="card-text">
-                    {% for key, value in input.module_options.get_all_nice().items() %}
+                    {% for key, value in items.module_options.get_all_nice().items() %}
                     {{ value }} <span class="px-1">•</span>
                     {% endfor %}
                 </p>
