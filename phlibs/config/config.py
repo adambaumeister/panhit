@@ -101,7 +101,7 @@ class ConfigFile:
             i = FileInput(data['location'])
             return i
         elif data['type'] == 'panfw':
-            p = Panfw(data)
+            p = PanfwInput(data)
             return p
         elif data['type'] == 'dict':
             l = ListInput(data['hosts'])
