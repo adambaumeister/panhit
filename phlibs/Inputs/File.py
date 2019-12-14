@@ -1,7 +1,10 @@
 import json
+from .Input import Input
 
-class ListInput():
+class ListInput(Input):
     def __init__(self, data):
+        super(ListInput, self).__init__()
+        self.pretty_name = "Manual"
         self.data = data
 
     def List(self):
@@ -10,8 +13,12 @@ class ListInput():
     def Output(self):
         pass
 
-class FileInput():
+class FileInput(Input):
     def __init__(self, source):
+        super(FileInput, self).__init__()
+
+        self.pretty_name = "File"
+
         self.source = source
         pass
 

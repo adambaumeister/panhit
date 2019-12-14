@@ -49,13 +49,13 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">{{ config_type }} definitions</h1>
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown button
+                    Add new {{ config_type }}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for item_type, item_obj in item_types.items() %}
-                    <a class="dropdown-item add-item" data-type="{{ config_type }}">{{ item_type }}</a>
+                    <a class="dropdown-item add-item" data-type="{{ config_type }}">{{ item_obj.pretty_name }}</a>
                     {% endfor %}
                 </div>
             </div>
