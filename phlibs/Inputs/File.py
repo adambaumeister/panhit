@@ -5,13 +5,15 @@ from phlibs.modules import ModuleOptions, ModuleOption
 
 class ListInput(Input):
     def __init__(self, mod_opts=None):
-        self.pretty_name = "Manual"
 
         data_option = ModuleOption('data')
         data_option.required = True
         self.module_options = ModuleOptions([data_option])
 
         super(ListInput, self).__init__(mod_opts)
+
+        self.pretty_name = "Manual"
+
 
 
 
@@ -25,13 +27,13 @@ class ListInput(Input):
 class FileInput(Input):
     def __init__(self, mod_opts=None):
 
-        self.pretty_name = "File"
 
         data_option = ModuleOption('source')
         data_option.required = True
         self.module_options = ModuleOptions([data_option])
 
         super(FileInput, self).__init__(mod_opts)
+        self.pretty_name = "File"
 
         pass
 

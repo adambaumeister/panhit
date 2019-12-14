@@ -9,14 +9,14 @@ class PanfwInput(Input):
     """
     def __init__(self,  mod_opts=None):
 
-        self.pretty_name = "PANOS Device"
-        self.image_small = "static/pan-logo-orange.png"
-        self.image = "images/pan-logo-orange.png"
 
         self.panfw = Panfw(mod_opts)
         self.module_options = self.panfw.module_options
 
         super(PanfwInput, self).__init__(mod_opts)
+        self.pretty_name = "PANOS Device"
+        self.image_small = "static/pan-logo-orange.png"
+        self.image = "images/pan-logo-orange.png"
 
 
     def List(self):
