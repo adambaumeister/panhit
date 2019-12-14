@@ -51,7 +51,8 @@ class Panfw(Module):
             xpath_option, report_interval,
         ])
         super(Panfw, self).__init__(mod_opts)
-        self.name = 'panfw'
+        self.class_name = 'panfw'
+
         self.module_options.get_opt('addr')
 
         self.arp_cache = {}

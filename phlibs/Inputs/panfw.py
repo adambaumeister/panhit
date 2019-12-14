@@ -8,8 +8,14 @@ class PanfwInput(Input):
     This is just a convienence class for readability more than anything.
     """
     def __init__(self,  mod_opts=None):
-        super(PanfwInput, self).__init__()
+        super(PanfwInput, self).__init__(mod_opts)
+
+        self.pretty_name = "PANOS Device"
+        self.image_small = "static/pan-logo-orange.png"
+        self.image = "images/pan-logo-orange.png"
+
         self.panfw = Panfw(mod_opts)
+        self.module_options = self.panfw.module_options
 
     def List(self):
         return self.panfw.List()

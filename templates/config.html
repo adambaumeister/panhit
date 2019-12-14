@@ -61,15 +61,15 @@
             </div>
 
         </div>
-        {% for items in items %}
+        {% for item in items %}
         <div class="card flex-row flex-wrap">
             <div class="card-header border-0">
-                <img src="//placehold.it/200" alt="">
+                <img src="{{ url_for('static', filename=item.image) }}" width="200px" alt="">
             </div>
             <div class="card-block px-3">
-                <h4 class="card-title">{{ items.name }}</h4>
+                <h4 class="card-title">{{ item.name }}</h4>
                 <p class="card-text">
-                    {% for key, value in items.module_options.get_all_nice().items() %}
+                    {% for key, value in item.module_options.get_all_nice().items() %}
                     {{ value }} <span class="px-1">•</span>
                     {% endfor %}
                 </p>
