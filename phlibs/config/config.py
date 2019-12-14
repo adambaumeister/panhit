@@ -33,10 +33,11 @@ class ConfigFile:
         }
 
         # Need to improve this, because these objects require args they must be instantiated
+        # Since fixed...
         self.inputs_available = {
             "panfw": PanfwInput(),
-            "dict": ListInput({}),
-            "file": FileInput("false"),
+            "dict": ListInput(),
+            "file": FileInput(),
         }
 
 

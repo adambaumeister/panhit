@@ -1,29 +1,43 @@
 import json
 from .Input import Input
+from phlibs.modules import ModuleOptions, ModuleOption
+
 
 class ListInput(Input):
-    def __init__(self, data):
-        super(ListInput, self).__init__()
+    def __init__(self, mod_opts=None):
         self.pretty_name = "Manual"
-        self.data = data
+
+        data_option = ModuleOption('data')
+        data_option.required = True
+        self.module_options = ModuleOptions([data_option])
+
+        super(ListInput, self).__init__(mod_opts)
+
+
 
     def List(self):
+        self.data = self.module_options.get_opt('data')
         return self.data
 
     def Output(self):
         pass
 
 class FileInput(Input):
-    def __init__(self, source):
-        super(FileInput, self).__init__()
+    def __init__(self, mod_opts=None):
 
         self.pretty_name = "File"
 
-        self.source = source
+        data_option = ModuleOption('source')
+        data_option.required = True
+        self.module_options = ModuleOptions([data_option])
+
+        super(FileInput, self).__init__(mod_opts)
+
         pass
 
     def List(self):
-        source = self.source
+        source = self.module_options.get_opt('source')
+
         host_dicts = []
         try:
             # JSON format
