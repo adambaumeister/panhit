@@ -11,7 +11,16 @@ class ModuleOption:
         self.secret = False
         # Default option type is str
         self.type = str
+        self.type_str = "str"
 
+    def spec(self):
+        return {
+            "name": self.name,
+            "nice_name": self.nice_name,
+            "required": self.required,
+            "secret": self.secret,
+            "type": self.type_str,
+        }
 
 class ModuleOptions:
     """
@@ -42,6 +51,13 @@ class ModuleOptions:
 
     def get_options(self):
         return self.options.keys()
+
+    def get_spec(self):
+        spec = []
+        for name, option in self.module_options.items():
+            spec.append(option.spec())
+
+        return spec
 
     def get_all_nice(self):
         r = {}

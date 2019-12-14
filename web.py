@@ -214,3 +214,22 @@ def get_config(config_type):
     m = ConfigGet()
     m.set_items(names)
     return m.GetMsg()
+
+@app.route('/api/config/<config_type>/<module_name>/spec', methods=['GET'])
+def get_config_spec(config_type, module_name):
+    """
+    Get the spec of the given configuration type (i.e options etc)
+    :param config_type: Type of configuration object to retrieve
+    :return: ConfigGet
+    """
+    c = ConfigFile()
+    if config_type == "input":
+        inputs = c.get_inputs_available()
+        if module_name in inputs:
+            mod = inputs[module_name]
+
+    spec = mod.module_options.get_spec()
+
+    m = ModuleSpec()
+    m.set_specs(spec)
+    return m.GetMsg()

@@ -81,3 +81,16 @@ class ConfigGet(Message):
         return {
             "items": self.items,
         }
+
+class ModuleSpec(Message):
+    def __init__(self):
+        super(ModuleSpec, self).__init__()
+        self.specs = None
+
+    def set_specs(self, specs):
+        self.specs = specs
+
+    def GetMsg(self):
+        return {
+            "module_option_spec": self.specs,
+        }
