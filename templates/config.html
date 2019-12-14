@@ -1,18 +1,18 @@
 {% extends "wrapper.html" %}
 {% block content %}
-<div class="row">
+<div class="row-special">
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
         <div class="sidebar-sticky">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/config/items">
+                    <a class="nav-link active" href="/config/input">
                         <svg class="bi bi-chevron-down" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor"
                              xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
                                   d="M3.646 6.646a.5.5 0 01.708 0L10 12.293l5.646-5.647a.5.5 0 01.708.708l-6 6a.5.5 0 01-.708 0l-6-6a.5.5 0 010-.708z"
                                   clip-rule="evenodd"></path>
                         </svg>
-                        itemss
+                        Inputs
                     </a>
                 </li>
 
@@ -55,7 +55,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for item_type, item_obj in item_types.items() %}
-                    <a class="dropdown-item add-item" data-type="{{ config_type }}">{{ item_obj.pretty_name }}</a>
+                    <a class="dropdown-item add-item" data-type="{{ config_type }}" data-module="{{ item_type }}">{{ item_obj.pretty_name }}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -66,7 +66,7 @@
             <div class="card-header border-0">
                 <img src="{{ url_for('static', filename=item.image) }}" width="200px" alt="">
             </div>
-            <div class="card-block px-3">
+            <div class="card-block p-3">
                 <h4 class="card-title">{{ item.name }}</h4>
                 <p class="card-text">
                     {% for key, value in item.module_options.get_all_nice().items() %}
