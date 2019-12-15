@@ -79,8 +79,8 @@
                         <form id="{{ item_type }}-form">
 
                             <div class="form-group">
-                                <label for="name-input">Name</label>
-                                <input type="email" class="form-control" id="name-input"
+                                <label for="{{ item_type }}-name-input">Name</label>
+                                <input name="name" class="form-control" id="{{ item_type }}-name-input"
                                        aria-describedby="name-help">
                                 <small id="name-help" class="form-text text-muted">Enter a unique name.
                                 </small>
@@ -90,7 +90,7 @@
                             {% for option in item_obj.module_options.get_spec() %}
                             <div class="form-group">
                                 <label for="{{ option.name }}-input">{{ option.nice_name }}</label>
-                                <input type="email" class="form-control" id="{{ option.name }}-input"
+                                <input name="{{ option.name }}" class="form-control" id="{{ option.name }}-input"
                                        aria-describedby="{{ option.name }}-help">
                                 <small id="{{ option.name }}-help" class="form-text text-muted">{{ option.help }}
                                 </small>
