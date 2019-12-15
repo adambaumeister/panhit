@@ -70,7 +70,7 @@ def config_input_page():
     docs = cdb.get_all()
     inputs = []
     for doc in docs:
-        i = c.get_input(doc)
+        i = c.get_input_from_data(doc)
         inputs.append(i)
 
     input_types = c.get_inputs_available()

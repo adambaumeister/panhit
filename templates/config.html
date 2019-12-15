@@ -119,9 +119,7 @@
             <div class="card-block p-3">
                 <h4 class="card-title">{{ item.name }}</h4>
                 <p class="card-text">
-                    {% for key, value in item.module_options.get_all_nice().items() %}
-                    {{ value }} <span class="px-1">•</span>
-                    {% endfor %}
+                    {{ item.module_options.get_all_nice_joined() }}
                 </p>
                 <div class="btn-group" role="group" aria-label="Options">
                     <button type="button" class="btn btn-outline-primary">Edit</button>

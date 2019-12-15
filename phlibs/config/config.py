@@ -90,7 +90,7 @@ class ConfigFile:
         return mods
 
     def get_input(self, mod_opts):
-        data = self.input  
+        data = self.input
         # If we're passed a string instead of a dictionary, look it up in the database
         data = self.load_if_str(data, "input")
 
@@ -100,13 +100,13 @@ class ConfigFile:
 
     def get_input_from_data(self, data):
         if data['type'] == 'file':
-            i = FileInput(data['location'])
+            i = FileInput(data)
             return i
         elif data['type'] == 'panfw':
             p = PanfwInput(data)
             return p
         elif data['type'] == 'dict':
-            l = ListInput(data['hosts'])
+            l = ListInput(data)
             return l
 
     def get_output(self, mod_opts):

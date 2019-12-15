@@ -25,7 +25,7 @@ class FileInput(Input):
     def __init__(self, mod_opts=None):
 
 
-        data_option = ModuleOption('source')
+        data_option = ModuleOption('location')
         data_option.required = True
         self.module_options = ModuleOptions([data_option])
 

@@ -73,6 +73,13 @@ class ModuleOptions:
             r[key] = value
         return r
 
+    def get_all_nice_joined(self):
+        r = self.get_all_nice()
+        result = []
+        for option in r.values():
+            if option:
+                result.append(option)
+        return " • ".join(result)
 
 class Module:
     """
