@@ -55,7 +55,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for item_type, item_obj in item_types.items() %}
-                    <a class="dropdown-item add-item" data-target="#exampleModal" data-toggle="modal"
+                    <a class="dropdown-item add-item" data-target="#{{ item_type }}-modal" data-toggle="modal"
                        data-type="{{ config_type }}" data-module="{{ item_type }}">{{ item_obj.pretty_name }}</a>
                     {% endfor %}
                 </div>
@@ -64,19 +64,28 @@
 
         {% for item_type, item_obj in item_types.items() %}
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="{{ item_type }}-modal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add new {{ item_obj.pretty_name }}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Add new {{ item_obj.pretty_name }} input
+                            type.</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         {% for option in item_obj.module_options.get_spec() %}
-                        {{ option.name }}
+                        <div class="form-group">
+                            <label for="{{ option.name }}-input">{{ option.nice_name }}</label>
+                            <input type="email" class="form-control" id="{{ option.name }}-input"
+                                   aria-describedby="{{ option.name }}-help">
+                            <small id="{{ option.name }}-help" class="form-text text-muted">{{ option.help }}
+                            </small>
+                        </div>
+
                         {% endfor %}
                     </div>
                     <div class="modal-footer">

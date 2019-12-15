@@ -12,6 +12,7 @@ class ModuleOption:
         # Default option type is str
         self.type = str
         self.type_str = "str"
+        self.help = ""
 
     def spec(self):
         return {
@@ -20,6 +21,7 @@ class ModuleOption:
             "required": self.required,
             "secret": self.secret,
             "type": self.type_str,
+            "help": self.help,
         }
 
 class ModuleOptions:

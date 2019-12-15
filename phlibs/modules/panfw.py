@@ -36,15 +36,27 @@ class Panfw(Module):
         """
         # Initialize this modules options
         addr_option = ModuleOption('addr')
+        addr_option.nice_name = "Address"
         addr_option.required = True
+        addr_option.help = "Address or FQDN of Panorama or NGFW"
+
         user_option = ModuleOption('user')
         user_option.required = True
+        user_option.nice_name = "Username"
+        user_option.help = "Must have READ access to objects"
+
         pw_option = ModuleOption('pw')
         pw_option.required = True
         pw_option.secret = True
+        pw_option.nice_name = "Password"
 
         xpath_option = ModuleOption('xpath')
+        xpath_option.nice_name = "Xpath"
+        xpath_option.help = "Xpath to address objects "
+
         report_interval = ModuleOption('report_interval')
+        report_interval.nice_name = "Reporting interval: lower values = faster discovery times!"
+        report_interval.help = "Lower values = faster but less complete results"
 
         self.module_options = ModuleOptions([
             addr_option, user_option, pw_option,
