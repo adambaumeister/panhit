@@ -55,7 +55,7 @@ class Panfw(Module):
         xpath_option.help = "Xpath to address objects "
 
         report_interval = ModuleOption('report_interval')
-        report_interval.nice_name = "Reporting interval: lower values = faster discovery times!"
+        report_interval.nice_name = "Reporting interval"
         report_interval.help = "Lower values = faster but less complete results"
 
         self.module_options = ModuleOptions([

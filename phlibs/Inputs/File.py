@@ -14,9 +14,6 @@ class ListInput(Input):
 
         self.pretty_name = "Manual"
 
-
-
-
     def List(self):
         self.data = self.module_options.get_opt('data')
         return self.data
