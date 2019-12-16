@@ -12,6 +12,8 @@ class ListInput(Input):
 
         super(ListInput, self).__init__(mod_opts)
 
+        self.image = "images/file_icon.png"
+        self.image_small = "images/file_icon.png"
         self.pretty_name = "Manual"
 
     def List(self):
@@ -31,6 +33,9 @@ class FileInput(Input):
 
         super(FileInput, self).__init__(mod_opts)
         self.pretty_name = "File"
+
+        self.image = "images/file_icon.png"
+        self.image_small = "images/file_icon.png"
 
         pass
 

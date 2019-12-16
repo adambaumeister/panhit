@@ -192,7 +192,8 @@ def add_config(config_type):
 
     m = ConfigStatus()
     m.set_name(name)
-    m.set_status('Added.')
+    m.set_status(0)
+    m.long_status = "Sucessfully added {} object.".format(config_type)
     return m.GetMsg()
 
 @app.route('/api/config/<config_type>', methods=['GET'])

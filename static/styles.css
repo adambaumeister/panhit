@@ -19,3 +19,11 @@
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
+
+.save {
+    min-width: 122px;
+}
+
+.save {
+  transition: background-color 0.5s ease;
+}

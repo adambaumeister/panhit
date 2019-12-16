@@ -54,7 +54,8 @@ class JobList(Message):
 class ConfigStatus(Message):
     def __init__(self):
         super(ConfigStatus, self).__init__()
-        self.status = ''
+        self.status = 1
+        self.long_status = ''
         self.name = None
 
     def set_status(self, status):
@@ -63,10 +64,14 @@ class ConfigStatus(Message):
     def set_name(self, name):
         self.name = name
 
+    def set_long_status(self, ls):
+        self.long_status = ls
+
     def GetMsg(self):
         return {
             "status": self.status,
-            "name": self.name
+            "result": self.long_status,
+            "name": self.name,
         }
 
 class ConfigGet(Message):
