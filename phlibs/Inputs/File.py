@@ -15,6 +15,8 @@ class ListInput(Input):
         self.image = "images/file_icon.png"
         self.image_small = "images/file_icon.png"
         self.pretty_name = "Manual"
+        self.type = "dict"
+
 
     def List(self):
         self.data = self.module_options.get_opt('data')
@@ -36,6 +38,9 @@ class FileInput(Input):
 
         self.image = "images/file_icon.png"
         self.image_small = "images/file_icon.png"
+
+        self.type = "file"
+
 
         pass
 

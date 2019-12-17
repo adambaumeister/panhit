@@ -216,6 +216,24 @@ def get_config(config_type):
     m.set_items(names)
     return m.GetMsg()
 
+@app.route('/api/config/<config_type>/<config_name>', methods=['GET'])
+def get_config_item(config_type, config_name):
+    """
+    Retrieve all the configuration objects matching the provided type
+    :param config_type: Type of configuration object to retrieve
+    :return: ConfigGet
+    """
+    c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_cdb()
+    db.update_path(config_type)
+
+    item = db.get(config_name)
+
+    m = ConfigGet()
+    m.set_items([item])
+    return m.GetMsg()
+
 @app.route('/api/config/<config_type>/<module_name>/spec', methods=['GET'])
 def get_config_spec(config_type, module_name):
     """

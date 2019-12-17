@@ -89,10 +89,10 @@
 
                             {% for option in item_obj.module_options.get_spec() %}
                             <div class="form-group">
-                                <label for="{{ option.name }}-input">{{ option.nice_name }}</label>
-                                <input name="{{ option.name }}" class="form-control" id="{{ option.name }}-input"
+                                <label for="{{ item_type }}-{{ option.name }}-input">{{ option.nice_name }}</label>
+                                <input name="{{ option.name }}" class="form-control" id="{{ item_type }}-{{ option.name }}-input"
                                        aria-describedby="{{ option.name }}-help">
-                                <small id="{{ option.name }}-help" class="form-text text-muted">{{ option.help }}
+                                <small id="{{ item_type }}-{{ option.name }}-help" class="form-text text-muted">{{ option.help }}
                                 </small>
                             </div>
 
@@ -122,7 +122,9 @@
                     {{ item.module_options.get_all_nice_joined() }}
                 </p>
                 <div class="btn-group" role="group" aria-label="Options">
-                    <button type="button" class="btn btn-outline-primary">Edit</button>
+                    <button type="button" class="btn btn-outline-primary edit" data-target="#{{ item.type }}-modal"
+                            data-toggle="modal" data-name="{{ item.name }}">Edit
+                    </button>
                     <button type="button" class="btn btn-outline-primary" id="delete">Delete</button>
                 </div>
             </div>

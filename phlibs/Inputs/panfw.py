@@ -17,7 +17,7 @@ class PanfwInput(Input):
         self.pretty_name = "PANOS Device"
         self.image_small = "static/pan-logo-orange.png"
         self.image = "images/pan-logo-orange.png"
-
+        self.type = "panfw"
 
     def List(self):
         return self.panfw.List()
