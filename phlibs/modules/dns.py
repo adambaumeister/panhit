@@ -11,10 +11,15 @@ class DNSHost(Module):
         'hostname'
     """
     def __init__(self, mod_opts=None):
+        self.module_options = ModuleOptions([])
+
         super(DNSHost, self).__init__(mod_opts)
 
-        self.module_options = ModuleOptions([])
-        self.name = 'dns'
+        self.class_name = 'dns'
+        self.pretty_name = "DNS"
+        self.image_small = "static/dns.png"
+        self.image = "images/dns.png"
+        self.type = "dns"
 
     def Get(self, host):
         data = {}
