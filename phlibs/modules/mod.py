@@ -86,10 +86,14 @@ class Module:
     A module represents a discrete set of tools for enriching a host with additional data
     """
     def __init__(self, opts):
-        self.name = 'module'
         self.data = {}
         self.opts = opts
         self.parse_options()
+
+        if opts:
+            if 'name' in opts:
+                self.name = opts['name']
+
 
     def get_name(self):
         return self.name

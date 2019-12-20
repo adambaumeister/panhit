@@ -77,7 +77,30 @@ def config_input_page():
 
     return render_template('config.html', items=inputs, config_type=config_type, item_types=input_types)
 
+@app.route('/config/modules', methods=['GET'])
+def config_modules_page():
+    """
+    Configuration landing page
+    :return: config.html
+    """
+    config_type = "modules"
 
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+
+    cdb = c.get_cdb()
+    cdb.update_path(config_type)
+    docs = cdb.get_all()
+
+    mods = []
+    for doc in docs:
+        i = c.get_module_from_data(doc)
+        mods.append(i)
+
+    mod_types = c.get_mods_available()
+
+    return render_template('config.html', items=mods, config_type=config_type, item_types=mod_types)
 
 ###############
 # API METHODS #

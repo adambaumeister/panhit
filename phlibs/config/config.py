@@ -46,6 +46,13 @@ class ConfigFile:
     def get_inputs_available(self):
         return self.inputs_available
 
+    def get_mods_available(self):
+        mods_available = {}
+        for mod_name, mod in self.mods_available.items():
+            mods_available[mod_name] = mod()
+
+        return mods_available
+
     def load_from_file(self, path=None):
         if not path:
             path=DEFAULT_CONFIG_PATH
@@ -108,6 +115,10 @@ class ConfigFile:
         elif data['type'] == 'dict':
             l = ListInput(data)
             return l
+
+    def get_module_from_data(self, data):
+        if data['type'] in self.mods_available:
+            return self.mods_available[data['type']](data)
 
     def get_output(self, mod_opts):
         if self.output['type'] == 'panfw':
