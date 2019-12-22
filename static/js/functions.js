@@ -1,4 +1,4 @@
-const API_ADD = "/api/config"
+const API_ROUTE = "/api/config"
 
 
 $(document).ready(function () {
@@ -8,6 +8,10 @@ $(document).ready(function () {
 
     $(".edit").click(function () {
         ClickEditButton(this)
+    });
+
+    $(".delete").click(function () {
+        ClickDeleteButton(this)
     });
 });
 
@@ -22,7 +26,7 @@ function ClickAddButton(obj) {
     })
     data['type'] = moduleName;
 
-    fetch(API_ADD + "/" + moduleType, {
+    fetch(API_ROUTE + "/" + moduleType, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -57,11 +61,11 @@ function ClickAddButton(obj) {
 }
 
 function ClickEditButton(obj) {
-    var moduleType = 'input';
+    var moduleType = $(obj).attr('data-type');
     var moduleName = $(obj).attr('data-name');
 
     var formId = $(obj).attr('data-target');
-    var url = API_ADD + "/" + moduleType + "/" + moduleName;
+    var url = API_ROUTE + "/" + moduleType + "/" + moduleName;
     console.log(url)
     fetch(url).then(
         function (response) {
@@ -81,6 +85,40 @@ function ClickEditButton(obj) {
                     console.log(selector)
                     $("#"+moduleClass+"-"+k+"-input").val(v)
                 }); 
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+
+}
+
+function ClickDeleteButton(obj) {
+    var moduleType = $(obj).attr('data-type');
+    var moduleName = $(obj).attr('data-name');
+
+    var url = API_ROUTE + "/" + moduleType + "/" + moduleName;
+    fetch(url, {
+        method: 'DELETE',
+    }).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+
+                $(obj).text("Failed!");
+                $(obj).addClass("btn-success").removeClass("btn-primary")
+                return;
+            }
+
+            response.json().then(function (data) {
+                if (data['status'] === 0) {
+                    $(obj).text("Deleted!");
+                    $(obj).addClass("btn-danger").removeClass("btn-primary")
+
+                    location.reload()
+                }
             });
         }
     )

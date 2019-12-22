@@ -123,9 +123,9 @@
                 </p>
                 <div class="btn-group" role="group" aria-label="Options">
                     <button type="button" class="btn btn-outline-primary edit" data-target="#{{ item.type }}-modal"
-                            data-toggle="modal" data-name="{{ item.name }}">Edit
+                            data-toggle="modal" data-name="{{ item.name }}" data-type="{{ config_type }}">Edit
                     </button>
-                    <button type="button" class="btn btn-outline-primary" id="delete">Delete</button>
+                    <button type="button" class="btn btn-outline-primary delete" data-type="{{ config_type }}" data-name="{{ item.name }}">Delete</button>
                 </div>
             </div>
             <div class="w-100"></div>

@@ -257,6 +257,27 @@ def get_config_item(config_type, config_name):
     m.set_items([item])
     return m.GetMsg()
 
+@app.route('/api/config/<config_type>/<config_name>', methods=['DELETE'])
+def delete_config_item(config_type, config_name):
+    """
+    Retrieve all the configuration objects matching the provided type
+    :param config_type: Type of configuration object to retrieve
+    :return: ConfigGet
+    """
+    c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_cdb()
+    db.update_path(config_type)
+
+    db.delete_id(config_name)
+
+    m = ConfigStatus()
+    m.set_name(config_name)
+    m.set_status(0)
+    m.set_long_status("Deleted item.")
+    return m.GetMsg()
+
+
 @app.route('/api/config/<config_type>/<module_name>/spec', methods=['GET'])
 def get_config_spec(config_type, module_name):
     """

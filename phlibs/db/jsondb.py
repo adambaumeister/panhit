@@ -68,6 +68,15 @@ class JsonDB:
             j = json.load(fp)
             return j
 
+    def delete_id(self, id):
+        """
+        Delete a specific document by ID.
+        :param id: Document ID
+        """
+        fullpath = os.path.join(self.path, id + ".json")
+        if os.path.isfile(fullpath):
+            os.unlink(fullpath)
+
     def get_in_sub(self, id, sub):
         """
         Get a document from a subdir within the db
