@@ -102,6 +102,37 @@ def config_modules_page():
 
     return render_template('config.html', items=mods, config_type=config_type, item_types=mod_types)
 
+@app.route('/jobs', methods=['GET'])
+def spec_page():
+    """
+    Render the job spec page, aka the job runner page
+    :return: spec.html
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+
+    # Grab all the inputs
+    cdb = c.get_cdb()
+    cdb.update_path("input")
+    docs = cdb.get_all()
+    inputs = []
+    for doc in docs:
+        i = c.get_input_from_data(doc)
+        inputs.append(i)
+
+    # Grab all the modules
+    cdb = c.get_cdb()
+    cdb.update_path("modules")
+    docs = cdb.get_all()
+    modules = []
+    for doc in docs:
+        i = c.get_input_from_data(doc)
+        modules.append(i)
+
+    return render_template('spec.html', inputs=inputs, modules=modules)
+
+
 ###############
 # API METHODS #
 ###############
