@@ -127,7 +127,7 @@ def spec_page():
     docs = cdb.get_all()
     modules = []
     for doc in docs:
-        i = c.get_input_from_data(doc)
+        i = c.get_module_from_data(doc)
         modules.append(i)
 
     return render_template('spec.html', inputs=inputs, modules=modules)

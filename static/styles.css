@@ -27,3 +27,11 @@
 .save {
   transition: background-color 0.5s ease;
 }
+
+.card-input-filled {
+    border: 1px solid #ff9a00ff;
+}
+
+.h1-input-selected {
+    color: #ff9a00ff;
+}

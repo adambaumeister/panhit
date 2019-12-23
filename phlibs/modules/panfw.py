@@ -65,7 +65,7 @@ class Panfw(Module):
         super(Panfw, self).__init__(mod_opts)
         self.class_name = 'panfw'
         self.pretty_name = "PANOS Device"
-        self.image_small = "static/pan-logo-orange.png"
+        self.image_small = "images/pan-logo-orange.png"
         self.image = "images/pan-logo-orange.png"
         self.type = "panfw"
 

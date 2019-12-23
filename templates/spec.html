@@ -4,15 +4,15 @@
     <div class="row">
         <div class="col-sm">
             <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Input</h2></div>
-            <div class="card text-center">
-                <div class="dropdown  p-4">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+            <div class="card text-center input-card">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle input-dropdown" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Pick your Input!
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         {% for item in inputs %}
-                        <button class="dropdown-item add-item"><img
+                        <button class="dropdown-item select-input" data-name="{{ item.name }}"><img
                                 src="{{ url_for('static', filename=item.image_small) }}" height="30px" class="pr-2"
                                 alt="">{{ item.name }}
                         </button>
@@ -21,8 +21,25 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm text-center">
-            One of three columns
+        <div class="col-sm text-center module-col">
+            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Enabled Modules</h2></div>
+            <div class="selected-module-container"></div>
+            <div class="card text-center module-card">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle module-dropdown" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pick your first module...
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for item in modules %}
+                        <button class="dropdown-item select-module" data-name="{{ item.name }}"><img
+                                src="{{ url_for('static', filename=item.image_small) }}" height="30px" class="pr-2"
+                                alt="">{{ item.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-sm text-center">
             One of three columns

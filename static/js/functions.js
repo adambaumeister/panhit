@@ -2,6 +2,9 @@ const API_ROUTE = "/api/config"
 
 
 $(document).ready(function () {
+    /*
+    Config buttons
+    */
     $(".save").click(function () {
         ClickAddButton(this)
     });
@@ -12,6 +15,18 @@ $(document).ready(function () {
 
     $(".delete").click(function () {
         ClickDeleteButton(this)
+    });
+
+    /*
+    Spec buttons
+    */
+    $(".select-input").click(function () {
+        SelectInputButton(this)
+    });
+
+    $(".select-module").click(function () {
+        console.log("clicked")
+        SelectModuleButton(this)
     });
 });
 
@@ -125,5 +140,27 @@ function ClickDeleteButton(obj) {
         .catch(function (err) {
             console.log('Fetch Error :-S', err);
         });
+
+}
+
+function SelectInputButton(obj) {
+    var moduleName = $(obj).attr('data-name');
+
+    /* Use the name, which'll be used by teh spec, as well as display it. */
+    var selectedHTML = `<h1 class='p-4 h1-input-selected input-value'>` +  moduleName + `</h1>`
+
+    /* Make the list invisible */
+    $(".input-dropdown").toggle()
+    /* Modify the card appearance to show it's selected */
+    $(".input-card").html(selectedHTML)
+    $(".input-card").addClass("card-input-filled")
+}
+
+function SelectModuleButton(obj) {
+    var moduleName = $(obj).attr('data-name');
+
+    /* Use the name, which'll be used by teh spec, as well as display it. */
+    var selectedHTML = `<div class="card-input-filled card text-center module-card"><h1 class='p-4 h1-input-selected input-value'>` +  moduleName + `</h1></div>`
+    $(".selected-module-container").html(selectedHTML)
 
 }
