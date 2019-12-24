@@ -35,3 +35,15 @@
 .h1-input-selected {
     color: #ff9a00ff;
 }
+
+.card-module-filled {
+    border: 1px solid #da4302ff;
+}
+
+.h1-module-selected {
+    color: #da4302ff;
+}
+
+.light-row {
+    background-color: #f8f9fa;
+}

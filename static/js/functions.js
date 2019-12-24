@@ -147,7 +147,7 @@ function SelectInputButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
     /* Use the name, which'll be used by teh spec, as well as display it. */
-    var selectedHTML = `<h1 class='p-4 h1-input-selected input-value'>` +  moduleName + `</h1>`
+    var selectedHTML = `<h2 class='p-3 h1-input-selected input-value'>` +  moduleName + `</h1>`
 
     /* Make the list invisible */
     $(".input-dropdown").toggle()
@@ -160,7 +160,7 @@ function SelectModuleButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
     /* Use the name, which'll be used by teh spec, as well as display it. */
-    var selectedHTML = `<div class="card-input-filled card text-center module-card"><h1 class='p-4 h1-input-selected input-value'>` +  moduleName + `</h1></div>`
-    $(".selected-module-container").html(selectedHTML)
+    var selectedHTML = `<div class="card-module-filled card text-center module-card mb-3"><h2 class='p-3 h1-module-selected module-value'>` +  moduleName + `</h2></div>`
+    $(".selected-module-container").append(selectedHTML)
 
 }

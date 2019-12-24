@@ -1,7 +1,7 @@
 {% extends "wrapper.html" %}
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
+    <div class="row light-row">
         <div class="col-sm">
             <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Input</h2></div>
             <div class="card text-center input-card">
@@ -24,7 +24,7 @@
         <div class="col-sm text-center module-col">
             <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Enabled Modules</h2></div>
             <div class="selected-module-container"></div>
-            <div class="card text-center module-card">
+            <div class="card text-center module-card mb-3">
                 <div class="dropdown p-4">
                     <button class="btn btn-primary dropdown-toggle module-dropdown" type="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,8 +41,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm text-center">
-            One of three columns
+        <div class="col-sm text-center output-col">
+            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Output</h2></div>
+            <div class="selected-output-container"></div>
+            <div class="card text-center module-card mb-3">
+                <h3 class="p-4">Local Database</h3>
+            </div>
         </div>
     </div>
 </div>
