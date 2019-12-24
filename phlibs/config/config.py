@@ -64,7 +64,6 @@ class ConfigFile:
 
     def unpickle(self, r):
         for k, v in r.items():
-
             self.__setattr__(k, v)
 
     def load_if_str(self, data, loc):
@@ -80,6 +79,23 @@ class ConfigFile:
         else:
             return data
 
+    def load_from_spec(self, spec_data):
+        """
+        Given a spec dict, load all given modules and inputs.
+        :param spec_data: (dict)
+        :return: ( inputs, modules )
+        """
+        inputs = []
+        mods = []
+        for input_name in spec_data['inputs']:
+            i = self.load_if_str(input_name, loc="input")
+            inputs.append(i)
+
+        for mod_name in spec_data['modules']:
+            mod = self.load_if_str(mod_name, loc="modules")
+            mods.append(mod)
+
+        return (inputs, mods)
 
     def init_modules(self, mod_opts):
         mods = []

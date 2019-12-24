@@ -21,6 +21,7 @@ def configure(j):
     c = ConfigFile()
     # First load in all the configuration from the provided configuration file, if it exists
     c.load_from_file(DEFAULT_CONFIG_FILE)
+
     # Add any configuration that the client has sent in the request
     if 'config' in j:
         c.unpickle(j['config'])
@@ -28,12 +29,22 @@ def configure(j):
         if 'mod_opts' in j['config']:
             mod_opts = j['config']['mod_opts']
 
-    mods = c.init_modules(mod_opts)
+        mods = c.init_modules(mod_opts)
 
-    db = c.get_db()
-    input = c.get_input(mod_opts)
-    hl = HostList(input, mods_enabled=mods, db=db)
-    return c, hl
+        db = c.get_db()
+        input = c.get_input(mod_opts)
+        hl = HostList(input, mods_enabled=mods, db=db)
+        return c, hl
+
+    # If a specfile is passed, load from stored configuration instead of parsing as if it were a config file
+    elif 'spec' in j:
+        (inputs, mods) = c.load_from_spec(j['spec'])
+        db = c.get_db()
+
+        # Hack - currently HostList only supports one input
+        hl = HostList(inputs[0], mods_enabled=mods, db=db)
+        return c, hl
+
 
 ################
 # VIEW METHODS #

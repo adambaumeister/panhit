@@ -45,7 +45,7 @@ class FileInput(Input):
         pass
 
     def List(self):
-        source = self.module_options.get_opt('source')
+        source = self.module_options.get_opt('location')
 
         host_dicts = []
         try:

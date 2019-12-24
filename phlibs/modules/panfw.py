@@ -62,6 +62,7 @@ class Panfw(Module):
             addr_option, user_option, pw_option,
             xpath_option, report_interval,
         ])
+        self.name = "panfw"
         super(Panfw, self).__init__(mod_opts)
         self.class_name = 'panfw'
         self.pretty_name = "PANOS Device"

@@ -13,6 +13,7 @@ class DNSHost(Module):
     def __init__(self, mod_opts=None):
         self.module_options = ModuleOptions([])
 
+        self.name = "dns"
         super(DNSHost, self).__init__(mod_opts)
 
         self.class_name = 'dns'

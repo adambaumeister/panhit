@@ -25,8 +25,8 @@ $(document).ready(function () {
     });
 
     $(".select-module").click(function () {
-        console.log("clicked")
-        SelectModuleButton(this)
+        SelectModuleButton(this);
+        ScanSpecSettings();
     });
 });
 
@@ -159,8 +159,17 @@ function SelectInputButton(obj) {
 function SelectModuleButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
+    $(".module-dropdown").text("Pick another module...")
     /* Use the name, which'll be used by teh spec, as well as display it. */
     var selectedHTML = `<div class="card-module-filled card text-center module-card mb-3"><h2 class='p-3 h1-module-selected module-value'>` +  moduleName + `</h2></div>`
     $(".selected-module-container").append(selectedHTML)
 
+}
+
+function ScanSpecSettings () {
+    /* Scans the spec page to ensure the user as selected an input, at least one module, and an output */
+    var items = $(".selected-module-container").find("h2"); 
+    items.each(function () {
+        console.log($(this).text())
+    })
 }
