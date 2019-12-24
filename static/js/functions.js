@@ -22,6 +22,7 @@ $(document).ready(function () {
     */
     $(".select-input").click(function () {
         SelectInputButton(this)
+        ScanSpecSettings();
     });
 
     $(".select-module").click(function () {
@@ -169,7 +170,21 @@ function SelectModuleButton(obj) {
 function ScanSpecSettings () {
     /* Scans the spec page to ensure the user as selected an input, at least one module, and an output */
     var items = $(".selected-module-container").find("h2"); 
+    var inputName = $(".input-value").text(); 
+
+
+    var data = {
+        'spec': {
+            'inputs': [inputName],
+            'modules': []
+        }
+    }; 
+
     items.each(function () {
-        console.log($(this).text())
+        data['spec']['modules'].push($(this).text())
     })
+
+    if (data['spec']['modules'].length > 0) {
+        console.log("OK!")
+    }
 }

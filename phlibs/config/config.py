@@ -88,11 +88,13 @@ class ConfigFile:
         inputs = []
         mods = []
         for input_name in spec_data['inputs']:
-            i = self.load_if_str(input_name, loc="input")
+            i_data = self.load_if_str(input_name, loc="input")
+            i = self.get_input_from_data(i_data)
             inputs.append(i)
 
         for mod_name in spec_data['modules']:
             mod = self.load_if_str(mod_name, loc="modules")
+            mod = self.get_module_from_data(mod)
             mods.append(mod)
 
         return (inputs, mods)
