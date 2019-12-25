@@ -3,6 +3,9 @@ from phlibs.modules import Module
 from phlibs.host import HostList
 from phlibs.db import JsonDB
 
+"""
+Test suite
+"""
 class DummyInput:
     def __init__(self, hosts):
         self.hosts = hosts
