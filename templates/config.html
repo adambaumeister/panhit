@@ -78,11 +78,30 @@
 
                             {% for option in item_obj.module_options.get_spec() %}
                             <div class="form-group">
+                                {% if option.type == "str" %}
+
                                 <label for="{{ item_type }}-{{ option.name }}-input">{{ option.nice_name }}</label>
-                                <input name="{{ option.name }}" class="form-control" id="{{ item_type }}-{{ option.name }}-input"
+                                <input name="{{ option.name }}" class="form-control"
+                                       id="{{ item_type }}-{{ option.name }}-input"
                                        aria-describedby="{{ option.name }}-help">
-                                <small id="{{ item_type }}-{{ option.name }}-help" class="form-text text-muted">{{ option.help }}
+                                <small id="{{ item_type }}-{{ option.name }}-help" class="form-text text-muted">{{
+                                    option.help }}
                                 </small>
+
+                                {% elif option.type == "list" %}
+                                <label for="{{ item_type }}-{{ option.name }}-input"> {{ option.nice_name }}</label>
+                                <div class="row">
+                                    <div class="col-8 {{ item_type }}-list">
+                                        <input class="form-control" name="{{ option.name }} ">
+                                    </div>
+                                    <div class="col-2 {{ item_type }}-list">
+                                        <button type="button" class="btn btn-primary add-list-item" data-target="{{ item_type }}-list">+</button>
+                                    </div>
+                                </div>
+                                <small id="{{ item_type }}-{{ option.name }}-help" class="form-text text-muted">{{
+                                    option.help }}
+                                </small>
+                                {% endif %}
                             </div>
 
                             {% endfor %}
@@ -114,7 +133,9 @@
                     <button type="button" class="btn btn-outline-primary edit" data-target="#{{ item.type }}-modal"
                             data-toggle="modal" data-name="{{ item.name }}" data-type="{{ config_type }}">Edit
                     </button>
-                    <button type="button" class="btn btn-outline-primary delete" data-type="{{ config_type }}" data-name="{{ item.name }}">Delete</button>
+                    <button type="button" class="btn btn-outline-primary delete" data-type="{{ config_type }}"
+                            data-name="{{ item.name }}">Delete
+                    </button>
                 </div>
             </div>
             <div class="w-100"></div>

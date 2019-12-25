@@ -8,6 +8,8 @@ class ListInput(Input):
 
         data_option = ModuleOption('data')
         data_option.required = True
+        data_option.type_str = "list"
+        data_option.nice_name = "Host List"
         self.module_options = ModuleOptions([data_option])
 
         super(ListInput, self).__init__(mod_opts)
@@ -31,6 +33,7 @@ class FileInput(Input):
 
         data_option = ModuleOption('location')
         data_option.required = True
+        data_option.type_str = "file"
         self.module_options = ModuleOptions([data_option])
 
         super(FileInput, self).__init__(mod_opts)

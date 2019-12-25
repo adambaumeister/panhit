@@ -17,6 +17,10 @@ $(document).ready(function () {
         ClickDeleteButton(this)
     });
 
+    $(".add-list-item").click(function () {
+        ClickListAddButton(this)
+    });
+
     /*
     Spec buttons
     */
@@ -30,6 +34,11 @@ $(document).ready(function () {
         ScanSpecSettings();
     });
 });
+
+function ClickListAddButton(obj) {
+    var targetList = $(obj).attr('data-target')
+    console.log(targetList)
+}
 
 function ClickAddButton(obj) {
     var moduleType = $(obj).attr('data-type');
@@ -185,6 +194,6 @@ function ScanSpecSettings () {
     })
 
     if (data['spec']['modules'].length > 0) {
-        console.log("OK!")
+        $(".run").removeClass("d-none")
     }
 }
