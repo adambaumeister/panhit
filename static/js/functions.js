@@ -36,8 +36,17 @@ $(document).ready(function () {
 });
 
 function ClickListAddButton(obj) {
-    var targetList = $(obj).attr('data-target')
-    console.log(targetList)
+    /* Clicking the little + button next to a list type input */
+    var targetList = "#" + $(obj).attr('data-target');
+    
+    inputs = [];
+    // Get the count of current input fields
+    $(targetList + " :input").each(function () {
+        inputs.push(this);
+    })
+    inputHtml = '<input class="form-control" name="' + $(inputs[0]).attr('name') + "-" + inputs.length + '">'
+    $(targetList).append(inputHtml)
+
 }
 
 function ClickAddButton(obj) {
