@@ -59,10 +59,21 @@ function ClickAddButton(obj) {
     // Normal input items
     $(formId + " .n-input").each(function () {
         data[$(this).attr('name')] = $(this).val()
-        console.log($(this).attr('name'))
     })
+
+    // List type input items
+    $(formId + " .l-input").each(function () {
+        // Init the lists as part of the map
+        data[$(this).attr('data-list')] = [];
+    })
+
+    $(formId + " .l-input").each(function () {
+        data[$(this).attr('data-list')].push($(this).val())
+    })
+
     data['type'] = moduleName;
-    console.log(data)
+    console.log(data);
+    return;
     fetch(API_ROUTE + "/" + moduleType, {
         method: 'POST',
         body: JSON.stringify(data),
