@@ -79,7 +79,15 @@ class ModuleOptions:
         for option in r.values():
             if option:
                 result.append(option)
-        return " • ".join(result)
+
+        printable_result = []
+        for r in result:
+            if type(r) is str:
+                printable_result.append(r)
+            elif type(r) is list:
+                s = ", ".join(r)
+                printable_result.append(s)
+        return " • ".join(printable_result)
 
 class Module:
     """

@@ -45,8 +45,9 @@ function ClickListAddButton(obj) {
         inputs.push(this);
     })
     // Add a new input when the button is clicked.
-    inputHtml = '<input class="form-control mb-2" name="' + $(inputs[0]).attr('name') + "-" + inputs.length + '">'
-    $(targetList).append(inputHtml)   
+    //inputHtml = '<input class="form-control mb-2 l-input" name="' + $(inputs[0]).attr('name') + "-" + inputs.length + '">'
+    inputHtml = $(inputs[0]).clone();
+    $(targetList).append(inputHtml);   
 
 }
 
@@ -72,8 +73,8 @@ function ClickAddButton(obj) {
     })
 
     data['type'] = moduleName;
-    console.log(data);
-    return;
+
+
     fetch(API_ROUTE + "/" + moduleType, {
         method: 'POST',
         body: JSON.stringify(data),

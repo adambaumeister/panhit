@@ -6,7 +6,7 @@ from phlibs.modules import ModuleOptions, ModuleOption
 class ListInput(Input):
     def __init__(self, mod_opts=None):
 
-        data_option = ModuleOption('data')
+        data_option = ModuleOption('hosts')
         data_option.required = True
         data_option.type_str = "list"
         data_option.nice_name = "Host List"
@@ -21,7 +21,7 @@ class ListInput(Input):
 
 
     def List(self):
-        self.data = self.module_options.get_opt('data')
+        self.data = self.module_options.get_opt('hosts')
         return self.data
 
     def Output(self):
