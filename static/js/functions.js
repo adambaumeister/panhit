@@ -1,5 +1,5 @@
-const API_ROUTE = "/api/config"
-
+const API_CONFIG_ROUTE = "/api/config"
+const API_ROUTE = "/api"
 
 $(document).ready(function () {
     /*
@@ -33,6 +33,12 @@ $(document).ready(function () {
         SelectModuleButton(this);
         ScanSpecSettings();
     });
+
+    
+    $(".run").click(function () {
+        ClickRunButton()
+    });
+
 });
 
 function ClickListAddButton(obj) {
@@ -75,7 +81,7 @@ function ClickAddButton(obj) {
     data['type'] = moduleName;
 
 
-    fetch(API_ROUTE + "/" + moduleType, {
+    fetch(API_CONFIG_ROUTE + "/" + moduleType, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -114,7 +120,7 @@ function ClickEditButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
     var formId = $(obj).attr('data-target');
-    var url = API_ROUTE + "/" + moduleType + "/" + moduleName;
+    var url = API_CONFIG_ROUTE + "/" + moduleType + "/" + moduleName;
     console.log(url)
     fetch(url).then(
         function (response) {
@@ -143,11 +149,50 @@ function ClickEditButton(obj) {
 
 }
 
+function ClickRunButton() {
+
+    inputData = ScanSpecSettings();
+
+    obj = ".run"
+    fetch(API_ROUTE + "/run", {
+        method: 'POST',
+        body: JSON.stringify(inputData),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+
+                $(obj).text("Failed!");
+                $(obj).addClass("btn-danger").removeClass("btn-primary")
+                return;
+            }
+
+            // Examine the text in the response
+            response.json().then(function (data) {
+                // If the operation is gucci gang gucci gang gucci gang
+                if (data['status'] === "started") {
+                    $(obj).text(data['id']);
+                    $(obj).addClass("btn-success").removeClass("btn-primary")
+
+                }
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+
+}
+
 function ClickDeleteButton(obj) {
     var moduleType = $(obj).attr('data-type');
     var moduleName = $(obj).attr('data-name');
 
-    var url = API_ROUTE + "/" + moduleType + "/" + moduleName;
+    var url = API_CONFIG_ROUTE + "/" + moduleType + "/" + moduleName;
     fetch(url, {
         method: 'DELETE',
     }).then(
@@ -220,4 +265,5 @@ function ScanSpecSettings () {
     if (data['spec']['modules'].length > 0) {
         $(".run").removeClass("d-none")
     }
+    return(data);
 }
