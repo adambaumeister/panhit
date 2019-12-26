@@ -22,7 +22,11 @@ class ListInput(Input):
 
     def List(self):
         self.data = self.module_options.get_opt('hosts')
-        return self.data
+        host_dicts = []
+        # Convert into correct format
+        for ip in self.data:
+            host_dicts.append({ "ip": ip})
+        return host_dicts
 
     def Output(self):
         pass
