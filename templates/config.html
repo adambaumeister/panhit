@@ -69,7 +69,7 @@
 
                             <div class="form-group">
                                 <label for="{{ item_type }}-name-input">Name</label>
-                                <input name="name" class="form-control" id="{{ item_type }}-name-input"
+                                <input name="name" class="form-control n-input"
                                        aria-describedby="name-help">
                                 <small id="name-help" class="form-text text-muted">Enter a unique name.
                                 </small>
@@ -81,7 +81,7 @@
                                 {% if option.type == "str" %}
 
                                 <label for="{{ item_type }}-{{ option.name }}-input">{{ option.nice_name }}</label>
-                                <input name="{{ option.name }}" class="form-control"
+                                <input name="{{ option.name }}" class="form-control n-input"
                                        id="{{ item_type }}-{{ option.name }}-input"
                                        aria-describedby="{{ option.name }}-help">
                                 <small id="{{ item_type }}-{{ option.name }}-help" class="form-text text-muted">{{
@@ -92,7 +92,7 @@
                                 <label for="{{ item_type }}-{{ option.name }}-input"> {{ option.nice_name }}</label>
                                 <div class="row">
                                     <div class="col-8" id="{{ item_type }}-list">
-                                        <input class="form-control" name="{{ option.name }}">
+                                        <input class="form-control mb-2 l-input" name="{{ option.name }}">
                                     </div>
                                     <div class="col-2">
                                         <button type="button" class="btn btn-primary add-list-item" data-target="{{ item_type }}-list">+</button>

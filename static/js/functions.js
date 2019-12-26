@@ -44,8 +44,9 @@ function ClickListAddButton(obj) {
     $(targetList + " :input").each(function () {
         inputs.push(this);
     })
-    inputHtml = '<input class="form-control" name="' + $(inputs[0]).attr('name') + "-" + inputs.length + '">'
-    $(targetList).append(inputHtml)
+    // Add a new input when the button is clicked.
+    inputHtml = '<input class="form-control mb-2" name="' + $(inputs[0]).attr('name') + "-" + inputs.length + '">'
+    $(targetList).append(inputHtml)   
 
 }
 
@@ -55,11 +56,13 @@ function ClickAddButton(obj) {
     var formId = "#" + moduleName + "-form";
 
     var data = {}
-    $(formId + " :input").each(function () {
+    // Normal input items
+    $(formId + " .n-input").each(function () {
         data[$(this).attr('name')] = $(this).val()
+        console.log($(this).attr('name'))
     })
     data['type'] = moduleName;
-
+    console.log(data)
     fetch(API_ROUTE + "/" + moduleType, {
         method: 'POST',
         body: JSON.stringify(data),
