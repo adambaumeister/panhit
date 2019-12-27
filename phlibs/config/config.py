@@ -22,6 +22,9 @@ class ConfigFile:
         self.configdb = None
         self.tags = []
 
+        # Name identifies this configuration spec
+        self.name = None
+
         # Dictionary of module + options from the configuration file
         self.mod_options = {}
         # Enabled retrieval modules

@@ -19,6 +19,8 @@ class JobQueue:
         self.id = now.strftime("%d-%m-%Y_%H-%M-%S")
         self.limit = 5
         self.db = None
+        # Default the name of the job to the ID
+        self.name = self.id
 
     def set_db(self, db):
         """
@@ -38,6 +40,10 @@ class JobQueue:
     def add_job(self, job):
         self.queue.append(job)
 
+    def set_name(self, name):
+        if name:
+            self.name = name
+
     def empty(self, nowait=False):
         """
         Run all jobs in the queue.
@@ -47,6 +53,7 @@ class JobQueue:
 
         d = {
             "id": self.id,
+            "name": self.name,
             "queued": len(self.queue),
             "start_time": started,
             "completed": 0,

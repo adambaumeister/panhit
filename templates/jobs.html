@@ -1,23 +1,22 @@
 {% extends "wrapper.html" %}
 {% block content %}
-<div class="container">
-    <table class="table">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Started</th>
-            <th scope="col">Discovered</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for job in jobs %}
-        <tr>
-            <th scope="row">{{ job.id }}</th>
-            <td>{{ job.start_time }}</td>
-            <td>{{ job.completed }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+<div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Job results</h2></div>
+<table class="table">
+    <thead class="thead-light">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Started</th>
+        <th scope="col">Discovered</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for job in jobs %}
+    <tr>
+        <th scope="row">{{ job.name }}</th>
+        <td>{{ job.start_time }}</td>
+        <td>{{ job.completed }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

@@ -41,6 +41,8 @@ def configure(j):
         (inputs, mods) = c.load_from_spec(j['spec'])
         db = c.get_db()
 
+        if 'name' in j:
+            c.name = j['name']
         # Hack - currently HostList only supports one input
         hl = HostList(inputs[0], mods_enabled=mods, db=db)
         return c, hl
@@ -177,6 +179,8 @@ def run():
 
     # Run the actual job in the background and return immediately
     jq = JobQueue()
+    # Set the job quueue name to the configuration spec name
+    jq.set_name(c.name)
     j = Job(hl.run_all_hosts, args=(jq,))
 
     m = JobStarted()
