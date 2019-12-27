@@ -152,7 +152,7 @@ function ClickEditButton(obj) {
 function ClickRunButton() {
 
     inputData = ScanSpecSettings();
-
+    console.log(inputData);
     obj = ".run"
     fetch(API_ROUTE + "/run", {
         method: 'POST',
@@ -249,9 +249,10 @@ function ScanSpecSettings () {
     /* Scans the spec page to ensure the user as selected an input, at least one module, and an output */
     var items = $(".selected-module-container").find("h2"); 
     var inputName = $(".input-value").text(); 
-
+    var jobName = $(".spec-name").val()
 
     var data = {
+        'name': jobName,
         'spec': {
             'inputs': [inputName],
             'modules': []
