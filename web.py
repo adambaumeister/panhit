@@ -113,10 +113,10 @@ def config_modules_page():
 
     return render_template('config.html', items=mods, config_type=config_type, item_types=mod_types)
 
-@app.route('/jobs', methods=['GET'])
+@app.route('/run', methods=['GET'])
 def spec_page():
     """
-    Render the job spec page, aka the job runner page
+    Render the job runner page
     :return: spec.html
     """
     c = ConfigFile()
@@ -143,6 +143,19 @@ def spec_page():
 
     return render_template('spec.html', inputs=inputs, modules=modules)
 
+@app.route('/jobs', methods=['GET'])
+def jobs_page():
+    """
+    Display running, scheduled, and completed jobs.
+    :return: Jobs page
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+    j = db.get_all_in_subdir_sorted('jqstatus')
+
+    return render_template('jobs.html', jobs=j)
 
 ###############
 # API METHODS #
