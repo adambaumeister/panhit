@@ -1,9 +1,21 @@
 {% extends "wrapper.html" %}
 {% block content %}
 <div class="container-fluid">
+    <div class="row p-3">
+        <div class="col-sm">
+            <label>Name</label>
+            <input name="spec-name" class="form-control n-input"
+                   aria-describedby="name-help">
+            <small id="name-help" class="form-text text-muted">Enter a job name.
+            </small>
+        </div>
+    </div>
     <div class="row light-row">
         <div class="col-sm">
-            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Input</h2></div>
+            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Input</h2>
+                <small class="form-text text-muted">Pick a configured input
+                </small>
+            </div>
             <div class="card text-center input-card">
                 <div class="dropdown p-4">
                     <button class="btn btn-primary dropdown-toggle input-dropdown" type="button" id="dropdownMenuButton"
@@ -22,7 +34,10 @@
             </div>
         </div>
         <div class="col-sm text-center module-col">
-            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Enabled Modules</h2></div>
+            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Enabled Modules</h2>
+                <small class="form-text text-muted">Set the lists of modules to enable
+                </small>
+            </div>
             <div class="selected-module-container"></div>
             <div class="card text-center module-card mb-3">
                 <div class="dropdown p-4">
@@ -42,7 +57,10 @@
             </div>
         </div>
         <div class="col-sm text-center output-col">
-            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Output</h2></div>
+            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Output</h2>
+                <small class="form-text text-muted">Set the destination output - output is always saved locally
+                </small>
+            </div>
             <div class="selected-output-container"></div>
             <div class="card text-center module-card mb-3">
                 <h3 class="p-4">Local Database</h3>
