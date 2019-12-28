@@ -252,13 +252,16 @@ function ScanSpecSettings () {
     var jobName = $(".spec-name").val()
 
     var data = {
-        'name': jobName,
         'spec': {
             'inputs': [inputName],
             'modules': []
         }
     }; 
 
+    if (jobName) {
+        data['name'] = jobName;
+    }
+    
     items.each(function () {
         data['spec']['modules'].push($(this).text())
     })

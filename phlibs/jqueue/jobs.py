@@ -66,7 +66,10 @@ class JobQueue:
                 for process in processes:
                     process.join()
                     completed = completed+1
+                    completed_percent = int(round(completed / len(self.queue)))
+
                     d['completed'] = completed
+                    d['completed_percent'] = completed_percent * 100
                     self.db.write_id('jqstatus', d)
 
                 processes = []
@@ -77,7 +80,10 @@ class JobQueue:
         for process in processes:
             process.join()
             completed = completed + 1
+            completed_percent = int(round(completed / len(self.queue)))
+
             d['completed'] = completed
+            d['completed_percent'] = completed_percent * 100
             self.db.write_id('jqstatus', d)
 
 class Job:
