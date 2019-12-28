@@ -43,9 +43,48 @@ $(document).ready(function () {
     jobs rendering
     */
 
+    ReplaceJobsTable();
     
 
 });
+
+function ReplaceJobsTable() {
+    // If we're not on the jobs page
+    if (top.location.pathname !== '/jobs')
+    {
+        return
+    }
+
+    var url = API_ROUTE + "/jobs?table=true&page=0";
+    fetch(url).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+            }
+
+            response.json().then(function (data) {
+                $.each(data['result']['fields'], function(k, v) {
+                    $('.job-table-head').append('<th scope="col">' + v + '</th>');
+                }); 
+                
+                $.each(data['result']['rows'], function(k, v) { 
+                    $('.job-table-body').append('<tr>')
+                    $.each(v, function(k, v) {
+                        $('.job-table-body').append('<td>' + v + '</td>');
+                    }); 
+                    $('.job-table-body').append('</tr>');
+                }); 
+
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+
+}
 
 function ClickListAddButton(obj) {
     /* Clicking the little + button next to a list type input */

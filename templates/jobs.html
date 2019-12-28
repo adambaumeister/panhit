@@ -2,29 +2,12 @@
 {% block content %}
 <div class="container-flex p-3">
     <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Job results</h2></div>
-    <table class="table table-hover">
+    <table class="table table-hover job-table">
         <thead class="thead-light">
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Started</th>
-            <th scope="col">Discovered</th>
-            <th scope="col">Progress</th>
+        <tr class="job-table-head">
         </tr>
         </thead>
-        <tbody class="job-table">
-        {% for job in jobs %}
-        <tr>
-            <th scope="row">{{ job.name }}</th>
-            <td>{{ job.start_time }}</td>
-            <td>{{ job.completed }}</td>
-            <td>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width:{{ job.completed_percent }}%"  aria-valuenow="{{ job.completed_percent }}" aria-valuemin="0"
-                         aria-valuemax="100"></div>
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
+        <tbody class="job-table-body">
         </tbody>
     </table>
 </div>

@@ -40,6 +40,7 @@ class JobList(Message):
         super(JobList, self).__init__()
         self.count = 0
         self.result = {}
+        self.pages = 1
 
     def set_from_json(self, j):
         self.count = len(j)
@@ -70,7 +71,8 @@ class JobList(Message):
     def GetMsg(self):
         return {
             "count": self.count,
-            "result": self.result
+            "result": self.result,
+            "pages": self.pages
         }
 
 class ConfigStatus(Message):
