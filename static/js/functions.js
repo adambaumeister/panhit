@@ -39,6 +39,12 @@ $(document).ready(function () {
         ClickRunButton()
     });
 
+    /*
+    jobs rendering
+    */
+
+    
+
 });
 
 function ClickListAddButton(obj) {

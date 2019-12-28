@@ -39,11 +39,33 @@ class JobList(Message):
     def __init__(self):
         super(JobList, self).__init__()
         self.count = 0
-        self.result = []
+        self.result = {}
 
     def set_from_json(self, j):
         self.count = len(j)
         self.result = j
+
+    def set_table_from_json(self, j):
+        fields = []
+        rows = []
+        for d in j:
+            for k in d.keys():
+                fields.append(k)
+
+        for d in j:
+            row = []
+            for k in fields:
+                row.append(d[k])
+            rows.append(row)
+
+        self.result['fields'] = fields
+        self.result['rows'] = rows
+
+    def page(self, page, count):
+        rows = self.result['rows']
+        idx = int(page)*count
+        paged_rows = rows[idx:idx+count]
+        self.result['rows'] = paged_rows
 
     def GetMsg(self):
         return {

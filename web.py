@@ -235,7 +235,7 @@ def get_job_result(job_id):
 
     return data
 
-@app.route('/api/jobs/list', methods=['GET'])
+@app.route('/api/jobs', methods=['GET'])
 def list_jobs():
     """
     List all current and past jobs.
@@ -248,8 +248,15 @@ def list_jobs():
     db = c.get_db()
     j = db.get_all_in_subdir_sorted('jqstatus')
 
+    t = request.args.get('table')
     m = JobList()
-    m.set_from_json(j)
+    if t:
+        page = request.args.get('page')
+        m.set_table_from_json(j)
+        if page:
+            m.page(page, 10)
+    else:
+        m.set_from_json(j)
 
     return m.GetMsg()
 
