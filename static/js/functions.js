@@ -48,6 +48,20 @@ $(document).ready(function () {
 
 });
 
+class ProgressBar {
+    constructor(min, max) {
+        this.min = min;
+        this.max = max;
+    }
+
+    render(cur) {
+        var txt = '<div class="progress">' +
+        '<div class="progress-bar" role="progressbar" style="width:' + cur + '%"  aria-valuenow="'+ cur + '" aria-valuemin="'+ this.min + '" aria-valuemax="'+ this.max + '"></div>' +
+        '</div>'
+        return txt;
+    }
+}
+
 function ReplaceJobsTable() {
     // If we're not on the jobs page
     if (top.location.pathname !== '/jobs')
@@ -55,6 +69,10 @@ function ReplaceJobsTable() {
         return
     }
 
+    // Set the field we use as the progress bar, this is an index as returned via the tablular api
+    var pbField = 5;
+
+    // Make the API call to get the values
     var url = API_ROUTE + "/jobs?table=true&page=0";
     fetch(url).then(
         function (response) {
@@ -72,7 +90,12 @@ function ReplaceJobsTable() {
                 $.each(data['result']['rows'], function(k, v) { 
                     $('.job-table-body').append('<tr>')
                     $.each(v, function(k, v) {
-                        $('.job-table-body').append('<td>' + v + '</td>');
+                        if (k === pbField) {
+                            pb = new ProgressBar(0, 100); 
+                            $('.job-table-body').append('<td>' + pb.render(v) + '</td>');
+                        } else{
+                            $('.job-table-body').append('<td>' + v + '</td>');
+                        }
                     }); 
                     $('.job-table-body').append('</tr>');
                 }); 
