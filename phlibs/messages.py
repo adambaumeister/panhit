@@ -51,7 +51,8 @@ class JobList(Message):
         rows = []
         for d in j:
             for k in d.keys():
-                fields.append(k)
+                if k not in fields:
+                    fields.append(k)
 
         for d in j:
             row = []
