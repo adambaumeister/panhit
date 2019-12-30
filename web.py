@@ -159,6 +159,24 @@ def jobs_page():
 
     return render_template('jobs.html', jobs=j)
 
+@app.route('/jobs/<job_id>', methods=['GET'])
+def job_page(job_id):
+    """
+    Return the result of a specific job.
+    :return: Jobs page
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+
+    db.update_path_nocreate(job_id)
+    hl = HostList(db=db)
+    hosts = hl.get_all_hosts()
+    print(hosts)
+    return render_template('job.html', hosts=hosts)
+
+
 ###############
 # API METHODS #
 ###############
@@ -192,7 +210,7 @@ def run():
     return m.GetMsg()
 
 
-@app.route('/api/jobs/get/<job_id>', methods=['GET'])
+@app.route('/api/jobs/<job_id>', methods=['GET'])
 def get_job(job_id):
     """
     Individual job retrieval
@@ -212,7 +230,7 @@ def get_job(job_id):
 
     return m.GetMsg()
 
-@app.route('/api/jobs/get/<job_id>/result', methods=['GET'])
+@app.route('/api/jobs/<job_id>/result', methods=['GET'])
 def get_job_result(job_id):
     """
     Job result retrieval

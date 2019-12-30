@@ -40,12 +40,28 @@ $(document).ready(function () {
     });
 
     /*
-    jobs rendering
+    job page stuff
     */
+    // register the next/prev page buttons
+    // This works for any table
+    var pageNum = $(".page-number").text();
+    $(".next-page").click(function () {
+        pageNum = Number(pageNum) + 1; 
+        $(".page-number").text(pageNum);
+        // Re-render any visble tables
+        ReplaceJobsTable();
+    });
+    $(".prev-page").click(function () {
+        pageNum = Number(pageNum) - 1; 
+        $(".page-number").text(pageNum);
+        // Re-render any visble tables
+        ReplaceJobsTable();
+    });
 
+    // Render the jobs table
     ReplaceJobsTable();
-    
-
+    // Render the job result table
+    ReplaceResultTable();
 });
 
 class ProgressBar {
@@ -62,18 +78,25 @@ class ProgressBar {
     }
 }
 
-function ReplaceJobsTable() {
-    // If we're not on the jobs page
-    if (top.location.pathname !== '/jobs')
-    {
-        return
-    }
+function ReplaceResultTable() {
+    // get the job id 
+    var res = top.location.pathname.split("/");
+    var jobID = res[2]
+    
+    // Zero out the existing html
+    $('.result-table-head').html("")
+    $('.result-table-body').html("")
 
+    // Set the field we use as the ID,  this gets referenced when the row is clicked
+    var idField = 0;
     // Set the field we use as the progress bar, this is an index as returned via the tablular api
     var pbField = 5;
 
+
     // Make the API call to get the values
-    var url = API_ROUTE + "/jobs?table=true&page=0";
+    var pageNum = $(".page-number").text();
+
+    var url = API_ROUTE + "/jobs?table=true&page="+ pageNum;
     fetch(url).then(
         function (response) {
             if (response.status !== 200) {
@@ -83,21 +106,70 @@ function ReplaceJobsTable() {
             }
 
             response.json().then(function (data) {
+
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+}
+
+function ReplaceJobsTable() {
+    // If we're not on the jobs page
+    if (top.location.pathname !== '/jobs')
+    {
+        return
+    }
+
+    // Zero out the existing html
+    $('.job-table-head').html("")
+    $('.job-table-body').html("")
+
+    // Set the field we use as the ID,  this gets referenced when the row is clicked
+    var idField = 0;
+    // Set the field we use as the progress bar, this is an index as returned via the tablular api
+    var pbField = 5;
+
+
+    // Make the API call to get the values
+    var pageNum = $(".page-number").text();
+
+    var url = API_ROUTE + "/jobs?table=true&page="+ pageNum;
+    fetch(url).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);;
+                return;
+            }
+
+            response.json().then(function (data) {
+                // Render the table headers
                 $.each(data['result']['fields'], function(k, v) {
                     $('.job-table-head').append('<th scope="col">' + v + '</th>');
                 }); 
                 
+                // Render the rows
                 $.each(data['result']['rows'], function(k, v) { 
-                    $('.job-table-body').append('<tr>')
+                    // Se the row data-target as the ID of the job, to be used as the link to the next page.
+                    var targetId = v[0];
+                    rowId = "jobs-row-" + k;
+                    $('.job-table-body').append('<tr class="clickable-row" data-target="'+ targetId +'" id="' + rowId + '">')
+                    
+                    // Register the click handlers for the row object
+                    $('#'+rowId).click(function() {
+                        console.log("hi");
+                    })
+                    // Render the row data
                     $.each(v, function(k, v) {
                         if (k === pbField) {
                             pb = new ProgressBar(0, 100); 
-                            $('.job-table-body').append('<td>' + pb.render(v) + '</td>');
+                            $("#"+rowId).append('<td>' + pb.render(v) + '</td>');
                         } else{
-                            $('.job-table-body').append('<td>' + v + '</td>');
+                            $("#"+rowId).append('<td>' + v + '</td>');
                         }
                     }); 
-                    $('.job-table-body').append('</tr>');
                 }); 
 
             });
@@ -106,7 +178,6 @@ function ReplaceJobsTable() {
         .catch(function (err) {
             console.log('Fetch Error :-S', err);
         });
-
 }
 
 function ClickListAddButton(obj) {
@@ -117,6 +188,7 @@ function ClickListAddButton(obj) {
     // Get the count of current input fields
     $(targetList + " :input").each(function () {
         inputs.push(this);
+
     })
     // Add a new input when the button is clicked.
     //inputHtml = '<input class="form-control mb-2 l-input" name="' + $(inputs[0]).attr('name') + "-" + inputs.length + '">'

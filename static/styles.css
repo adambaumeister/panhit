@@ -47,3 +47,12 @@
 .light-row {
     background-color: #f8f9fa;
 }
+
+.page-number {
+    display: inline;
+    padding: 10px;
+}
+
+.clickable-row {
+    cursor: pointer;
+}

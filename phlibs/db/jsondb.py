@@ -26,6 +26,12 @@ class JsonDB:
             print("Creating {}".format(self.path))
             os.mkdir(self.path)
 
+    def update_path_nocreate(self, d):
+        """
+        Update the current path of the datastore
+        """
+        self.path = self.path + os.sep + d
+
     def write(self, document):
         """
         Write a json document to disk.
@@ -90,7 +96,7 @@ class JsonDB:
             j = json.load(fp)
             return j
 
-    def get_all_in_subdir_sorted(self, doc_id):
+    def get_all_in_subdir_sorted(self, doc_id, sort_field="start_time"):
         """
         Retrieve a document with the same ID from all the sub-databases (directories within the root)
         :param doc_id: id of document
@@ -104,7 +110,8 @@ class JsonDB:
                 j = json.load(fp)
                 docs.append(j)
 
-        return docs
+        # Return the sorted value, sorted by any field in the dictionary (defaults to ID).
+        return sorted(docs, key=lambda d: d[sort_field])
 
     def summary(self):
         """
