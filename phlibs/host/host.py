@@ -67,6 +67,7 @@ class HostList:
                 self.index.append(str(hid))
 
                 h.set_db(self.db)
+                h.set_id(hid)
                 j = Job(h.run_all_mods, (hid,))
                 jq.add_job(j)
 
@@ -98,6 +99,7 @@ class Host:
         :param ip: IP address of the host - required.
         :param mods: Mods to enable for this host.
         """
+        self.id = None
         self.mods_enabled = mods_enabled
         self.ip = ip
         self.result = {}
@@ -108,6 +110,12 @@ class Host:
     def set_db(self, db):
         self.db = db
 
+    def set_id(self, hid):
+        """
+        Set the Host ID, which is used in various database calls
+        :param hid: (str) UID
+        """
+        self.id = hid
 
     def add_data(self, k, v):
         """
@@ -140,6 +148,7 @@ class Host:
 
     def pickle(self):
         d = {
+            'id': str(self.id),
             'attributes': self.attributes,
             'mods_enabled': self.result
         }

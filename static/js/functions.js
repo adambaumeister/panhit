@@ -61,7 +61,7 @@ $(document).ready(function () {
     // Render the jobs table
     ReplaceJobsTable();
     // Render the job result table
-    ReplaceResultTable();
+    //ReplaceResultTable();
 });
 
 class ProgressBar {
@@ -106,7 +106,7 @@ function ReplaceResultTable() {
             }
 
             response.json().then(function (data) {
-
+  
             });
         }
     )
@@ -159,7 +159,7 @@ function ReplaceJobsTable() {
                     
                     // Register the click handlers for the row object
                     $('#'+rowId).click(function() {
-                        console.log("hi");
+                        window.location.href='/jobs/'+targetId;
                     })
                     // Render the row data
                     $.each(v, function(k, v) {

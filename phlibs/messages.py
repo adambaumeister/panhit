@@ -76,6 +76,53 @@ class JobList(Message):
             "pages": self.pages
         }
 
+class JobResult(Message):
+    """
+    ## Need to figure out how to return an ordered list of these unordered objects (for paging purposes)
+    """
+    def __init__(self):
+        super(JobResult, self).__init__()
+        self.count = 0
+        self.result = {}
+        self.pages = 1
+
+        self.result['fields'] = []
+        self.result['rows'] = []
+
+    def set_from_json(self, j):
+        self.count = len(j)
+        self.result = j
+
+    def set_table_from_json(self, j):
+        fields = []
+        rows = []
+        for d in j:
+            for k in d.keys():
+                if k not in fields:
+                    fields.append(k)
+
+        for d in j:
+            row = []
+            for k in fields:
+                row.append(d[k])
+            rows.append(row)
+
+        self.result['fields'] = fields
+        self.result['rows'] = rows
+
+    def page(self, page, count):
+        rows = self.result['rows']
+        idx = int(page)*count
+        paged_rows = rows[idx:idx+count]
+        self.result['rows'] = paged_rows
+
+    def GetMsg(self):
+        return {
+            "count": self.count,
+            "result": self.result,
+            "pages": self.pages
+        }
+
 class ConfigStatus(Message):
     def __init__(self):
         super(ConfigStatus, self).__init__()

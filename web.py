@@ -173,7 +173,7 @@ def job_page(job_id):
     db.update_path_nocreate(job_id)
     hl = HostList(db=db)
     hosts = hl.get_all_hosts()
-    print(hosts)
+
     return render_template('job.html', hosts=hosts)
 
 
@@ -250,6 +250,14 @@ def get_job_result(job_id):
     if jqstatus['completed'] == jqstatus['queued']:
         hl = HostList(db=db)
         data = o.Output(hl)
+
+    m = JobResult()
+    t = request.args.get('table')
+    if t:
+        page = request.args.get('page')
+        m.set_table_from_json(data)
+        if page:
+            m.page(page, 10)
 
     return data
 
