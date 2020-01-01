@@ -257,7 +257,7 @@ def get_job_result(job_id):
         page = request.args.get('page')
         m.set_table_from_json(data)
         if page:
-            m.page(page, 2)
+            m.page(page, 10)
     else:
         m.set_from_json(data)
 

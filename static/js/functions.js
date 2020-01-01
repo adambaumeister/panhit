@@ -61,10 +61,11 @@ $(document).ready(function () {
     // Render the jobs table
     ReplaceJobsTable();
     // Render the job result table
-    //ReplaceResultTable();
+    ReplaceResultTable();
 });
 
 class ProgressBar {
+    // Basic Progress bar, rendered using bootstraps methods.
     constructor(min, max) {
         this.min = min;
         this.max = max;
@@ -78,11 +79,63 @@ class ProgressBar {
     }
 }
 
+class JobResultTable {
+    // This 
+    constructor(headClass, tbodyClass, data) {
+        this.data = data;
+
+        this.headClass = headClass;
+        this.tbodyClass = tbodyClass;
+
+        this.count = data['count'];
+        this.pages = data['pages'];
+        this.hosts = data['result'];
+        
+    }
+
+    render() {
+        console.log(this.data);
+
+
+        var headers;
+        var spanHeaders;
+        // Gather all the headers together
+        
+        $.each(this.hosts, function(k, v) {
+            var spanHeaders = "<tr>"
+            var headers = '<tr>';
+            var values = '<tr>'
+            var max = 0; 
+            
+            $.each(v['attributes'], function(k, v) {
+                max = max+1
+                headers = headers + '<th>'+k+'</th>'
+                values = values + '<td>'+v+'</td>'
+            }); 
+            spanHeaders = spanHeaders + '<th colspan="'+max+'">Attributes</th>'
+            spanHeaders = spanHeaders + '</tr>'
+
+            headers = headers + '</tr>'
+            values = values + '</tr>'
+            console.log(spanHeaders);
+            console.log(headers);
+            console.log(values);
+
+
+
+        }); 
+    }
+}
+
 function ReplaceResultTable() {
     // get the job id 
     var res = top.location.pathname.split("/");
     var jobID = res[2]
-    
+
+    if (!$('.result-table-body').length) {
+        return;
+    }
+
     // Zero out the existing html
     $('.result-table-head').html("")
     $('.result-table-body').html("")
@@ -92,11 +145,10 @@ function ReplaceResultTable() {
     // Set the field we use as the progress bar, this is an index as returned via the tablular api
     var pbField = 5;
 
-
     // Make the API call to get the values
     var pageNum = $(".page-number").text();
 
-    var url = API_ROUTE + "/jobs?table=true&page="+ pageNum;
+    var url = API_ROUTE + "/jobs/" + jobID + "/result?table=true&page="+ pageNum;
     fetch(url).then(
         function (response) {
             if (response.status !== 200) {
@@ -106,7 +158,9 @@ function ReplaceResultTable() {
             }
 
             response.json().then(function (data) {
-  
+
+                table = new JobResultTable('.result-table-head', '.result-table-body', data);
+                table.render();
             });
         }
     )
@@ -117,11 +171,10 @@ function ReplaceResultTable() {
 
 function ReplaceJobsTable() {
     // If we're not on the jobs page
-    if (top.location.pathname !== '/jobs')
-    {
-        return
+    if (!$('.job-table-body').length) {
+        return;
     }
-
+    
     // Zero out the existing html
     $('.job-table-head').html("")
     $('.job-table-body').html("")
