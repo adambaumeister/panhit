@@ -94,29 +94,22 @@ class JobResult(Message):
         self.result = j
 
     def set_table_from_json(self, j):
-        fields = []
-        rows = []
-        for d in j:
-            for k in d.keys():
-                if k not in fields:
-                    fields.append(k)
+        result = []
+        for host_ip, host_data in j.items():
+            result.append(host_data)
 
-        for d in j:
-            row = []
-            for k in fields:
-                row.append(d[k])
-            rows.append(row)
+        result = sorted(result, key=lambda d: d['id'])
+        self.result = result
 
-        self.result['fields'] = fields
-        self.result['rows'] = rows
 
     def page(self, page, count):
-        rows = self.result['rows']
+        rows = self.result
         idx = int(page)*count
         paged_rows = rows[idx:idx+count]
-        self.result['rows'] = paged_rows
+        self.result = paged_rows
 
     def GetMsg(self):
+        self.count = len(self.result)
         return {
             "count": self.count,
             "result": self.result,

@@ -155,6 +155,7 @@ class Host:
         return d
 
     def unpickle(self, host_json):
+        self.id = host_json['id']
         self.attributes = host_json['attributes']
         self.result = host_json['mods_enabled']
 
