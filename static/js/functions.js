@@ -81,11 +81,10 @@ class ProgressBar {
 
 class JobResultTable {
     // This 
-    constructor(headClass, tbodyClass, data) {
+    constructor(resultDiv, data) {
         this.data = data;
 
-        this.headClass = headClass;
-        this.tbodyClass = tbodyClass;
+        this.div = resultDiv;
 
         this.count = data['count'];
         this.pages = data['pages'];
@@ -94,36 +93,20 @@ class JobResultTable {
     }
 
     render() {
-        console.log(this.data);
+        var d = this.div;
+        $(d).html("")
 
-
-        var headers;
-        var spanHeaders;
-        // Gather all the headers together
-        
         $.each(this.hosts, function(k, v) {
-            var spanHeaders = "<tr>"
-            var headers = '<tr>';
-            var values = '<tr>'
-            var max = 0; 
+            var mods_enabled = v['mods_enabled'];
+            var attributtes = v['attributes'];
             
-            $.each(v['attributes'], function(k, v) {
-                max = max+1
-                headers = headers + '<th>'+k+'</th>'
-                values = values + '<td>'+v+'</td>'
-            }); 
-            spanHeaders = spanHeaders + '<th colspan="'+max+'">Attributes</th>'
-            spanHeaders = spanHeaders + '</tr>'
-
-            headers = headers + '</tr>'
-            values = values + '</tr>'
-            console.log(spanHeaders);
-            console.log(headers);
-            console.log(values);
-
-
-
+            var h = '<div class="card m-2">'    +
+            ' <div class="card-body"><h5 class="card-title">' +
+            attributtes['ip'];
+            var h = h + '</h5></div></div>'
+            $(d).append(h);
         }); 
+
     }
 }
 
@@ -132,13 +115,9 @@ function ReplaceResultTable() {
     var res = top.location.pathname.split("/");
     var jobID = res[2]
 
-    if (!$('.result-table-body').length) {
+    if (!$('.result').length) {
         return;
     }
-
-    // Zero out the existing html
-    $('.result-table-head').html("")
-    $('.result-table-body').html("")
 
     // Set the field we use as the ID,  this gets referenced when the row is clicked
     var idField = 0;
@@ -159,7 +138,7 @@ function ReplaceResultTable() {
 
             response.json().then(function (data) {
 
-                table = new JobResultTable('.result-table-head', '.result-table-body', data);
+                table = new JobResultTable(".result", data);
                 table.render();
             });
         }
