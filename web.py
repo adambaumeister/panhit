@@ -257,10 +257,12 @@ def get_job_result(job_id):
         page = request.args.get('page')
         html = request.args.get('as_html')
         m.set_table_from_json(data)
+        if page:
+            m.page(page, 5)
+
         if html:
             return m.as_html()
-        if page:
-            m.page(page, 10)
+
     else:
         m.set_from_json(data)
 
