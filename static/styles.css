@@ -56,3 +56,7 @@
 .clickable-row {
     cursor: pointer;
 }
+
+.mod-button {
+    font-size: smaller;
+}

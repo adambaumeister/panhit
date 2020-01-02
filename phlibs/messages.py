@@ -88,8 +88,6 @@ class JobResult(Message):
         self.result = {}
         self.pages = 1
 
-        self.result['fields'] = []
-        self.result['rows'] = []
 
     def set_from_json(self, j):
         self.count = len(j)
@@ -99,6 +97,34 @@ class JobResult(Message):
         """
         Return the table as a blob of templated html instead of the JSON
         """
+        mod_id = 0
+        # Munge the data into something that fits into html tables
+        for host_data in self.result:
+            mod_tables = []
+
+            for mod, mod_data in host_data['mods_enabled'].items():
+                mod_headers = []
+                mod_row = []
+
+                for k, v in mod_data.items():
+                    mod_headers.append(k)
+
+                mod_headers = sorted(mod_headers)
+                for k in mod_headers:
+                    mod_row.append(mod_data[k])
+
+                mod_table = {
+                    "id": mod_id,
+                    "name": mod,
+                    "headers": mod_headers,
+                    "row": mod_row
+                }
+                mod_tables.append(mod_table)
+
+            mod_id = mod_id + 1
+
+            host_data['mod_tables'] = mod_tables
+
         return render_template('snippets/results_table.html', hosts=self.result)
 
     def set_table_from_json(self, j):
