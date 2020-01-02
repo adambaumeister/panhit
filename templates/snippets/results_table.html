@@ -1,0 +1,7 @@
+<div class="card m-2">
+    <div class="card-body">
+        {% for host in hosts %}
+        <h5 class="card-title">{{ host.attributes.ip }}</h5>
+        {% endfor %}
+    </div>
+</div>

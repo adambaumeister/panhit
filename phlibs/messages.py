@@ -1,4 +1,6 @@
 
+from flask import render_template
+
 class Message:
     def __init__(self):
         pass
@@ -92,6 +94,12 @@ class JobResult(Message):
     def set_from_json(self, j):
         self.count = len(j)
         self.result = j
+
+    def as_html(self):
+        """
+        Return the table as a blob of templated html instead of the JSON
+        """
+        return render_template('snippets/results_table.html', hosts=self.result)
 
     def set_table_from_json(self, j):
         result = []

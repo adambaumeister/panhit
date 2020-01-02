@@ -79,37 +79,6 @@ class ProgressBar {
     }
 }
 
-class JobResultTable {
-    // This 
-    constructor(resultDiv, data) {
-        this.data = data;
-
-        this.div = resultDiv;
-
-        this.count = data['count'];
-        this.pages = data['pages'];
-        this.hosts = data['result'];
-        
-    }
-
-    render() {
-        var d = this.div;
-        $(d).html("")
-
-        $.each(this.hosts, function(k, v) {
-            var mods_enabled = v['mods_enabled'];
-            var attributtes = v['attributes'];
-            
-            var h = '<div class="card m-2">'    +
-            ' <div class="card-body"><h5 class="card-title">' +
-            attributtes['ip'];
-            var h = h + '</h5></div></div>'
-            $(d).append(h);
-        }); 
-
-    }
-}
-
 function ReplaceResultTable() {
     // get the job id 
     var res = top.location.pathname.split("/");
@@ -127,7 +96,7 @@ function ReplaceResultTable() {
     // Make the API call to get the values
     var pageNum = $(".page-number").text();
 
-    var url = API_ROUTE + "/jobs/" + jobID + "/result?table=true&page="+ pageNum;
+    var url = API_ROUTE + "/jobs/" + jobID + "/result?table=true&as_html=true&page="+ pageNum;
     fetch(url).then(
         function (response) {
             if (response.status !== 200) {
@@ -136,10 +105,8 @@ function ReplaceResultTable() {
                 return;
             }
 
-            response.json().then(function (data) {
-
-                table = new JobResultTable(".result", data);
-                table.render();
+            response.text().then(function (data) {
+                $('.result').html(data);
             });
         }
     )
