@@ -3,7 +3,8 @@
     <div class="card-body">
         <h5 class="card-title">{{ host.attributes.ip }}</h5>
         {% for mod_table in host.mod_tables %}
-        <button class="btn btn-outline-secondary mod-button" type="button" data-toggle="collapse" data-target="#{{ mod_table.name }}-{{ mod_table.id }}"
+        <button class="btn btn-outline-secondary mod-button" type="button" data-toggle="collapse"
+                data-target="#{{ mod_table.name }}-{{ mod_table.id }}"
                 aria-expanded="false" aria-controls="collapseExample">
             {{ mod_table.name }}
         </button>
@@ -33,4 +34,20 @@
         {% endfor %}
     </div>
 </div>
+
 {% endfor %}
+<div class="row text-center">
+    <div class="col">
+    </div>
+    <div class="col-6 text-center">
+        <button type="button" class="btn btn-primary btn-sm prev-page"><</button>
+        <button type="button" class="btn btn-primary btn-sm next-page">></button>
+    </div>
+    <div class="col text-right">
+        <small>Page
+            <div class="page-number">{{ page }}</div>
+            -
+            <div class="page-max">{{ pages }}</div>
+        </small>
+    </div>
+</div>

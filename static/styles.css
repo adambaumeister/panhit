@@ -53,6 +53,12 @@
     padding: 10px;
 }
 
+.page-max {
+    display: inline;
+    padding: 10px;
+}
+
+
 .clickable-row {
     cursor: pointer;
 }

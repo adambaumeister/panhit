@@ -1,5 +1,5 @@
-
 from flask import render_template
+
 
 class Message:
     def __init__(self):
@@ -26,6 +26,7 @@ class JobStarted(Message):
             "status": self.status
         }
 
+
 class JobStatus(Message):
     def __init__(self):
         super(JobStatus, self).__init__()
@@ -36,6 +37,7 @@ class JobStatus(Message):
 
     def GetMsg(self):
         return self.json_job
+
 
 class JobList(Message):
     def __init__(self):
@@ -67,8 +69,8 @@ class JobList(Message):
 
     def page(self, page, count):
         rows = self.result['rows']
-        idx = int(page)*count
-        paged_rows = rows[idx:idx+count]
+        idx = int(page) * count
+        paged_rows = rows[idx:idx + count]
         self.result['rows'] = paged_rows
 
     def GetMsg(self):
@@ -78,16 +80,19 @@ class JobList(Message):
             "pages": self.pages
         }
 
+
 class JobResult(Message):
     """
     ## Need to figure out how to return an ordered list of these unordered objects (for paging purposes)
     """
+
     def __init__(self):
         super(JobResult, self).__init__()
         self.count = 0
         self.result = {}
         self.pages = 1
 
+        self.current_page = 0
 
     def set_from_json(self, j):
         self.count = len(j)
@@ -125,7 +130,8 @@ class JobResult(Message):
 
             host_data['mod_tables'] = mod_tables
 
-        return render_template('snippets/results_table.html', hosts=self.result)
+        return render_template('snippets/results_table.html', hosts=self.result, pages=self.pages-1,
+                               page=self.current_page)
 
     def set_table_from_json(self, j):
         result = []
@@ -135,11 +141,15 @@ class JobResult(Message):
         result = sorted(result, key=lambda d: d['id'])
         self.result = result
 
-
     def page(self, page, count):
+
         rows = self.result
-        idx = int(page)*count
-        paged_rows = rows[idx:idx+count]
+        pages = int(len(rows) / count) + (len(rows) % count > 0)
+        self.pages = pages
+        self.current_page = page
+
+        idx = int(page) * count
+        paged_rows = rows[idx:idx + count]
         self.result = paged_rows
 
     def GetMsg(self):
@@ -147,8 +157,10 @@ class JobResult(Message):
         return {
             "count": self.count,
             "result": self.result,
-            "pages": self.pages
+            "pages": self.pages,
+            "page": self.current_page
         }
+
 
 class ConfigStatus(Message):
     def __init__(self):
@@ -173,6 +185,7 @@ class ConfigStatus(Message):
             "name": self.name,
         }
 
+
 class ConfigGet(Message):
     def __init__(self):
         super(ConfigGet, self).__init__()
@@ -185,6 +198,7 @@ class ConfigGet(Message):
         return {
             "items": self.items,
         }
+
 
 class ModuleSpec(Message):
     def __init__(self):

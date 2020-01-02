@@ -46,10 +46,13 @@ $(document).ready(function () {
     // This works for any table
     var pageNum = $(".page-number").text();
     $(".next-page").click(function () {
+        console.log("here")
+
         pageNum = Number(pageNum) + 1; 
         $(".page-number").text(pageNum);
         // Re-render any visble tables
         ReplaceJobsTable();
+
     });
     $(".prev-page").click(function () {
         pageNum = Number(pageNum) - 1; 
@@ -107,6 +110,24 @@ function ReplaceResultTable() {
 
             response.text().then(function (data) {
                 $('.result').html(data);
+
+                var pageNum = $(".page-number").text();
+                $(".next-page").click(function () {
+                    console.log("here")
+            
+                    pageNum = Number(pageNum) + 1; 
+                    $(".page-number").text(pageNum);
+                    // Re-render any visble tables
+                    ReplaceResultTable();
+            
+                });
+                $(".prev-page").click(function () {
+                    pageNum = Number(pageNum) - 1; 
+                    $(".page-number").text(pageNum);
+                    // Re-render any visble tables
+                    ReplaceResultTable();
+            
+                });
             });
         }
     )
