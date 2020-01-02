@@ -112,21 +112,32 @@ function ReplaceResultTable() {
                 $('.result').html(data);
 
                 var pageNum = $(".page-number").text();
-                $(".next-page").click(function () {
-                    console.log("here")
-            
-                    pageNum = Number(pageNum) + 1; 
-                    $(".page-number").text(pageNum);
-                    // Re-render any visble tables
-                    ReplaceResultTable();
-            
+                var pageMax = $(".page-max").text();
+
+                if (Number(pageNum) == Number(pageMax)) {
+                    $(".next-page").attr("disabled", true)
+                } 
+
+                if (Number(pageNum) == 0) {
+                    $(".prev-page").attr("disabled", true)
+                } 
+                $(".next-page").click(function () {            
+                    var newNum = Number(pageNum) + 1; 
+                    pageMax = Number(pageMax)
+                    if (newNum <= pageMax) {
+                        $(".page-number").text(newNum);
+                        // Re-render any visble tables
+                        ReplaceResultTable();
+                    } 
                 });
                 $(".prev-page").click(function () {
-                    pageNum = Number(pageNum) - 1; 
-                    $(".page-number").text(pageNum);
-                    // Re-render any visble tables
-                    ReplaceResultTable();
-            
+                    var newNum = Number(pageNum) - 1; 
+                    pageMax = Number(pageMax)
+                    if (newNum >= 0 ) {
+                        $(".page-number").text(newNum);
+                        // Re-render any visble tables
+                        ReplaceResultTable();
+                    }
                 });
             });
         }
