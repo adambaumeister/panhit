@@ -173,8 +173,9 @@ def job_page(job_id):
     db.update_path_nocreate(job_id)
     hl = HostList(db=db)
     hosts = hl.get_all_hosts()
+    job_status = db.get('jqstatus')
 
-    return render_template('job.html', hosts=hosts)
+    return render_template('job.html', hosts=hosts, job=job_status)
 
 
 ###############

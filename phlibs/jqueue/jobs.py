@@ -57,6 +57,7 @@ class JobQueue:
             "queued": len(self.queue),
             "start_time": started,
             "completed": 0,
+            'completed_percent': 0
         }
         self.db.write_id('jqstatus', d)
 
