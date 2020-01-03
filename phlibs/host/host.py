@@ -2,18 +2,23 @@ import os
 import json
 from phlibs.jqueue import JobQueue, Job
 
+
 class HostList:
     """
     List of Host Entries
     """
-    def __init__(self, input=None, mods_enabled=None, db=None):
+
+    def __init__(self, input=None, mods_enabled=None, db=None, tags_policy=None):
         """
         Instantiate a host list based on a given input type.
         :param input: Class of type Input but can be anything with a List() function
         :param mods_enabled: Discovery modules to use
         :param db (optional): Run database. If provided, enables async processing./
+        :param tag_policy (optional): Tag configuration.
         """
         self.mods_enabled = mods_enabled
+        self.tags_policy = tags_policy
+
         if input:
             self.hosts = self.hosts_from_list(input.List())
         else:
@@ -27,7 +32,7 @@ class HostList:
             if 'ip' not in hd:
                 raise ValueError("Missing field ip in host list.")
 
-            h = Host(ip=hd['ip'], mods_enabled=self.mods_enabled)
+            h = Host(ip=hd['ip'], mods_enabled=self.mods_enabled, tag_policy=self.tags_policy)
             h.add_data_dict(hd)
             hosts.append(h)
 
@@ -79,13 +84,15 @@ class HostList:
 
         for h in self.get_all_hosts():
             h.run_all_mods()
-            done = done+1
+            done = done + 1
             print("Done {}/{}".format(done, total))
+
 
 def unpickle_host(host_json):
     host = Host(host_json['attributes']['ip'])
     host.unpickle(host_json)
     return host
+
 
 class Host:
     """
@@ -93,7 +100,8 @@ class Host:
 
     Hosts contain data per module that is enabled, such as DNS.
     """
-    def __init__(self, ip, mods_enabled=None):
+
+    def __init__(self, ip, mods_enabled=None, tag_policy=None):
         """
         Create a new host object.
         :param ip: IP address of the host - required.
@@ -106,6 +114,23 @@ class Host:
         self.attributes = {}
         self.tag = ''
         self.db = None
+        self.tag_policy = []
+        if tag_policy:
+            self.tag_policy = tag_policy
+
+    def match_tag(self):
+        for t in reversed(self.tag_policy):
+            if 'match_any' in t:
+                match = True
+            else:
+                match = True
+                for match_attr, match_value in t['match'].items():
+                    r = self.compare_attr(match_attr, match_value)
+                    if not r:
+                        match = False
+
+            if match:
+                self.set_tag(t['name'])
 
     def set_db(self, db):
         self.db = db
@@ -133,10 +158,16 @@ class Host:
         """
         Run all mods and enrich this object with the results
         """
+        # Run the mods
         for mod in self.mods_enabled:
             data = mod.Get(self)
             self.result[mod.get_name()] = data
 
+        # Tag based on said mod response
+        if self.tag_policy:
+            self.match_tag()
+
+        # Optionally, write to the database.
         if self.db:
             self.db.write_id(str(hid), self.pickle())
 
@@ -144,7 +175,7 @@ class Host:
         print(self.result)
 
     def dump_attributes(self):
-        return(self.attributes)
+        return (self.attributes)
 
     def pickle(self):
         d = {

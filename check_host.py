@@ -29,24 +29,6 @@ def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     e = input(prompt + ": ")
     return e
 
-def tag(host_list, policy):
-    for h in host_list.get_all_hosts():
-        for t in reversed(policy):
-            if 'match_any' in t:
-                match = True
-            else:
-                match = True
-                for match_attr, match_value in t['match'].items():
-                    r = h.compare_attr(match_attr, match_value)
-                    if not r:
-                        match = False
-
-            if match:
-                h.set_tag(t['name'])
-
-
-
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(
@@ -76,12 +58,10 @@ if __name__ == '__main__':
 
     db = c.get_db()
     input = c.get_input(mod_opts)
-    hl = HostList(input, mods_enabled=mods, db=db)
+    hl = HostList(input, mods_enabled=mods, db=db, tags_policy=c.tags)
 
     jq = JobQueue()
     hl.run_all_hosts(jq)
-
-    tag(hl, c.tags)
 
     output = c.get_output(mod_opts)
     output.Output(hl)
