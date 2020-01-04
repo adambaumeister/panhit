@@ -21,6 +21,10 @@ $(document).ready(function () {
         ClickListAddButton(this)
     });
 
+    $(".add-tag").click(function() {
+        ClickAddTagButton(this)
+    })
+
     /*
     Spec buttons
     */
@@ -80,6 +84,28 @@ class ProgressBar {
         '</div>'
         return txt;
     }
+}
+
+function ClickAddTagButton() {
+
+    var url = API_ROUTE + "/config/tags/add";
+    fetch(url).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+            }
+
+            response.text().then(function (data) {
+                console.log(data)
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+
 }
 
 function ReplaceResultTable() {
@@ -292,7 +318,6 @@ function ClickEditButton(obj) {
 
     var formId = $(obj).attr('data-target');
     var url = API_CONFIG_ROUTE + "/" + moduleType + "/" + moduleName;
-    console.log(url)
     fetch(url).then(
         function (response) {
             if (response.status !== 200) {

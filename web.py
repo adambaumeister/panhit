@@ -350,6 +350,26 @@ def get_config(config_type):
     m.set_items(names)
     return m.GetMsg()
 
+@app.route('/api/config/tag', methods=['GET'])
+def get_tag_config():
+    """
+    Retrieve all the configuration objects matching the provided type
+    :return: ConfigGet
+    """
+    c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_cdb()
+    db.update_path("tags")
+
+    names = []
+    for item in db.get_all():
+        names.append(item['name'])
+
+    m = ConfigGet()
+    m.set_items(names)
+    return m.GetMsg()
+
+
 @app.route('/api/config/<config_type>/<config_name>', methods=['GET'])
 def get_config_item(config_type, config_name):
     """
