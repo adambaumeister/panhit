@@ -66,6 +66,14 @@ $(document).ready(function () {
     ReplaceJobsTable();
     // Render the job result table
     ReplaceResultTable();
+
+    /*
+    Tag config stuff
+    */
+    $(".pick-job").click(function () {
+        ClickChooseJob()
+    });
+    
 });
 
 class ProgressBar {
@@ -84,6 +92,7 @@ class ProgressBar {
 }
 
 function ClickAddTagButton() {
+    $(".new-config").toggle();
 
     var url = API_ROUTE + "/config/tags/add";
     fetch(url).then(
@@ -496,4 +505,8 @@ function ScanSpecSettings () {
         $(".run").removeClass("d-none")
     }
     return(data);
+}
+
+function ClickChooseJob() {
+    
 }

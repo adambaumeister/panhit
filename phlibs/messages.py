@@ -236,3 +236,19 @@ class ModuleSpec(Message):
             "module_name": self.name,
 
         }
+
+class TagSpec(Message):
+    def __init__(self):
+        super(TagSpec, self).__init__()
+        self.spec = None
+
+    def set_spec(self, spec):
+        self.spec = spec
+
+    def as_html(self):
+        return render_template('snippets/add_tag_box.html', specs=self.spec)
+
+    def GetMsg(self):
+        return {
+            "spec": self.spec
+        }

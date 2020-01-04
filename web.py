@@ -95,7 +95,12 @@ def config_input_page():
 
 @app.route('/config/tags', methods=['GET'])
 def config_tags():
-    return render_template('tag_config.html')
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+    j = db.get_all_in_subdir_sorted('jqstatus', limit=5)
+    return render_template('tag_config.html', jobs=j)
 
 @app.route('/config/modules', methods=['GET'])
 def config_modules_page():
@@ -305,6 +310,29 @@ def list_jobs():
 
     return m.GetMsg()
 
+@app.route('/api/jobs/<job_id>/tag_spec', methods=['GET'])
+def get_job_tag_spec(job_id):
+    """
+    Job tag spec
+    Returns all the fields that are taggable from the result of a job
+    :param job_id: ID of job, either running, scheduled, or existing.
+    :return: JobStatus JSON message type.
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+    db.update_path(job_id)
+
+    index = db.get("index")
+    first_id = index[0]
+    j = db.get(first_id)
+    m = TagSpec()
+    m.set_spec(j)
+    if request.args.get('as_html'):
+        return m.as_html()
+
+    return m.GetMsg()
 
 @app.route('/api/config/<config_type>', methods=['POST'])
 def add_config(config_type):
@@ -349,26 +377,6 @@ def get_config(config_type):
     m = ConfigGet()
     m.set_items(names)
     return m.GetMsg()
-
-@app.route('/api/config/tag', methods=['GET'])
-def get_tag_config():
-    """
-    Retrieve all the configuration objects matching the provided type
-    :return: ConfigGet
-    """
-    c = ConfigFile()
-    c.load_from_file(DEFAULT_CONFIG_FILE)
-    db = c.get_cdb()
-    db.update_path("tags")
-
-    names = []
-    for item in db.get_all():
-        names.append(item['name'])
-
-    m = ConfigGet()
-    m.set_items(names)
-    return m.GetMsg()
-
 
 @app.route('/api/config/<config_type>/<config_name>', methods=['GET'])
 def get_config_item(config_type, config_name):
