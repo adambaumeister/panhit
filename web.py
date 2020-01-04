@@ -87,8 +87,15 @@ def config_input_page():
         inputs.append(i)
 
     input_types = c.get_inputs_available()
+    config_descr = """
+    An Input is a list of host IP addresses, either statically defined or dynamically retrieved.
+    """
 
-    return render_template('config.html', items=inputs, config_type=config_type, item_types=input_types)
+    return render_template('config.html', items=inputs, config_type=config_type, config_descr=config_descr, item_types=input_types)
+
+@app.route('/config/tags', methods=['GET'])
+def config_tags():
+    return render_template('tag_config.html')
 
 @app.route('/config/modules', methods=['GET'])
 def config_modules_page():
@@ -113,7 +120,11 @@ def config_modules_page():
 
     mod_types = c.get_mods_available()
 
-    return render_template('config.html', items=mods, config_type=config_type, item_types=mod_types)
+    config_descr = """
+    A module retrieves additional information about a host, to be later displayed or used as categorization. 
+    """
+
+    return render_template('config.html', items=mods, config_type=config_type, config_descr=config_descr, item_types=mod_types)
 
 @app.route('/run', methods=['GET'])
 def spec_page():

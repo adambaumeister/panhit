@@ -64,6 +64,7 @@
                 </div>
             </div>
         </div>
+        <small>{{ config_descr }}</small>
 
         {% for item_type, item_obj in item_types.items() %}
         <!-- Modal -->
@@ -137,7 +138,7 @@
         {% endfor %}
 
         {% for item in items %}
-        <div class="card flex-row flex-wrap">
+        <div class="card flex-row flex-wrap mt-2">
             <div class="card-header border-0">
                 <img src="{{ url_for('static', filename=item.image) }}" width="200px" height="128px" alt="">
             </div>
