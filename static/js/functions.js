@@ -126,7 +126,6 @@ function ClickAddItemButton(obj) {
                 $(".new-config").html(data);
 
                 $(".save").click(function () {
-                    console.log('clicked')
                     ClickAddButton(this)
                 });
             
@@ -346,28 +345,25 @@ function ClickAddButton(obj) {
 
 function ClickEditButton(obj) {
     var moduleType = $(obj).attr('data-type');
-    var moduleName = $(obj).attr('data-name');
+    var moduleName = $(obj).attr('data-module');
+    var itemName = $(obj).attr('data-name');
 
-    var formId = $(obj).attr('data-target');
-    var url = API_CONFIG_ROUTE + "/" + moduleType + "/" + moduleName;
+    var url = API_CONFIG_ROUTE + "/" + moduleType + "/" + moduleName + "/spec?as_html=true&from="+itemName;
     fetch(url).then(
         function (response) {
             if (response.status !== 200) {
                 console.log('Looks like there was a problem. Status Code: ' +
                     response.status);
-
-                $(obj).text("Failed!");
-                $(obj).addClass("btn-success").removeClass("btn-primary")
                 return;
             }
 
-            response.json().then(function (data) {
-                var moduleClass = data['items'][0]['type']
-                $.each(data['items'][0], function(k, v) {
-                    var selector = "#"+moduleClass+"-"+k+"-input"
-                    console.log(selector)
-                    $("#"+moduleClass+"-"+k+"-input").val(v)
-                }); 
+            response.text().then(function (data) {
+                $(".new-config").html(data);
+
+                $(".save").click(function () {
+                    ClickAddButton(this)
+                });
+            
             });
         }
     )

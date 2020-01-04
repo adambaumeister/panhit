@@ -417,6 +417,8 @@ def get_config_spec(config_type, module_name):
     :return: ConfigGet
     """
     c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+
     if config_type == "input":
         inputs = c.get_inputs_available()
         if module_name in inputs:
@@ -432,6 +434,14 @@ def get_config_spec(config_type, module_name):
     m.set_specs(spec)
     m.set_type(config_type)
     m.set_name(module_name)
+
+    if request.args.get("from"):
+        f = request.args.get("from")
+        db = c.get_cdb()
+        db.update_path(config_type)
+        values = db.get(f)
+        m.add_values(values)
+
     if request.args.get('as_html'):
         return m.as_html()
     return m.GetMsg()

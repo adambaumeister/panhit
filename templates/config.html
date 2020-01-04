@@ -79,8 +79,7 @@
                     {{ item.module_options.get_all_nice_joined() }}
                 </p>
                 <div class="btn-group" role="group" aria-label="Options">
-                    <button type="button" class="btn btn-outline-primary edit" data-target="#{{ item.type }}-modal"
-                            data-toggle="modal" data-name="{{ item.name }}" data-type="{{ config_type }}">Edit
+                    <button type="button" class="btn btn-outline-primary edit" data-module="{{ item.type }}" data-name="{{ item.name }}" data-type="{{ config_type }}">Edit
                     </button>
                     <button type="button" class="btn btn-outline-primary delete" data-type="{{ config_type }}"
                             data-name="{{ item.name }}">Delete

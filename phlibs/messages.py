@@ -207,6 +207,7 @@ class ModuleSpec(Message):
         self.specs = None
         self.type = ""
         self.name = ""
+        self.source = ""
 
     def set_specs(self, specs):
         self.specs = specs
@@ -217,8 +218,16 @@ class ModuleSpec(Message):
     def set_name(self, n):
         self.name = n
 
+    def add_values(self, values):
+        self.source = values['name']
+
+        for spec in self.specs:
+            if spec['name'] in values:
+                spec['value'] = values[spec['name']]
+
+
     def as_html(self):
-        return render_template('snippets/config_box.html', specs=self.specs, mod_name=self.name, mod_type=self.type)
+        return render_template('snippets/config_box.html', specs=self.specs, mod_name=self.name, mod_type=self.type, source=self.source)
 
     def GetMsg(self):
         return {

@@ -5,15 +5,16 @@
                 <form id="new-item-form">
                     <labe>Name</labe>
                     <input name="name" class="form-control n-input"
-                           aria-describedby="name-help">
+                           aria-describedby="name-help" value="{{ source }}">
                     <small id="name-help" class="form-text text-muted">Enter a unique tag name.
                     </small>
                     {% for spec in specs %}
                     {% if spec.type == "str" %}
                     <label>{{ spec.nice_name }}</label>
-                    <input name="{{ spec.name }}" class="form-control n-input">
+                    <input name="{{ spec.name }}" class="form-control n-input" {% if spec.value %}value="{{ spec.value }}"{% endif %}>
                     <small class="form-text text-muted">{{ spec.help }}
                     </small>
+
                     {% endif %}
                     {% endfor %}
                 </form>
