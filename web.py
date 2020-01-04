@@ -421,9 +421,17 @@ def get_config_spec(config_type, module_name):
         inputs = c.get_inputs_available()
         if module_name in inputs:
             mod = inputs[module_name]
+    else:
+        mods = c.get_mods_available()
+        if module_name in mods:
+            mod = mods[module_name]
 
     spec = mod.module_options.get_spec()
 
     m = ModuleSpec()
     m.set_specs(spec)
+    m.set_type(config_type)
+    m.set_name(module_name)
+    if request.args.get('as_html'):
+        return m.as_html()
     return m.GetMsg()

@@ -1,0 +1,25 @@
+<div class="add-tag-div">
+    <div class="card m-2">
+        <div class="card-body">
+            <div class="form-group">
+                <form id="new-item-form">
+                    <labe>Name</labe>
+                    <input name="name" class="form-control n-input"
+                           aria-describedby="name-help">
+                    <small id="name-help" class="form-text text-muted">Enter a unique tag name.
+                    </small>
+                    {% for spec in specs %}
+                    {% if spec.type == "str" %}
+                    <label>{{ spec.nice_name }}</label>
+                    <input name="{{ spec.name }}" class="form-control n-input">
+                    <small class="form-text text-muted">{{ spec.help }}
+                    </small>
+                    {% endif %}
+                    {% endfor %}
+                </form>
+                <button class="save btn btn-primary" data-type="{{ mod_type }}" data-module="{{ mod_name }}">Save</button>
+
+            </div>
+        </div>
+    </div>
+</div>

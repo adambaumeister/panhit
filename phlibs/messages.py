@@ -191,6 +191,7 @@ class ConfigGet(Message):
         super(ConfigGet, self).__init__()
         self.items = []
 
+
     def set_items(self, items):
         self.items = items
 
@@ -204,11 +205,25 @@ class ModuleSpec(Message):
     def __init__(self):
         super(ModuleSpec, self).__init__()
         self.specs = None
+        self.type = ""
+        self.name = ""
 
     def set_specs(self, specs):
         self.specs = specs
 
+    def set_type(self, t):
+        self.type = t
+
+    def set_name(self, n):
+        self.name = n
+
+    def as_html(self):
+        return render_template('snippets/config_box.html', specs=self.specs, mod_name=self.name, mod_type=self.type)
+
     def GetMsg(self):
         return {
             "module_option_spec": self.specs,
+            "module_type": self.type,
+            "module_name": self.name,
+
         }

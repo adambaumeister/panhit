@@ -5,9 +5,6 @@ $(document).ready(function () {
     /*
     Config buttons
     */
-    $(".save").click(function () {
-        ClickAddButton(this)
-    });
 
     $(".edit").click(function () {
         ClickEditButton(this)
@@ -23,6 +20,10 @@ $(document).ready(function () {
 
     $(".add-tag").click(function() {
         ClickAddTagButton(this)
+    })
+
+    $(".add-item").click(function() {
+        ClickAddItemButton(this)
     })
 
     /*
@@ -99,6 +100,36 @@ function ClickAddTagButton() {
 
             response.text().then(function (data) {
                 console.log(data)
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+
+}
+
+function ClickAddItemButton(obj) {
+    var moduleType = $(obj).attr('data-type');
+    var moduleName = $(obj).attr('data-module');
+
+    var url = API_CONFIG_ROUTE + "/" + moduleType + "/" + moduleName + "/spec?as_html=true"
+    fetch(url).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+            }
+
+            response.text().then(function (data) {
+                $(".new-config").html(data);
+
+                $(".save").click(function () {
+                    console.log('clicked')
+                    ClickAddButton(this)
+                });
+            
             });
         }
     )
@@ -257,7 +288,7 @@ function ClickListAddButton(obj) {
 function ClickAddButton(obj) {
     var moduleType = $(obj).attr('data-type');
     var moduleName = $(obj).attr('data-module');
-    var formId = "#" + moduleName + "-form";
+    var formId = "#new-item-form";
 
     var data = {}
     // Normal input items
@@ -277,6 +308,7 @@ function ClickAddButton(obj) {
 
     data['type'] = moduleName;
 
+    console.log(data['type'])
 
     fetch(API_CONFIG_ROUTE + "/" + moduleType, {
         method: 'POST',
