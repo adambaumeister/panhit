@@ -60,17 +60,21 @@
         <div class="new-config" style="display:none">
             <div class="card m-2">
                 <div class="card-body">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Pick a recently completed job
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {% for job in jobs %}
-                            <a class="dropdown-item pick-job" data-target="{{ job.id }}">{{ job.name }} - {{ job.start_time }}</a>
-                            {% endfor %}
+                    <div class="text-center mb-3">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Pick a recently completed job
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% for job in jobs %}
+                                <a class="dropdown-item pick-job" data-target="{{ job.id }}">{{ job.name }} - {{
+                                    job.start_time }}</a>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
+                    <div class="job-display"></div>
                 </div>
             </div>
         </div>

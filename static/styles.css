@@ -66,3 +66,9 @@
 .mod-button {
     font-size: smaller;
 }
+
+.color-picker-button {
+    width: 25px;
+    height: 25px;
+    background-color: #da4302ff;
+}

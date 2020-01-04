@@ -71,7 +71,7 @@ $(document).ready(function () {
     Tag config stuff
     */
     $(".pick-job").click(function () {
-        ClickChooseJob()
+        ClickChooseJob(this)
     });
     
 });
@@ -507,6 +507,25 @@ function ScanSpecSettings () {
     return(data);
 }
 
-function ClickChooseJob() {
-    
+function ClickChooseJob(obj) {
+    var jobId  = $(obj).attr('data-target');
+    $("#dropdownMenuButton").text(jobId)
+    $("#dropdownMenuButton").button('toggle')
+    var url = API_ROUTE + "/jobs/"+jobId+"/tag_spec?as_html=true";
+    fetch(url).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+            }
+
+            response.text().then(function (data) {
+                $(".job-display").html(data)
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
 }

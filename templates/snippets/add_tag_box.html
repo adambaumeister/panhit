@@ -1,13 +1,37 @@
 <div class="add-tag-div">
-    <div class="card m-2">
-        <div class="card-body">
-            <div class="form-group">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm">
                 <label>Name</label>
                 <input name="name" class="form-control n-input"
                        aria-describedby="name-help">
-                <small id="name-help" class="form-text text-muted">Enter a unique tag name.
+                <small id="name-help" class="form-text text-muted mb-3">Enter a unique tag name.
                 </small>
             </div>
+            <div class="col-sm">
+                <label>Tag Color</label><br>
+                <button class="btn color-picker-button"></button>
+            </div>
         </div>
+        <div class="row">
+            <div class="col-sm">
+
+                {% for mod_name, mod_dict in specs.mods_enabled.items() %}
+                {% for k, v in mod_dict.items() %}
+                <label>{{ k }}</label>
+                <input name="{{ k }}" class="form-control n-input"
+                       aria-describedby="name-help" placeholder="Ex. {{ v }}">
+                {% endfor %}
+
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm text-center">
+                <button class="btn btn-primary save-tag mt-2">Save</button>
+            </div>
+
+        </div>
+
     </div>
 </div>
