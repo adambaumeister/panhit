@@ -11,14 +11,39 @@
                     {% for spec in specs %}
                     {% if spec.type == "str" %}
                     <label>{{ spec.nice_name }}</label>
-                    <input name="{{ spec.name }}" class="form-control n-input" {% if spec.value %}value="{{ spec.value }}"{% endif %}>
+                    <input name="{{ spec.name }}" class="form-control n-input" {% if spec.value
+                           %}value="{{ spec.value }}" {% endif %}>
                     <small class="form-text text-muted">{{ spec.help }}
                     </small>
 
+                    {% elif spec.type == "list" %}
+                    <label> {{ spec.nice_name }}</label>
+                    <div class="row">
+                        <div class="col-8" id="{{ spec.name }}-list">
+                            {% if spec.value %}
+                            {% for v in spec.value %}
+                            <input class="form-control mb-2 l-input" name="{{ spec.name }}"
+                                   data-list="hosts" value="{{ v }}">
+                            {% endfor %}
+                            {% else %}
+                            <input class="form-control mb-2 l-input" name="{{ spec.name }}"
+                                   data-list="hosts">
+                            {% endif %}
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-primary add-list-item"
+                                    data-target="{{ spec.name }}-list">+
+                            </button>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">{{
+                        spec.help }}
+                    </small>
                     {% endif %}
                     {% endfor %}
                 </form>
-                <button class="save btn btn-primary" data-type="{{ mod_type }}" data-module="{{ mod_name }}">Save</button>
+                <button class="save btn btn-primary" data-type="{{ mod_type }}" data-module="{{ mod_name }}">Save
+                </button>
 
             </div>
         </div>

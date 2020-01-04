@@ -14,10 +14,6 @@ $(document).ready(function () {
         ClickDeleteButton(this)
     });
 
-    $(".add-list-item").click(function () {
-        ClickListAddButton(this)
-    });
-
     $(".add-tag").click(function() {
         ClickAddTagButton(this)
     })
@@ -124,6 +120,11 @@ function ClickAddItemButton(obj) {
 
             response.text().then(function (data) {
                 $(".new-config").html(data);
+                
+                // Register the buttons within the new HTML
+                $(".add-list-item").click(function () {
+                    ClickListAddButton(this)
+                });
 
                 $(".save").click(function () {
                     ClickAddButton(this)
@@ -269,6 +270,7 @@ function ReplaceJobsTable() {
 
 function ClickListAddButton(obj) {
     /* Clicking the little + button next to a list type input */
+    console.log("clicked")
     var targetList = "#" + $(obj).attr('data-target');
     
     inputs = [];
