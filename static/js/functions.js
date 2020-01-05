@@ -521,11 +521,58 @@ function ClickChooseJob(obj) {
             }
 
             response.text().then(function (data) {
-                $(".job-display").html(data)
+                $(".job-display").html(data);
+
+                var cp = new ColorPicker();
+                cp.Register();
+
+                $(".save-tag").click(function () {
+                    ClickSaveTagButton(this)
+                });
             });
         }
     )
         .catch(function (err) {
             console.log('Fetch Error :-S', err);
         });
+}
+
+function ClickSaveTagButton(obj) {
+    var formId = "#new-item-form";
+
+    var data = {
+        name: '',
+        match: {},
+        match_any: false
+    }
+    // Normal input items
+    // Name
+    data['name'] = $(".name").val(); 
+
+    // Match criteria
+    $(formId + " .m-input").each(function () {
+        data['match'][$(this).attr('name')] = $(this).val()
+    })
+    console.log(data)
+}
+
+class ColorPicker {
+    ClickPickColor(obj) {
+        var color = $(obj).attr('data-value'); 
+        $(".color-picker-button").css('background-color', color)
+    }
+    ClickColorPicker() {
+        $('.color-picker-colors').toggle();
+    }
+
+    Register() {
+        var cl = this;
+        $(".color-picker-button").click(function () {
+            cl.ClickColorPicker(this);
+        });
+
+        $(".color-button").click(function () {
+            cl.ClickPickColor(this);
+        });
+    }
 }
