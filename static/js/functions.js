@@ -548,18 +548,56 @@ function ClickSaveTagButton(obj) {
     // Normal input items
     // Name
     data['name'] = $(".name").val(); 
+    // Description
+    data['description'] = $(".descr").val(); 
+    // Tag color
+    data['color'] = $(".c-input").val(); 
 
     // Match criteria
     $(formId + " .m-input").each(function () {
-        data['match'][$(this).attr('name')] = $(this).val()
+        var v = $(this).val();
+        if (v != "") {
+            data['match'][$(this).attr('name')] = $(this).val()
+        }
     })
-    console.log(data)
+    fetch(API_CONFIG_ROUTE + "/tags", {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+
+                $(obj).text("Failed!");
+                $(obj).addClass("btn-danger").removeClass("btn-primary")
+                return;
+            }
+
+            // Examine the text in the response
+            response.json().then(function (data) {
+                // If the operation is gucci gang gucci gang gucci gang
+                if (data['status'] === 0) {
+                    $(obj).text(data['id']);
+                    $(obj).addClass("btn-success").removeClass("btn-primary")
+
+                }
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
 }
 
 class ColorPicker {
     ClickPickColor(obj) {
         var color = $(obj).attr('data-value'); 
         $(".color-picker-button").css('background-color', color)
+        $(".c-input").val(color)
     }
     ClickColorPicker() {
         $('.color-picker-colors').toggle();

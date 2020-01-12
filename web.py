@@ -100,7 +100,12 @@ def config_tags():
     c.load_from_file(DEFAULT_CONFIG_FILE)
     db = c.get_db()
     j = db.get_all_in_subdir_sorted('jqstatus', limit=5)
-    return render_template('tag_config.html', jobs=j)
+    cdb = c.get_cdb()
+
+    cdb.update_path_nocreate("tags")
+    docs = cdb.get_all()
+
+    return render_template('tag_config.html', jobs=j, items=docs)
 
 @app.route('/config/modules', methods=['GET'])
 def config_modules_page():

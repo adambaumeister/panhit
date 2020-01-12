@@ -72,11 +72,34 @@
                                     job.start_time }}</a>
                                 {% endfor %}
                             </div>
+                            <br>
+                            <small>The available tag fields will be populated based upon the result of the chosen job.
+                            </small>
+
                         </div>
                     </div>
                     <div class="job-display"></div>
                 </div>
             </div>
         </div>
+        {% for item in items %}
+        <div class="card flex-row flex-wrap mt-2">
+            <div class="card-header border-0" style="background-color: {{ item.color }}">
+            </div>
+            <div class="card-block p-3">
+                <h4 class="card-title">{{ item.name }}</h4>
+                <small>{{ item.description }}</small>
+                <br>
+                <div class="btn-group mt-2" role="group" aria-label="Options">
+                    <button type="button" class="btn btn-outline-primary delete" data-type="tags"
+                            data-name="{{ item.name }}">Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-100"></div>
+        </div>
+
+        {% endfor %}
 </div>
 {% endblock %}
