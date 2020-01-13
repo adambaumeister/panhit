@@ -16,6 +16,7 @@ class JsonDB:
         """
         self.path = path
         self.root = path
+        self.create_if_not(self.path)
 
     def update_path(self, d):
         """
@@ -31,6 +32,11 @@ class JsonDB:
         Update the current path of the datastore
         """
         self.path = self.path + os.sep + d
+
+    def create_if_not(self, p):
+        if not os.path.isdir(p):
+            print("Creating {}".format(p))
+            os.mkdir(p)
 
     def write(self, document):
         """
@@ -125,6 +131,7 @@ class JsonDB:
         subs = []
         latest_time = 0
         latest = None
+
         for dir in os.listdir(self.root):
             subs.append(dir)
             if self.get_in_sub("jqstatus", dir):
