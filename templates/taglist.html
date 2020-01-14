@@ -57,53 +57,44 @@
                 </li>
             </ul>
         </div>
-
     </nav>
+
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
 
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">{{ config_type }} definitions</h1>
+            <h1 class="h2">Tag List definitions</h1>
             <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Add new {{ config_type }}
+                <button class="btn btn-outline-secondary add-tag" type="button">
+                    New Tag Policy
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {% for item_type, item_obj in item_types.items() %}
-                    <a class="dropdown-item add-item" data-module="{{ item_type }}" data-type="{{ config_type }}"
-                    >{{ item_obj.pretty_name }}</a>
+            </div>
+        </div>
+
+        <div class="new-config" style="display:none">
+            <div class="row">
+                <div class="col">
+
+                    {% for tag in tags %}
+
+                    <div class="card m-2" id="{{ tag.name }}">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    {{ tag.name }} - {{ tag.description }}
+                                </div>
+                                <div class="col text-right">
+                                    <button class="btn btn-primary add-list-tag" data-target="{{ tag.name }}">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
-            </div>
-        </div>
-        <small>{{ config_descr }}</small>
+                <div class="col selected-tags">
 
-        <div class="new-config"></div>
-
-        {% for item in items %}
-        <div class="card flex-row flex-wrap mt-2">
-            <div class="card-header border-0">
-                <img src="{{ url_for('static', filename=item.image) }}" width="200px" height="128px" alt="">
-            </div>
-            <div class="card-block p-3">
-                <h4 class="card-title">{{ item.name }}</h4>
-                <p class="card-text">
-                    {{ item.module_options.get_all_nice_joined() }}
-                </p>
-                <div class="btn-group" role="group" aria-label="Options">
-                    <button type="button" class="btn btn-outline-primary edit" data-module="{{ item.type }}"
-                            data-name="{{ item.name }}" data-type="{{ config_type }}">Edit
-                    </button>
-                    <button type="button" class="btn btn-outline-primary delete" data-type="{{ config_type }}"
-                            data-name="{{ item.name }}">Delete
-                    </button>
                 </div>
             </div>
-            <div class="w-100"></div>
-        </div>
 
-        {% endfor %}
     </main>
-
 </div>
 {% endblock %}

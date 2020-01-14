@@ -73,6 +73,9 @@ $(document).ready(function () {
     $(".pick-job").click(function () {
         ClickChooseJob(this)
     });
+    $(".add-list-tag").click(function() {
+        ClickAddTagToList(this)
+    })
     
 });
 
@@ -89,6 +92,12 @@ class ProgressBar {
         '</div>'
         return txt;
     }
+}
+
+function ClickAddTagToList(obj) {
+    var target = $(obj).attr('data-target');
+
+    $("#"+target).appendTo(".selected-tags")
 }
 
 function ClickAddTagButton() {

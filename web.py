@@ -107,6 +107,22 @@ def config_tags():
 
     return render_template('tag_config.html', jobs=j, items=docs)
 
+@app.route('/config/taglist', methods=['GET'])
+def config_taglist():
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    cdb = c.get_cdb()
+
+    cdb.update_path("tags")
+    tags = cdb.get_all()
+    cdb = c.get_cdb()
+
+    cdb.update_path("taglist")
+    docs = cdb.get_all()
+
+    return render_template('taglist.html', tags=tags)
+
 @app.route('/config/modules', methods=['GET'])
 def config_modules_page():
     """
