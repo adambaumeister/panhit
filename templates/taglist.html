@@ -73,10 +73,18 @@
         <div class="new-config" style="display:none">
             <div class="row">
                 <div class="col">
+                    <input name="name" class="form-control name">
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col">
 
                     {% for tag in tags %}
 
                     <div class="card m-2" id="{{ tag.name }}">
+                        <input type="hidden" name="{{ tag.name }}" value="{{ tag.name }}">
+
                         <div class="card-body">
                             <div class="row">
                                 <div class="col">
@@ -93,7 +101,10 @@
                 <div class="col selected-tags">
 
                 </div>
+
             </div>
+            <button class="save-tag-list btn btn-primary" data-type="taglist" data-module="taglist">Save
+            </button>
 
     </main>
 </div>
