@@ -44,8 +44,9 @@ class HostList:
             hosts = []
             for hid in index:
                 host_json = self.db.get(hid)
-                h = unpickle_host(host_json)
-                hosts.append(h)
+                if host_json:
+                    h = unpickle_host(host_json)
+                    hosts.append(h)
 
             self.hosts = hosts
             return hosts
