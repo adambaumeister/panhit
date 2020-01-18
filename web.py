@@ -38,13 +38,12 @@ def configure(j):
 
     # If a specfile is passed, load from stored configuration instead of parsing as if it were a config file
     elif 'spec' in j:
-        (inputs, mods) = c.load_from_spec(j['spec'])
+        (inputs, mods, tag_policies) = c.load_from_spec(j['spec'])
         db = c.get_db()
-
         if 'name' in j:
             c.name = j['name']
         # Hack - currently HostList only supports one input
-        hl = HostList(inputs[0], mods_enabled=mods, db=db)
+        hl = HostList(inputs[0], mods_enabled=mods, db=db, tags_policy=tag_policies)
         return c, hl
 
 

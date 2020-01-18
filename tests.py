@@ -2,6 +2,8 @@ from phlibs.jqueue import Job
 from phlibs.modules import Module
 from phlibs.host import HostList
 from phlibs.db import JsonDB
+from phlibs.config import ConfigFile
+from web import DEFAULT_CONFIG_FILE
 
 """
 Test suite
@@ -39,10 +41,12 @@ def test_jdb():
     jdb.write({})
 
 
+def test_get_tags():
+    c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    c.tags = ["tes5"]
+    t = c.get_tag_policy()
+    print(t)
+
 if __name__ == '__main__':
-    test_jdb()
-
-    hl = InstantiateHostList()
-
-    j = Job(hl.run_all_hosts, ())
-    j.Run()
+    test_get_tags()

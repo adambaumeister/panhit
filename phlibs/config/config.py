@@ -46,6 +46,16 @@ class ConfigFile:
 
         pass
 
+
+    def get_tag_policy(self, tp):
+        tags = []
+        for tag in tp["tags"]:
+            tag_p = self.load_if_str(tag, "tags")
+            tags.append(tag_p)
+
+        return tags
+
+
     def get_inputs_available(self):
         return self.inputs_available
 
@@ -90,6 +100,7 @@ class ConfigFile:
         """
         inputs = []
         mods = []
+        tag_policys = []
         for input_name in spec_data['inputs']:
             i_data = self.load_if_str(input_name, loc="input")
             i = self.get_input_from_data(i_data)
@@ -100,7 +111,12 @@ class ConfigFile:
             mod = self.get_module_from_data(mod)
             mods.append(mod)
 
-        return (inputs, mods)
+        if 'tag_policy' in spec_data:
+            tag_policy_ref = spec_data['tag_policy']
+            tag_policy = self.load_if_str(tag_policy_ref, "taglist")
+            tag_policys = self.get_tag_policy(tag_policy)
+
+        return (inputs, mods, tag_policys)
 
     def init_modules(self, mod_opts):
         mods = []
