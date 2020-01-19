@@ -70,7 +70,6 @@ $(document).ready(function () {
     ReplaceJobsTable();
     // Render the job result table
     ReplaceResultTable();
-
     /*
     Tag config stuff
     */
@@ -100,6 +99,11 @@ class ProgressBar {
         '</div>'
         return txt;
     }
+}
+
+function ClickHostCard(obj) {
+    console.log("here")
+    $(".mods", obj).toggle();
 }
 
 function ClickAddTagToList(obj) {
@@ -265,6 +269,15 @@ function ReplaceResultTable() {
                         ReplaceResultTable();
                     }
                 });
+
+                /*
+                Results page stuff
+                */
+                $(".clickable-card").click(function (){
+                    ClickHostCard(this)
+                })
+
+                
             });
         }
     )

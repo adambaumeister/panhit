@@ -78,3 +78,17 @@
     height: 25px;
     background-color: #da4302ff;
 }
+
+.mod-table {
+    border-left: 2px solid #f8f9fa;
+}
+
+.mod-table-name {
+    float: left;
+    margin-right: 5px;
+}
+
+.clickable-card:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}

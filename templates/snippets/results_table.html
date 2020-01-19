@@ -3,42 +3,28 @@
 {% for host in hosts %}
 
 <div class="card m-2">
-    <div class="card-body">
+    <div class="card-body clickable-card">
 
         <h5 class="card-title">{{ host.attributes.ip }}</h5>
-        {% for mod_table in host.mod_tables %}
-        <button class="btn btn-outline-secondary mod-button" type="button" data-toggle="collapse"
-                data-target="#{{ mod_table.name }}-{{ mod_table.id }}"
-                aria-expanded="false" aria-controls="collapseExample">
-            {{ mod_table.name }}
-        </button>
-        {% endfor %}
-        {% for mod_table in host.mod_tables %}
+        <div class="mods" style="display:none;">
 
-        <div class="collapse" id="{{ mod_table.name }}-{{ mod_table.id }}">
-            <div class="card mt-3">
-                <table class="table table-borderless mod-data-table">
-                    <thead class="thead-dark">
-                    <tr>
-                        {% for k in mod_table.headers %}
-                        <th>{{ k }}</th>
-                        {% endfor %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        {% for v in mod_table.row %}
-                        <td>{{ v }}</td>
-                        {% endfor %}
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            {% for mod_name, mod_data in host.mods_enabled.items() %}
+            <div class="mod-table-name">{{ mod_name }}</div>
+            <table class="mod-table mb-3">
+                {% for k, v in mod_data.items() %}
+                <tr>
+                    <td class="pr-2 pl-2"><b>{{ k }}</b></td>
+                    <td>{{ v }}</td>
+                </tr>
+                {% endfor %}
+            </table>
         {% endfor %}
+        </div>
+
     </div>
     {% if 'tag' in host.attributes %}
-    <div class="card-header border-0" style="background-color: {{ host.attributes.tag.color }}; height:2px; padding:0px;">
+    <div class="card-header border-0"
+         style="background-color: {{ host.attributes.tag.color }}; height:2px; padding:0px;">
     </div>
     {% endif %}
 </div>

@@ -104,6 +104,9 @@ class JobResult(Message):
         """
         mod_id = 0
         # Munge the data into something that fits into html tables
+
+        return render_template('snippets/results_table.html', hosts=self.result, pages=self.pages-1,
+                               page=self.current_page)
         for host_data in self.result:
             mod_tables = []
 
@@ -130,8 +133,7 @@ class JobResult(Message):
 
             host_data['mod_tables'] = mod_tables
 
-        return render_template('snippets/results_table.html', hosts=self.result, pages=self.pages-1,
-                               page=self.current_page)
+
 
     def set_table_from_json(self, j):
         result = []
