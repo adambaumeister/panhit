@@ -4,6 +4,7 @@
 
 <div class="card m-2">
     <div class="card-body">
+
         <h5 class="card-title">{{ host.attributes.ip }}</h5>
         {% for mod_table in host.mod_tables %}
         <button class="btn btn-outline-secondary mod-button" type="button" data-toggle="collapse"
@@ -36,6 +37,10 @@
         </div>
         {% endfor %}
     </div>
+    {% if 'tag' in host.attributes %}
+    <div class="card-header border-0" style="background-color: {{ host.attributes.tag.color }}; height:2px; padding:0px;">
+    </div>
+    {% endif %}
 </div>
 
 {% endfor %}

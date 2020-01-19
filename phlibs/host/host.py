@@ -131,7 +131,7 @@ class Host:
                         match = False
 
             if match:
-                self.set_tag(t['name'])
+                self.set_tag(t)
 
     def set_db(self, db):
         self.db = db
