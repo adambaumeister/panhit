@@ -110,6 +110,24 @@ function ClickAddTagToList(obj) {
     var target = $(obj).attr('data-target');
 
     $("#"+target).appendTo(".selected-tags")
+    $(obj).text("-");
+    $(obj).removeClass("btn-primary");
+    $(obj).addClass("btn-danger")
+    $(obj).click(function() {
+        var target = $(obj).attr('data-target');
+
+        $("#"+target).appendTo(".tags-available")
+
+        $(obj).text("+");
+        $(obj).removeClass("btn-danger")
+        $(obj).addClass("btn-primary");
+        $(this).click(
+            function() {
+                ClickAddTagToList(this);
+            }
+        )
+
+    })
 }
 
 function ClickSaveTagList(obj) {
