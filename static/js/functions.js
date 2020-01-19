@@ -35,6 +35,10 @@ $(document).ready(function () {
         ScanSpecSettings();
     });
 
+    $(".select-tagp").click(function () {
+        SelectTagpButton(this);
+        ScanSpecSettings();
+    });
     
     $(".run").click(function () {
         ClickRunButton()
@@ -526,6 +530,20 @@ function SelectInputButton(obj) {
     $(".input-card").addClass("card-input-filled")
 }
 
+function SelectTagpButton(obj) {
+    var tagpName = $(obj).attr('data-name');
+
+    /* Use the name, which'll be used by teh spec, as well as display it. */
+    var selectedHTML = `<h2 class='p-3 h1-input-selected tagp-value'>` +  tagpName + `</h1>`
+
+    /* Make the list invisible */
+    $(".tagp-dropdown").toggle()
+    /* Modify the card appearance to show it's selected */
+    $(".tagp-card").html(selectedHTML)
+    $(".tagp-card").addClass("card-input-filled")
+}
+
+
 function SelectModuleButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
@@ -541,6 +559,8 @@ function ScanSpecSettings () {
     var items = $(".selected-module-container").find("h2"); 
     var inputName = $(".input-value").text(); 
     var jobName = $(".spec-name").val()
+    var tagpName = $(".tagp-value").text(); 
+
 
     var data = {
         'spec': {
@@ -548,6 +568,7 @@ function ScanSpecSettings () {
             'modules': []
         }
     }; 
+
 
     if (jobName) {
         data['name'] = jobName;
@@ -559,6 +580,11 @@ function ScanSpecSettings () {
 
     if (data['spec']['modules'].length > 0) {
         $(".run").removeClass("d-none")
+    }
+    if (tagpName) {
+        data['spec']['tag_policy'] = tagpName
+        console.log(data)
+
     }
     return(data);
 }

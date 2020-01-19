@@ -33,6 +33,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-sm text-center module-col">
             <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Enabled Modules</h2>
                 <small class="form-text text-muted">Set the lists of modules to enable
@@ -56,6 +57,29 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-sm text-center output-col">
+            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Tag policy</h2>
+                <small class="form-text text-muted">Configure the Tag policy
+                </small>
+            </div>
+            <div class="selected-tagp-container"></div>
+            <div class="card text-center tagp-card mb-3">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle tagp-dropdown" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pick a tag policy!
+                    </button>
+                    <div class="dropdown-menu">
+                        {% for item in tag_policies %}
+                        <button class="dropdown-item select-tagp" data-name="{{ item.name }}">{{ item.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-sm text-center output-col">
             <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Output</h2>
                 <small class="form-text text-muted">Set the destination output - output is always saved locally

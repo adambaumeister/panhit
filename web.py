@@ -120,7 +120,7 @@ def config_taglist():
     cdb.update_path("taglist")
     docs = cdb.get_all()
 
-    return render_template('taglist.html', tags=tags)
+    return render_template('taglist.html', tags=tags, items=docs)
 
 @app.route('/config/modules', methods=['GET'])
 def config_modules_page():
@@ -175,11 +175,16 @@ def spec_page():
     cdb.update_path("modules")
     docs = cdb.get_all()
     modules = []
+
     for doc in docs:
         i = c.get_module_from_data(doc)
         modules.append(i)
 
-    return render_template('spec.html', inputs=inputs, modules=modules)
+    cdb = c.get_cdb()
+    cdb.update_path("taglist")
+    docs = cdb.get_all()
+    tag_policies = docs
+    return render_template('spec.html', inputs=inputs, modules=modules, tag_policies=tag_policies)
 
 @app.route('/jobs', methods=['GET'])
 def jobs_page():
