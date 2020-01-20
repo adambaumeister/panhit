@@ -102,7 +102,7 @@ class JsonDB:
             j = json.load(fp)
             return j
 
-    def get_all_in_subdir_sorted(self, doc_id, sort_field="start_time", limit=None):
+    def get_all_in_subdir_sorted(self, doc_id, sort_field="start_time", reverse=True, limit=None):
         """
         Retrieve a document with the same ID from all the sub-databases (directories within the root)
         :param doc_id: id of document
@@ -116,12 +116,16 @@ class JsonDB:
                 j = json.load(fp)
                 docs.append(j)
 
-            if limit:
-                if len(docs) >= limit:
-                    return sorted(docs, key=lambda d: d[sort_field])
+        sorted_docs = sorted(docs, key=lambda d: d[sort_field])
+
+        if limit:
+            if reverse:
+                sorted_docs.reverse()
+
+            return sorted_docs[:5]
 
         # Return the sorted value, sorted by any field in the dictionary (defaults to ID).
-        return sorted(docs, key=lambda d: d[sort_field])
+        return sorted_docs
 
     def summary(self):
         """

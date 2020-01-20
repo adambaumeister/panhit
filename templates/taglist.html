@@ -71,45 +71,54 @@
         </div>
 
         <div class="new-config" style="display:none">
-            <div class="row">
-                <div class="col">
-                    <label>Policy name</label>
-                    <input name="name" class="form-control name">
+            <div class="card card-body">
+
+                <div class="row">
+                    <div class="col">
+                        <label>Policy name</label>
+                        <input name="name" class="form-control name">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
+                <div class="row">
 
-                <div class="col pt-3 tags-available">
-                    <h4>Tags Available</h4>
+                    <div class="col pt-3 tags-available">
+                        <h4>Tags Available</h4>
 
 
-                    {% for tag in tags %}
+                        {% for tag in tags %}
 
-                    <div class="card mb-2" id="{{ tag.name }}">
-                        <input type="hidden" name="{{ tag.name }}" value="{{ tag.name }}">
+                        <div class="card mb-2" id="{{ tag.name }}">
+                            <input type="hidden" name="{{ tag.name }}" value="{{ tag.name }}">
 
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    {{ tag.name }} - {{ tag.description }}
-                                </div>
-                                <div class="col text-right">
-                                    <button class="btn btn-primary add-list-tag" data-target="{{ tag.name }}">+</button>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ tag.name }} - {{ tag.description }}
+                                    </div>
+                                    <div class="col text-right">
+                                        <button class="btn btn-primary add-list-tag" data-target="{{ tag.name }}">+
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-                <div class="col selected-tags pt-3">
-                <h4>Selected tags</h4>
+                    <div class="col selected-tags pt-3">
+                        <h4>Selected tags</h4>
+
+                    </div>
 
                 </div>
-
+                <div class="row">
+                    <div class="col">
+                        <button class="save-tag-list btn btn-primary" data-type="taglist" data-module="taglist">Save
+                        </button>
+                    </div>
+                </div>
             </div>
-            <button class="save-tag-list btn btn-primary" data-type="taglist" data-module="taglist">Save
-            </button>
         </div>
+
         <small>Tag policy is an ordered list of Tag configurations
 
         </small>

@@ -120,15 +120,18 @@ class Host:
             self.tag_policy = tag_policy
 
     def match_tag(self):
+        match = False
         for t in reversed(self.tag_policy):
             if 'match_any' in t:
-                match = True
-            else:
-                match = True
-                for match_attr, match_value in t['match'].items():
-                    r = self.compare_attr(match_attr, match_value)
-                    if not r:
-                        match = False
+                if t['match_any']:
+                    self.set_tag(t)
+                    return
+
+            match = True
+            for match_attr, match_value in t['match'].items():
+                r = self.compare_attr(match_attr, match_value)
+                if not r:
+                    match = False
 
             if match:
                 self.set_tag(t)
