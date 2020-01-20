@@ -327,9 +327,13 @@ def list_jobs():
     m = JobList()
     if t:
         page = request.args.get('page')
+        html = request.args.get('as_html')
         m.set_table_from_json(j)
         if page:
-            m.page(page, 10)
+            m.page(page, 5)
+
+        if html:
+            return m.as_html()
     else:
         m.set_from_json(j)
 

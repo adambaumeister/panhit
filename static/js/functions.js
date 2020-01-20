@@ -44,28 +44,6 @@ $(document).ready(function () {
         ClickRunButton()
     });
 
-    /*
-    job page stuff
-    */
-    // register the next/prev page buttons
-    // This works for any table
-    var pageNum = $(".page-number").text();
-    $(".next-page").click(function () {
-        console.log("here")
-
-        pageNum = Number(pageNum) + 1; 
-        $(".page-number").text(pageNum);
-        // Re-render any visble tables
-        ReplaceJobsTable();
-
-    });
-    $(".prev-page").click(function () {
-        pageNum = Number(pageNum) - 1; 
-        $(".page-number").text(pageNum);
-        // Re-render any visble tables
-        ReplaceJobsTable();
-    });
-
     // Render the jobs table
     ReplaceJobsTable();
     // Render the job result table
@@ -102,8 +80,12 @@ class ProgressBar {
 }
 
 function ClickHostCard(obj) {
-    console.log("here")
     $(".mods", obj).toggle();
+}
+
+function ClickJobRow(obj) {
+    console.log("here")
+    window.location.href = $(obj).attr("data-target");
 }
 
 function ClickAddTagToList(obj) {
@@ -305,61 +287,61 @@ function ReplaceResultTable() {
 }
 
 function ReplaceJobsTable() {
-    // If we're not on the jobs page
-    if (!$('.job-table-body').length) {
+
+    if (!$('.jobs').length) {
         return;
     }
-    
-    // Zero out the existing html
-    $('.job-table-head').html("")
-    $('.job-table-body').html("")
-
-    // Set the field we use as the ID,  this gets referenced when the row is clicked
-    var idField = 0;
-    // Set the field we use as the progress bar, this is an index as returned via the tablular api
-    var pbField = 5;
 
 
     // Make the API call to get the values
     var pageNum = $(".page-number").text();
 
-    var url = API_ROUTE + "/jobs?table=true&page="+ pageNum;
+    var url = API_ROUTE + "/jobs?table=true&as_html=true&page="+ pageNum;
     fetch(url).then(
         function (response) {
             if (response.status !== 200) {
                 console.log('Looks like there was a problem. Status Code: ' +
-                    response.status);;
+                    response.status);
                 return;
             }
 
-            response.json().then(function (data) {
-                // Render the table headers
-                $.each(data['result']['fields'], function(k, v) {
-                    $('.job-table-head').append('<th scope="col">' + v + '</th>');
-                }); 
-                
-                // Render the rows
-                $.each(data['result']['rows'], function(k, v) { 
-                    // Se the row data-target as the ID of the job, to be used as the link to the next page.
-                    var targetId = v[0];
-                    rowId = "jobs-row-" + k;
-                    $('.job-table-body').append('<tr class="clickable-row" data-target="'+ targetId +'" id="' + rowId + '">')
-                    
-                    // Register the click handlers for the row object
-                    $('#'+rowId).click(function() {
-                        window.location.href='/jobs/'+targetId;
-                    })
-                    // Render the row data
-                    $.each(v, function(k, v) {
-                        if (k === pbField) {
-                            pb = new ProgressBar(0, 100); 
-                            $("#"+rowId).append('<td>' + pb.render(v) + '</td>');
-                        } else{
-                            $("#"+rowId).append('<td>' + v + '</td>');
-                        }
-                    }); 
-                }); 
+            response.text().then(function (data) {
+                $('.jobs').html(data);
 
+                var pageNum = $(".page-number").text();
+                var pageMax = $(".page-max").text();
+                console.log(pageMax)
+
+                if (Number(pageNum) == Number(pageMax)) {
+                    $(".next-page").attr("disabled", true)
+                } 
+
+                if (Number(pageNum) == 0) {
+                    $(".prev-page").attr("disabled", true)
+                } 
+                $(".next-page").click(function () {            
+                    var newNum = Number(pageNum) + 1; 
+                    pageMax = Number(pageMax)
+                    if (newNum <= pageMax) {
+                        $(".page-number").text(newNum);
+                        // Re-render any visble tables
+                        ReplaceJobsTable();
+                    } 
+                });
+                $(".prev-page").click(function () {
+                    var newNum = Number(pageNum) - 1; 
+                    pageMax = Number(pageMax)
+                    if (newNum >= 0 ) {
+                        $(".page-number").text(newNum);
+                        // Re-render any visble tables
+                        ReplaceJobsTable();
+                    }
+                });
+
+                $(".clickable-row").click(function (){
+                    ClickJobRow(this)
+                })
+                
             });
         }
     )

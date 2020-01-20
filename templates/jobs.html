@@ -2,23 +2,20 @@
 {% block content %}
 <div class="container-flex p-3">
     <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Job results</h2></div>
-    <table class="table job-table table-hover">
-        <thead class="thead-light">
-        <tr class="job-table-head">
-        </tr>
-        </thead>
-        <tbody class="job-table-body">
-        </tbody>
-    </table>
-    <div class="row text-center">
-        <div class="col">
+    <div class="jobs">
+        <div class="row text-center">
+            <div class="col">
+            </div>
+            <div class="col-6 text-center">
+                <button type="button" class="btn btn-primary btn-sm prev-page"><</button>
+                <button type="button" class="btn btn-primary btn-sm next-page">></button>
+            </div>
+            <div class="col text-right">
+                <small>Page
+                    <div class="page-number">0</div>
+                </small>
+            </div>
         </div>
-        <div class="col-6 text-center">
-            <button type="button" class="btn btn-secondary btn-sm prev-page"><</button>
-            <h4 class="page-number">0</h4>
-            <button type="button" class="btn btn-secondary btn-sm next-page">></button>
-        </div>
-        <div class="col"></div>
     </div>
 </div>
 {% endblock %}

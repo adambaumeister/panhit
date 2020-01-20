@@ -45,6 +45,7 @@ class JobList(Message):
         self.count = 0
         self.result = {}
         self.pages = 1
+        self.current_page = 1
 
     def set_from_json(self, j):
         self.count = len(j)
@@ -67,8 +68,16 @@ class JobList(Message):
         self.result['fields'] = fields
         self.result['rows'] = rows
 
+    def as_html(self):
+        print(self.pages)
+        return render_template('snippets/jobs_table.html', jobs=self.result, pages=self.pages-1,
+                               page=self.current_page)
+
     def page(self, page, count):
         rows = self.result['rows']
+        pages = int(len(rows) / count) + (len(rows) % count > 0)
+        self.pages = pages
+        self.current_page = page
         idx = int(page) * count
         paged_rows = rows[idx:idx + count]
         self.result['rows'] = paged_rows
