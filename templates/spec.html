@@ -86,9 +86,24 @@
                 </small>
             </div>
             <div class="selected-output-container"></div>
-            <div class="card text-center module-card mb-3">
+            <div class="card text-center mb-3">
                 <h3 class="p-4">Local Database</h3>
             </div>
+            <div class="card text-center output-card mb-3">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle select-dropdown" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select another output...
+                    </button>
+                    <div class="dropdown-menu">
+                        {% for item in outputs %}
+                        <button class="dropdown-item select-output" data-name="{{ item.name }}">{{ item.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="row">

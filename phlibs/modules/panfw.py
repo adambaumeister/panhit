@@ -3,6 +3,8 @@ from panos import Panos
 from xml.etree import ElementTree
 import ipaddress
 import time
+import urllib3
+urllib3.disable_warnings()
 
 MAX_REPORT_QUERIES=20
 
@@ -190,8 +192,9 @@ class Panfw(Module):
         """
         tags = set()
 
-        for host in host_list.hosts:
-            tags.add(host.tag)
+        for host in host_list.get_all_hosts():
+            if host.tag:
+                tags.add(host.tag["name"])
 
         tag_elements = []
         for tag in tags:
@@ -200,10 +203,11 @@ class Panfw(Module):
         # First we add the tags
         self.send_objects(panos, tag_elements, tag_xpath, 'set')
 
-        for host in host_list.hosts:
-            full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
-            e = element.format(host.tag)
-            self.send_objects(panos, e, full_xpath, 'edit')
+        for host in host_list.get_all_hosts():
+            if host.tag:
+                full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
+                e = element.format(host.tag["name"])
+                self.send_objects(panos, e, full_xpath, 'edit')
 
 
     def send_objects(self, panos, elements, xpath, set_type):
@@ -216,7 +220,7 @@ class Panfw(Module):
         r = panos.send(params)
         result = panos.check_resp(r)
         if not result:
-            print("Error adding elements.")
+            print("Error adding elements. {}".format(r.content))
 
     def route_lookup(self, ip, route_table):
         longest_match = 0

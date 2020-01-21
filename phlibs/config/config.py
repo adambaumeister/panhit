@@ -43,6 +43,10 @@ class ConfigFile:
             "file": FileInput(),
         }
 
+        self.outputs_available = {
+            "panfw": PanfwOutput(),
+        }
+
 
         pass
 
@@ -65,6 +69,9 @@ class ConfigFile:
             mods_available[mod_name] = mod()
 
         return mods_available
+
+    def get_outputs_available(self):
+        return self.outputs_available
 
     def load_from_file(self, path=None):
         if not path:
@@ -101,6 +108,7 @@ class ConfigFile:
         inputs = []
         mods = []
         tag_policys = []
+        output = None
         for input_name in spec_data['inputs']:
             i_data = self.load_if_str(input_name, loc="input")
             i = self.get_input_from_data(i_data)
@@ -116,7 +124,11 @@ class ConfigFile:
             tag_policy = self.load_if_str(tag_policy_ref, "taglist")
             tag_policys = self.get_tag_policy(tag_policy)
 
-        return (inputs, mods, tag_policys)
+        if 'output' in spec_data:
+            output = self.load_if_str(spec_data['output'], "output")
+            output = self.get_output_from_data(output)
+
+        return inputs, mods, tag_policys, output
 
     def init_modules(self, mod_opts):
         mods = []
@@ -152,6 +164,11 @@ class ConfigFile:
         elif data['type'] == 'dict':
             l = ListInput(data)
             return l
+
+    def get_output_from_data(self, data):
+        if data['type'] == 'panfw':
+            p = PanfwOutput(data)
+            return p
 
     def get_module_from_data(self, data):
         if data['type'] in self.mods_available:

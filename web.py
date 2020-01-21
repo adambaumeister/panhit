@@ -38,12 +38,12 @@ def configure(j):
 
     # If a specfile is passed, load from stored configuration instead of parsing as if it were a config file
     elif 'spec' in j:
-        (inputs, mods, tag_policies) = c.load_from_spec(j['spec'])
+        (inputs, mods, tag_policies, outputs) = c.load_from_spec(j['spec'])
         db = c.get_db()
         if 'name' in j:
             c.name = j['name']
         # Hack - currently HostList only supports one input
-        hl = HostList(inputs[0], mods_enabled=mods, db=db, tags_policy=tag_policies)
+        hl = HostList(inputs[0], mods_enabled=mods, db=db, tags_policy=tag_policies, output=outputs)
         return c, hl
 
 
@@ -86,11 +86,40 @@ def config_input_page():
         inputs.append(i)
 
     input_types = c.get_inputs_available()
+    print(input_types)
     config_descr = """
     An Input is a list of host IP addresses, either statically defined or dynamically retrieved.
     """
 
     return render_template('config.html', items=inputs, config_type=config_type, config_descr=config_descr, item_types=input_types)
+
+@app.route('/config/outputs', methods=['GET'])
+def config_output_page():
+    """
+    Configuration landing page
+    :return: config.html
+    """
+    config_type = "output"
+
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+
+    cdb = c.get_cdb()
+    cdb.update_path(config_type)
+    docs = cdb.get_all()
+    outputs = []
+    for doc in docs:
+        i = c.get_output_from_data(doc)
+        outputs.append(i)
+
+    output_types = c.get_outputs_available()
+
+    config_descr = """
+    Outputs act as stores - seperate from the local database - for host information 
+    """
+
+    return render_template('config.html', items=outputs, config_type=config_type, config_descr=config_descr, item_types=output_types)
 
 @app.route('/config/tags', methods=['GET'])
 def config_tags():
@@ -184,7 +213,13 @@ def spec_page():
     cdb.update_path("taglist")
     docs = cdb.get_all()
     tag_policies = docs
-    return render_template('spec.html', inputs=inputs, modules=modules, tag_policies=tag_policies)
+
+    cdb = c.get_cdb()
+    cdb.update_path("output")
+    docs = cdb.get_all()
+    outputs = docs
+
+    return render_template('spec.html', inputs=inputs, modules=modules, tag_policies=tag_policies, outputs=outputs)
 
 @app.route('/jobs', methods=['GET'])
 def jobs_page():
@@ -463,6 +498,10 @@ def get_config_spec(config_type, module_name):
         inputs = c.get_inputs_available()
         if module_name in inputs:
             mod = inputs[module_name]
+    elif config_type == "output":
+        outputs = c.get_outputs_available()
+        if module_name in outputs:
+            mod = outputs[module_name]
     else:
         mods = c.get_mods_available()
         if module_name in mods:

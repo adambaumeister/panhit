@@ -8,7 +8,7 @@ class HostList:
     List of Host Entries
     """
 
-    def __init__(self, input=None, mods_enabled=None, db=None, tags_policy=None):
+    def __init__(self, input=None, mods_enabled=None, db=None, tags_policy=None, output=None):
         """
         Instantiate a host list based on a given input type.
         :param input: Class of type Input but can be anything with a List() function
@@ -19,6 +19,7 @@ class HostList:
         self.mods_enabled = mods_enabled
         self.tags_policy = tags_policy
 
+        self.output = output
         if input:
             self.hosts = self.hosts_from_list(input.List())
         else:
@@ -83,6 +84,9 @@ class HostList:
 
             jq.empty()
 
+            # If we're passed an output spec, run it
+            if self.output:
+                self.output.Output(self)
             return
 
         for h in self.get_all_hosts():
@@ -115,7 +119,7 @@ class Host:
         self.ip = ip
         self.result = {}
         self.attributes = {}
-        self.tag = ''
+        self.tag = None
         self.db = None
         self.tag_policy = []
         if tag_policy:
@@ -195,6 +199,8 @@ class Host:
         self.id = host_json['id']
         self.attributes = host_json['attributes']
         self.result = host_json['mods_enabled']
+        if "tag" in self.attributes:
+            self.tag = self.attributes["tag"]
 
     def compare_attr(self, attr_name, attr_value):
         for mod, results in self.result.items():
