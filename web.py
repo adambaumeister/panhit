@@ -325,7 +325,7 @@ def list_jobs():
     c.load_from_file(DEFAULT_CONFIG_FILE)
     db = c.get_db()
     j = db.get_all_in_subdir_sorted('jqstatus')
-
+    j.reverse()
     t = request.args.get('table')
     m = JobList()
     if t:
@@ -333,7 +333,7 @@ def list_jobs():
         html = request.args.get('as_html')
         m.set_table_from_json(j)
         if page:
-            m.page(page, 5)
+            m.page(page, 10)
 
         if html:
             return m.as_html()

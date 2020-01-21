@@ -89,6 +89,11 @@ class ModuleOptions:
                 printable_result.append(s)
         return " • ".join(printable_result)
 
+    def remove_option(self, option_name):
+        if option_name in self.module_options:
+            del self.module_options[option_name]
+
+
 class Module:
     """
     A module represents a discrete set of tools for enriching a host with additional data

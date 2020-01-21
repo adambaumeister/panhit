@@ -12,6 +12,7 @@ class PanfwInput(Input):
 
         self.panfw = Panfw(mod_opts)
         self.module_options = self.panfw.module_options
+        self.module_options.remove_option("report_interval")
 
         super(PanfwInput, self).__init__(mod_opts)
         self.pretty_name = "PANOS Device"
