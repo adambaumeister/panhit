@@ -12,7 +12,7 @@
                     {% if spec.type == "str" %}
                     <label>{{ spec.nice_name }}</label>
                     <input name="{{ spec.name }}" class="form-control n-input" {% if spec.value
-                           %} value="{{ spec.value }}" {% endif %}>
+                           %} value="{{ spec.value }}" {% endif %} {% if spec.secret %}type="password"{% endif %}>
                     <small class="form-text text-muted">{{ spec.help }}
                     </small>
 
