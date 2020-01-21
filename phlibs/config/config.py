@@ -179,4 +179,8 @@ class ConfigFile:
             if self.configdb['type'] == 'JsonDB':
                 db_path = self.configdb['path']
                 jdb = JsonDB(db_path)
+                # If we get an environ varaible for secret key we enable encryhption for the config database
+                secret = os.getenv("PANHIT_SECRET")
+                if secret:
+                    jdb.enable_encryption(secret)
                 return jdb

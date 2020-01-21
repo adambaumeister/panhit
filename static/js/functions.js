@@ -406,7 +406,8 @@ function ClickAddButton(obj) {
                     response.status);
 
                 $(obj).text("Failed!");
-                $(obj).addClass("btn-success").removeClass("btn-primary")
+                $(obj).addClass("btn-danger").removeClass("btn-primary")
+
                 return;
             }
 
@@ -415,8 +416,7 @@ function ClickAddButton(obj) {
                 // If the operation is gucci gang gucci gang gucci gang
                 if (data['status'] === 0) {
                     $(obj).text("Added!");
-                    $(obj).addClass("btn-danger").removeClass("btn-primary")
-
+                    $(obj).addClass("btn-success").removeClass("btn-primary")
                     location.reload()
                 }
             });

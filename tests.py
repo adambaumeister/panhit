@@ -34,11 +34,31 @@ def InstantiateHostList():
 def dummy_function(a,b):
     print(a+b)
 
-def test_jdb():
+def test_jdb_write_encrypted():
     jdb = JsonDB("database")
-    i = jdb.make_id()
-    print(i)
-    jdb.write({})
+    jdb.enable_encryption("spaghetti")
+    id = jdb.write({
+        "test_key": "test_val"
+    })
+    r = jdb.get(id)
+    print(r)
+
+def test_jdb_write_decrypted():
+    jdb = JsonDB("database")
+    id = jdb.write({
+        "test_key": "test_val"
+    })
+    r = jdb.get(id)
+    print(r)
+
+def test_jdb_decrypt_unencrypted():
+    jdb = JsonDB("database")
+    id = jdb.write({
+        "test_key": "test_val"
+    })
+    jdb.enable_encryption("spaghetti")
+    r = jdb.get(id)
+    print(r)
 
 
 def test_get_tags():
@@ -49,4 +69,5 @@ def test_get_tags():
     print(t)
 
 if __name__ == '__main__':
-    test_get_tags()
+    test_jdb_write_encrypted()
+    test_jdb_decrypt_unencrypted()

@@ -2,6 +2,8 @@ import json
 import os
 import pathlib
 import uuid
+import pyAesCrypt
+import io
 
 class JsonDB:
     """
@@ -17,6 +19,13 @@ class JsonDB:
         self.path = path
         self.root = path
         self.create_if_not(self.path)
+        self.secret = None
+
+    def enable_encryption(self, key):
+        self.secret = key
+
+    def disable_encryption(self):
+        self.secret = None
 
     def update_path(self, d):
         """
@@ -26,6 +35,36 @@ class JsonDB:
         if not os.path.isdir(self.path):
             print("Creating {}".format(self.path))
             os.mkdir(self.path)
+
+    def encrypt(self, str):
+        """
+        Given an arbtiraty string, encrypt it and return the value.
+        :param str: string to encrypt
+        :return: encrypted string
+        """
+        password = self.secret
+        bufferSize = 64 * 1024
+        # input plaintext binary stream
+        fIn = io.BytesIO(str.encode())
+
+        # initialize ciphertext binary stream
+        fCiph = io.BytesIO()
+        pyAesCrypt.encryptStream(fIn, fCiph, password, bufferSize)
+        return fCiph
+
+
+    def decrypt(self, enc_bytes):
+        password = self.secret
+        bufferSize = 64 * 1024
+
+        # get ciphertext length
+        ctlen = len(enc_bytes)
+
+        # decrypt stream
+        fDec = io.BytesIO()
+        fIn = io.BytesIO(enc_bytes)
+        pyAesCrypt.decryptStream(fIn, fDec, password, bufferSize, ctlen)
+        return fDec
 
     def update_path_nocreate(self, d):
         """
@@ -45,9 +84,8 @@ class JsonDB:
         """
         id = self.make_id()
         id = str(id)
-        full_path = self.path + os.sep + id + ".json"
-        fp = open(full_path, 'w')
-        json.dump(document, fp)
+        self.write_id(id, document)
+        return id
 
     def write_id(self, id, document):
         """
@@ -56,8 +94,16 @@ class JsonDB:
         :param document: (dict) Dictionary to write to JSON
         """
         full_path = self.path + os.sep + id + ".json"
-        fp = open(full_path, 'w')
-        json.dump(document, fp)
+        if self.secret:
+            fp = open(full_path, 'wb')
+
+            d = json.dumps(document)
+            encrypted = self.encrypt(d)
+            fp.write(encrypted.getvalue())
+        else:
+            fp = open(full_path, 'w')
+
+            json.dump(document, fp)
 
     def make_id(self):
         id = uuid.uuid1()
@@ -67,18 +113,43 @@ class JsonDB:
         documents = []
         for item in os.listdir(self.path):
             fullpath = self.path + os.sep + item
-            if os.path.isfile(fullpath):
-                fp = open(fullpath)
-                j = json.load(fp)
-                documents.append(j)
+            j = self.get_fullpath(fullpath)
+            documents.append(j)
         return documents
 
-    def get(self, id):
-        fullpath = self.path + os.sep + id + ".json"
-        if os.path.isfile(fullpath):
-            fp = open(fullpath)
-            j = json.load(fp)
+    def get_fullpath(self, full_path):
+        if os.path.isfile(full_path):
+
+            if self.secret:
+                fp = open(full_path, 'rb')
+                # If it's encrypted and we have a secret
+                try:
+                    r = self.decrypt(fp.read()).getvalue()
+                    decoded = r.decode()
+                    j = json.loads(decoded)
+                # If we have a secret but the file is unencrypted
+                except ValueError as e:
+                    fp = open(full_path, 'r')
+                    try:
+                        j = json.load(fp)
+                    except UnicodeDecodeError:
+                        raise ValueError("Your decryption secret is incorrect or has changed. Your configuration is broken!")
+            else:
+                fp = open(full_path)
+                # If we don't have a secret and the file is unencrypted
+                try:
+                    j = json.load(fp)
+                # Finally, we have no secret and the file is encrypted. This is the only one that should fail!
+                except UnicodeDecodeError:
+                    raise ValueError("Attempting to decrypt encrypted file without a passphrase. your configuration is broken!")
+
             return j
+
+
+    def get(self, id):
+        fullpath = self.path + os.sep + str(id) + ".json"
+        j = self.get_fullpath(fullpath)
+        return j
 
     def delete_id(self, id):
         """
@@ -97,10 +168,7 @@ class JsonDB:
         :return: document
         """
         fullpath = self.root + os.sep + sub + os.sep + id + ".json"
-        if os.path.isfile(fullpath):
-            fp = open(fullpath)
-            j = json.load(fp)
-            return j
+        return self.get_fullpath(fullpath)
 
     def get_all_in_subdir_sorted(self, doc_id, sort_field="start_time", reverse=True, limit=None):
         """
@@ -111,10 +179,8 @@ class JsonDB:
         docs = []
         for item in os.listdir(self.root):
             fullpath = self.root + os.sep + item + os.sep + doc_id + ".json"
-            if os.path.isfile(fullpath):
-                fp = open(fullpath)
-                j = json.load(fp)
-                docs.append(j)
+            j = self.get_fullpath(fullpath)
+            docs.append(j)
 
         sorted_docs = sorted(docs, key=lambda d: d[sort_field])
 
