@@ -460,7 +460,6 @@ function ClickEditButton(obj) {
 function ClickRunButton() {
 
     inputData = ScanSpecSettings();
-    console.log(inputData);
     obj = ".run"
     fetch(API_ROUTE + "/run", {
         method: 'POST',
@@ -485,7 +484,7 @@ function ClickRunButton() {
                 if (data['status'] === "started") {
                     $(obj).text(data['id']);
                     $(obj).addClass("btn-success").removeClass("btn-primary")
-
+                    window.location.href = "/jobs/"+data['id'];
                 }
             });
         }

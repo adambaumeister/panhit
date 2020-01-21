@@ -41,6 +41,8 @@ class HostList:
     def get_all_hosts(self):
         if self.db:
             index = self.db.get("index")
+            if not index:
+                index = []
             hosts = []
             for hid in index:
                 host_json = self.db.get(hid)

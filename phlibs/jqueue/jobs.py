@@ -44,6 +44,17 @@ class JobQueue:
         if name:
             self.name = name
 
+        # Set the initial jqstatus
+        d = {
+            "id": self.id,
+            "name": self.name,
+            "queued": len(self.queue),
+            "start_time": 0,
+            "completed": 0,
+            'completed_percent': 0
+        }
+        self.db.write_id('jqstatus', d)
+
     def empty(self, nowait=False):
         """
         Run all jobs in the queue.

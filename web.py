@@ -240,6 +240,9 @@ def run():
     # Run the actual job in the background and return immediately
     jq = JobQueue()
     # Set the job quueue name to the configuration spec name
+    db = c.get_db()
+    db.update_path(jq.id)
+    jq.set_db(db)
     jq.set_name(c.name)
     j = Job(hl.run_all_hosts, args=(jq,))
 
