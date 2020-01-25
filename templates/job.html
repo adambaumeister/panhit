@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container-flex p-3">
     <div class="row  mb-3">
-        <div class="col-sm text-center">
+        <div class="col-sm">
             <h3>{{ job.name }}<br>
                 <small>{{ job.queued }} hosts queued for identification<br></small>
                 <small>Started at {{ job.start_time }}</small>
@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="col-sm">
-            <div style="height:400px">
+            <div style="height:400px" class="card card-body">
                 <canvas id="tag-stats"></canvas>
             </div>
 

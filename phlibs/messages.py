@@ -276,7 +276,9 @@ class JobGraph(Message):
     def GetMsg(self):
         dataset = {
             "data": self.data,
-            "backgroundColor": self.bg_colors
+            "backgroundColor": self.bg_colors,
+            "borderColor": self.bg_colors,
+
         }
         return {
             "labels": self.labels,

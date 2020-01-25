@@ -1,9 +1,10 @@
-
+import ipaddress
 
 class ModuleOption:
     """
     A single option, passed to a module.
     """
+
     def __init__(self, name):
         self.name = name
         self.nice_name = name
@@ -24,10 +25,12 @@ class ModuleOption:
             "help": self.help,
         }
 
+
 class ModuleOptions:
     """
     Options available to a module
     """
+
     def __init__(self, module_options):
 
         self.module_options = {}
@@ -100,15 +103,17 @@ class Module:
     """
     A module represents a discrete set of tools for enriching a host with additional data
     """
+
     def __init__(self, opts):
         self.data = {}
         self.opts = opts
         self.parse_options()
 
+        self.result_spec = None
+
         if opts:
             if 'name' in opts:
                 self.name = opts['name']
-
 
     def get_name(self):
         return self.name
@@ -121,3 +126,62 @@ class Module:
             # If this module has defined module options
             if self.module_options:
                 self.module_options.parse_dict(self.opts)
+
+    def get_spec(self):
+        return self.result_spec
+
+class ResultSpec:
+    def __init__(self):
+        self.fields = {}
+        pass
+
+    def add_field(self, field):
+        self.fields[field.name] = field
+
+    def new_str_field(self, field_name):
+        f = StringResultField()
+        f.name = field_name
+        self.add_field(f)
+
+    def new_addr_field(self, field_name):
+        f = AddressField()
+        f.name = field_name
+        self.add_field(f)
+
+    def new_list_field(self, field_name):
+        f = ListField()
+        f.name = field_name
+        self.add_field(f)
+
+class ResultField:
+    def __init__(self):
+        self.name = ""
+        self.data = ""
+        pass
+
+    def get_type(self):
+        return type(self)
+
+    def set(self, value):
+        self.data = value
+
+
+class StringResultField(ResultField):
+    def __init__(self):
+        super(StringResultField, self).__init__()
+
+
+class AddressField(ResultField):
+    def __init__(self):
+        super(AddressField, self).__init__()
+
+    def set(self, value):
+        addr = ipaddress.ip_address(value)
+        self.data = addr
+
+class ListField(ResultField):
+    def __init__(self):
+        super(ListField, self).__init__()
+
+    def set(self, values):
+        self.data = values

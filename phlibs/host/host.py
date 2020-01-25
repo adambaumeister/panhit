@@ -39,6 +39,10 @@ class HostList:
 
         return hosts
 
+    #def get_host_mod_fields(self):
+    #    for host in self.get_all_hosts():
+
+
     def get_all_hosts(self):
         if self.db:
             index = self.db.get("index")

@@ -1,4 +1,4 @@
-from .mod import Module, ModuleOptions, ModuleOption
+from .mod import Module, ModuleOptions, ModuleOption, ResultSpec, StringResultField
 from panos import Panos
 from xml.etree import ElementTree
 import ipaddress
@@ -36,6 +36,16 @@ class Panfw(Module):
         """
         Initialize an instance of the panfw module.
         """
+        # Init the output fields
+        result_spec = ResultSpec()
+        result_spec.new_addr_field("nexthop")
+        result_spec.new_addr_field("destination")
+        result_spec.new_str_field("interface")
+        result_spec.new_str_field("vr")
+        result_spec.new_str_field("flags")
+        result_spec.new_str_field("apps")
+        result_spec.new_str_field("apps_seen")
+
         # Initialize this modules options
         addr_option = ModuleOption('addr')
         addr_option.nice_name = "Address"
@@ -62,12 +72,14 @@ class Panfw(Module):
         ])
         self.name = "panfw"
         super(Panfw, self).__init__(mod_opts)
+
+        self.result_spec = result_spec
+
         self.class_name = 'panfw'
         self.pretty_name = "PANOS Device"
         self.image_small = "images/pan-logo-orange.png"
         self.image = "images/pan-logo-orange.png"
         self.type = "panfw"
-
 
         self.module_options.get_opt('addr')
 

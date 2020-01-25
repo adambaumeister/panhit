@@ -32,9 +32,10 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm ">
 
                     {% for mod_name, mod_dict in specs.mods_enabled.items() %}
+                    <h5 class="border-bottom pb-3">{{ mod_name }}</h5>
                     {% for k, v in mod_dict.items() %}
                     <label>{{ k }}</label>
                     <input name="{{ k }}" class="form-control m-input"
