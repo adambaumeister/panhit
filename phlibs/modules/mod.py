@@ -44,6 +44,8 @@ class ModuleOptions:
             else:
                 self.options[name] = d[name]
 
+    def add_opt(self, option):
+        self.module_options[option.name] = option
 
     def get_opt(self, opt):
         if opt not in self.options:

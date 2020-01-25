@@ -377,6 +377,24 @@ def list_jobs():
 
     return m.GetMsg()
 
+@app.route('/api/jobs/<job_id>/graph', methods=['GET'])
+def graph_job(job_id):
+    """
+    Return a graph of host based data for a given job
+    :return: JobGraph message type
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    db = c.get_db()
+    db.update_path_nocreate(job_id)
+    hl = HostList(db=db)
+    labels,data,bg_colors = hl.stats_by_tag()
+
+    m = JobGraph()
+    m.set_graph(labels,data, bg_colors)
+    return m.GetMsg()
+
 @app.route('/api/jobs/<job_id>/tag_spec', methods=['GET'])
 def get_job_tag_spec(job_id):
     """

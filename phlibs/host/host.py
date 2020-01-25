@@ -94,6 +94,29 @@ class HostList:
             done = done + 1
             print("Done {}/{}".format(done, total))
 
+    def stats_by_tag(self):
+        tags = {}
+        labels = []
+        data = []
+        color_dict = {}
+        for h in self.get_all_hosts():
+            if h.tag:
+                if h.tag['name'] in tags:
+                    tags[h.tag['name']].append(h)
+                else:
+                    tags[h.tag['name']] = []
+                color_dict[h.tag['name']] = h.tag['color']
+
+        bg_colors = []
+        for tag_name, hosts in tags.items():
+            labels.append(tag_name)
+            data.append(len(hosts))
+            bg_colors.append(color_dict[tag_name])
+
+        return labels, data, bg_colors
+
+
+
 
 def unpickle_host(host_json):
     host = Host(host_json['attributes']['ip'])

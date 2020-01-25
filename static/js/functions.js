@@ -67,6 +67,9 @@ $(document).ready(function () {
         ClickSaveTagList(this)
     })
     
+    // Graphs n stuff
+    RenderTagGraphs();
+
 });
 
 class ProgressBar {
@@ -83,6 +86,7 @@ class ProgressBar {
         return txt;
     }
 }
+
 
 function ClickHostCard(obj) {
     $(".mods", obj).toggle();
@@ -208,6 +212,42 @@ function ClickAddItemButton(obj) {
                     ClickAddButton(this)
                 });
             
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
+
+}
+
+function RenderTagGraphs() {
+    if (!$('#tag-stats').length) {
+        return;
+    }
+
+    var res = top.location.pathname.split("/");
+    var jobID = res[2]
+
+    var url = API_ROUTE + "/jobs/" + jobID + "/graph"
+    fetch(url).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+            }
+
+            response.json().then(function (rdata) {
+                var ctx = $("#tag-stats")
+                var statsChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: rdata,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                    }
+                })
             });
         }
     )

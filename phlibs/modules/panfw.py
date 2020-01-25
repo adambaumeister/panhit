@@ -52,17 +52,13 @@ class Panfw(Module):
         pw_option.secret = True
         pw_option.nice_name = "Password"
 
-        xpath_option = ModuleOption('xpath')
-        xpath_option.nice_name = "Xpath"
-        xpath_option.help = "Xpath to address objects "
-
         report_interval = ModuleOption('report_interval')
         report_interval.nice_name = "Reporting interval"
         report_interval.help = "Lower values = faster but less complete results"
 
         self.module_options = ModuleOptions([
             addr_option, user_option, pw_option,
-            xpath_option, report_interval,
+            report_interval,
         ])
         self.name = "panfw"
         super(Panfw, self).__init__(mod_opts)

@@ -263,3 +263,22 @@ class TagSpec(Message):
         return {
             "spec": self.spec
         }
+
+class JobGraph(Message):
+    def __init__(self):
+        super(JobGraph, self).__init__()
+
+    def set_graph(self, labels, data, bg_colors):
+        self.labels = labels
+        self.data = data
+        self.bg_colors = bg_colors
+
+    def GetMsg(self):
+        dataset = {
+            "data": self.data,
+            "backgroundColor": self.bg_colors
+        }
+        return {
+            "labels": self.labels,
+            "datasets": [dataset]
+        }

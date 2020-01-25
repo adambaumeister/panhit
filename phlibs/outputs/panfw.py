@@ -1,5 +1,5 @@
 from .output import Output
-from phlibs.modules import Panfw
+from phlibs.modules import Panfw, ModuleOption
 
 class PanfwOutput(Output):
     """
@@ -12,6 +12,12 @@ class PanfwOutput(Output):
         self.panfw = Panfw(mod_opts)
         self.module_options = self.panfw.module_options
         self.module_options.remove_option("report_interval")
+
+        xpath_option = ModuleOption('xpath')
+        xpath_option.nice_name = "Xpath"
+        xpath_option.help = "Xpath to address objects"
+        self.module_options.add_opt(xpath_option)
+
 
         super(PanfwOutput, self).__init__(mod_opts)
         self.pretty_name = "PANOS Device"
