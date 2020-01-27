@@ -1,17 +1,19 @@
 {% extends "wrapper.html" %}
 {% block content %}
-<div class="row light-row p-3">
-    <div class="col-sm">
-        <label>Name</label>
-        <input name="spec-name" class="form-control spec-name"
-               aria-describedby="name-help">
-        <small id="name-help" class="form-text text-muted">Enter a job name.
-        </small>
-    </div>
-</div>
-<div class="container">
 
-    <div class="row">
+<div class="container-flex">
+
+    <div class="row no-gutters light-row no-gutters p-3 no-gutters">
+        <div class="col-sm">
+            <label>Name</label>
+            <input name="spec-name" class="form-control spec-name"
+                   aria-describedby="name-help">
+            <small id="name-help" class="form-text text-muted">Enter a job name.
+            </small>
+        </div>
+    </div>
+
+    <div class="row no-gutters">
         <div class="col-sm">
             <div class="text-center pt-3 pb-2 border-bottom"><h2>Input</h2>
                 <small class="form-text text-muted">Pick a configured input
@@ -35,7 +37,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row no-gutters" style="opacity:0;" id="fadein-1">
         <div class="col-sm text-center module-col">
             <div class="text-center pt-3 pb-2 border-bottom"><h2>Enabled Modules</h2>
                 <small class="form-text text-muted">Set the lists of modules to enable
@@ -60,7 +62,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row no-gutters" style="opacity:0;" id="fadein-2">
 
         <div class="col-sm text-center output-col">
             <div class="text-center pt-3 pb-2 border-bottom"><h2>Tag policy</h2>
@@ -84,7 +86,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row no-gutters" style="opacity:0;" id="fadein-3">
 
         <div class="col-sm text-center output-col">
             <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Output</h2>
@@ -92,9 +94,7 @@
                 </small>
             </div>
             <div class="selected-output-container"></div>
-            <div class=" card text-center">
-                <h3 class="p-4">Local Database</h3>
-            </div>
+            <h3 class="p-4">Local Database</h3>
             <div class="text-center output-card mb-3">
                 <div class="dropdown p-4">
                     <button class="btn btn-primary dropdown-toggle select-dropdown" type="button"
@@ -112,7 +112,7 @@
 
         </div>
     </div>
-    <div class="row">
+    <div class="row no-gutters">
         <div class="col-sm">
         </div>
         <div class="col-sm text-center">

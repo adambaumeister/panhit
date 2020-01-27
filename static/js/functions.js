@@ -578,20 +578,23 @@ function SelectInputButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
     /* Use the name, which'll be used by teh spec, as well as display it. */
-    var selectedHTML = `<h2 class='p-3 h1-input-selected input-value'>` +  moduleName + `</h1>`
+    var selectedHTML = `<h3 class='p-3 h1-input-selected input-value'>` +  moduleName + `</h3>`
 
     /* Make the list invisible */
     $(".input-dropdown").toggle()
     /* Modify the card appearance to show it's selected */
     $(".input-card").html(selectedHTML)
     $(".input-card").addClass("card-input-filled")
+    // Make the next step visible
+    $("#fadein-1").fadeTo( "slow" , 1, function() {
+    }); 
 }
 
 function SelectOutputButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
     /* Use the name, which'll be used by teh spec, as well as display it. */
-    var selectedHTML = `<h2 class='p-3 h1-input-selected output-value'>` +  moduleName + `</h1>`
+    var selectedHTML = `<h3 class='p-3 h1-input-selected output-value'>` +  moduleName + `</h3>`
 
     /* Make the list invisible */
     $(".output-dropdown").toggle()
@@ -604,7 +607,7 @@ function SelectTagpButton(obj) {
     var tagpName = $(obj).attr('data-name');
 
     /* Use the name, which'll be used by teh spec, as well as display it. */
-    var selectedHTML = `<h2 class='p-3 h1-input-selected tagp-value'>` +  tagpName + `</h1>`
+    var selectedHTML = `<h3 class='p-3 h1-input-selected tagp-value'>` +  tagpName + `</h3>`
 
     /* Make the list invisible */
     $(".tagp-dropdown").toggle()
@@ -619,14 +622,19 @@ function SelectModuleButton(obj) {
 
     $(".module-dropdown").text("Pick another module...")
     /* Use the name, which'll be used by teh spec, as well as display it. */
-    var selectedHTML = `<div class="card-module-filled card text-center module-card mb-3"><h2 class='p-3 h1-module-selected module-value'>` +  moduleName + `</h2></div>`
+    var selectedHTML = `<h3 class='p-3 h1-module-selected module-value'>` +  moduleName + `</h3>`
     $(".selected-module-container").append(selectedHTML)
+
+    $("#fadein-2").fadeTo( "slow" , 1, function() {
+    }); 
+
+    $("#fadein-3").fadeTo( "slow" , 1, function() {
+    }); 
 
 }
 
 function ScanSpecSettings () {
     /* Scans the spec page to ensure the user as selected an input, at least one module, and an output */
-    var items = $(".selected-module-container").find("h2"); 
     var inputName = $(".input-value").text(); 
     var jobName = $(".spec-name").val()
     var tagpName = $(".tagp-value").text(); 
@@ -643,7 +651,7 @@ function ScanSpecSettings () {
         data['name'] = jobName;
     }
     
-    items.each(function () {
+    $(".module-value").each(function () {
         data['spec']['modules'].push($(this).text())
     })
 
@@ -656,6 +664,7 @@ function ScanSpecSettings () {
     if (outputName) {
         data['spec']['output'] = outputName
     } 
+    console.log(data)
     return(data);
 }
 
