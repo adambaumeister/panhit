@@ -14,6 +14,7 @@ class ModuleOption:
         self.type = str
         self.type_str = "str"
         self.help = ""
+        self.default = None
 
     def spec(self):
         return {
@@ -40,10 +41,13 @@ class ModuleOptions:
         self.options = {}
 
     def parse_dict(self, d):
+        print(d)
         for name, option in self.module_options.items():
             if name not in d:
                 if option.required:
                     raise ValueError("Missing module option: {}".format(name))
+                elif option.default:
+                    self.options[name] = option.default
             else:
                 self.options[name] = d[name]
 

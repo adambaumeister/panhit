@@ -23,11 +23,11 @@
                             {% if spec.value %}
                             {% for v in spec.value %}
                             <input class="form-control mb-2 l-input" name="{{ spec.name }}"
-                                   data-list="hosts" value="{{ v }}">
+                                   data-list="{{ spec.name }}" value="{{ v }}">
                             {% endfor %}
                             {% else %}
                             <input class="form-control mb-2 l-input" name="{{ spec.name }}"
-                                   data-list="hosts">
+                                   data-list="{{ spec.name }}">
                             {% endif %}
                         </div>
                         <div class="col-2">

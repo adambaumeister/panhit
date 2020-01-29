@@ -33,6 +33,7 @@ class ConfigFile:
         self.mods_available = {
             'dns': DNSHost,
             'panfw': Panfw,
+            'portscan': Portscan,
         }
 
         # Need to improve this, because these objects require args they must be instantiated
