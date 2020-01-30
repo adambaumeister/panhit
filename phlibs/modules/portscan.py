@@ -1,5 +1,6 @@
 import socket
 from .mod import Module, ModuleOptions, ModuleOption
+from phlibs.modules.helpers import is_host
 
 class Portscan(Module):
     """
@@ -39,19 +40,25 @@ class Portscan(Module):
         self.type = "portscan"
 
     def Get(self, host):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         ip = host.ip
+        data = {}
+
+        # Don't scan subnet addresses
+        if not is_host(ip):
+            return data
+
         ports = self.module_options.get_opt("ports")
         timeout = self.module_options.get_opt("timeout")
 
-        data = {}
         for port in ports:
             try:
-                s.settimeout(timeout)
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                s.settimeout(int(timeout))
                 s.connect((ip, int(port)))
                 s.shutdown(2)
                 data[port] = "open"
-            except:
+            except socket.timeout:
                 data[port] = "closed"
 
         return data
