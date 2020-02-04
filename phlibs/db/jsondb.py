@@ -84,6 +84,8 @@ class JsonDB:
         """
         id = self.make_id()
         id = str(id)
+        document['id'] = id
+
         self.write_id(id, document)
         return id
 

@@ -44,7 +44,11 @@ $(document).ready(function () {
         SelectOutputButton(this);
         ScanSpecSettings();
     });
-    
+
+    $(".select-spec").click(function () {
+        SelectSpecButton(this);
+    });
+
     $(".run").click(function () {
         ClickRunButton()
     });
@@ -95,6 +99,38 @@ function ClickHostCard(obj) {
 function ClickJobRow(obj) {
     console.log("here")
     window.location.href = $(obj).attr("data-target");
+}
+
+function SelectSpecButton(obj) {
+    var specid = $(obj).attr('data-target');
+
+    var url = API_ROUTE + "/specs/" + specid
+    fetch(url).then(
+        function (response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' +
+                    response.status);
+                return;
+            }
+
+            response.json().then(function (data) {
+                SetInput(data['spec']['inputs'][0])
+                $(".selected-module-container").html("")
+
+                $(data['spec']['modules']).each(function () {
+                    // Zero out the module html before re-inserting
+                    SetModules(this);
+                })
+                if ('tag_policy' in data['spec'] ) {
+                    SetTagp(data['spec']['tag_policy']);
+                }
+                ScanSpecSettings();
+            });
+        }
+    )
+        .catch(function (err) {
+            console.log('Fetch Error :-S', err);
+        });
 }
 
 function ClickAddTagToList(obj) {
@@ -574,9 +610,7 @@ function ClickDeleteButton(obj) {
 
 }
 
-function SelectInputButton(obj) {
-    var moduleName = $(obj).attr('data-name');
-
+function SetInput(moduleName) {
     /* Use the name, which'll be used by teh spec, as well as display it. */
     var selectedHTML = `<h3 class='p-3 h1-input-selected input-value'>` +  moduleName + `</h3>`
 
@@ -590,9 +624,13 @@ function SelectInputButton(obj) {
     }); 
 }
 
-function SelectOutputButton(obj) {
+function SelectInputButton(obj) {
     var moduleName = $(obj).attr('data-name');
 
+    SetInput(moduleName);
+}
+
+function SetOutput(moduleName) {
     /* Use the name, which'll be used by teh spec, as well as display it. */
     var selectedHTML = `<h3 class='p-3 h1-input-selected output-value'>` +  moduleName + `</h3>`
 
@@ -603,9 +641,13 @@ function SelectOutputButton(obj) {
     $(".output-card").addClass("card-input-filled")
 }
 
-function SelectTagpButton(obj) {
-    var tagpName = $(obj).attr('data-name');
+function SelectOutputButton(obj) {
+    var moduleName = $(obj).attr('data-name');
 
+    SetOutput(moduleName)
+}
+
+function SetTagp(tagpName) {
     /* Use the name, which'll be used by teh spec, as well as display it. */
     var selectedHTML = `<h3 class='p-3 h1-input-selected tagp-value'>` +  tagpName + `</h3>`
 
@@ -616,10 +658,15 @@ function SelectTagpButton(obj) {
     $(".tagp-card").addClass("card-input-filled")
 }
 
+function SelectTagpButton(obj) {
+    var tagpName = $(obj).attr('data-name');
 
-function SelectModuleButton(obj) {
-    var moduleName = $(obj).attr('data-name');
+    SetTagp(tagpName)
 
+}
+
+
+function SetModules(moduleName) {
     $(".module-dropdown").text("Pick another module...")
     /* Use the name, which'll be used by teh spec, as well as display it. */
     var selectedHTML = `<h3 class='p-3 h1-module-selected module-value'>` +  moduleName + `</h3>`
@@ -630,6 +677,13 @@ function SelectModuleButton(obj) {
 
     $("#fadein-3").fadeTo( "slow" , 1, function() {
     }); 
+
+}
+
+function SelectModuleButton(obj) {
+    var moduleName = $(obj).attr('data-name');
+
+    SetModules(moduleName)
 
 }
 
@@ -664,6 +718,11 @@ function ScanSpecSettings () {
     if (outputName) {
         data['spec']['output'] = outputName
     } 
+    if ( $("#save-spec").is(":checked") ) {
+        data['save'] = true
+    } else {
+        data['save'] = false
+    }
     console.log(data)
     return(data);
 }

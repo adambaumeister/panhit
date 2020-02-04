@@ -62,7 +62,6 @@ def index():
 
     db = c.get_db()
     summary = db.summary()
-    print(summary)
     return render_template('index.html', summary=summary)
 
 @app.route('/config/input', methods=['GET'])
@@ -86,7 +85,6 @@ def config_input_page():
         inputs.append(i)
 
     input_types = c.get_inputs_available()
-    print(input_types)
     config_descr = """
     An Input is a list of host IP addresses, either statically defined or dynamically retrieved.
     """
@@ -219,7 +217,12 @@ def spec_page():
     docs = cdb.get_all()
     outputs = docs
 
-    return render_template('spec.html', inputs=inputs, modules=modules, tag_policies=tag_policies, outputs=outputs)
+    cdb = c.get_cdb()
+    cdb.update_path("specs")
+    docs = cdb.get_all()
+    specs = docs
+
+    return render_template('spec.html', inputs=inputs, modules=modules, tag_policies=tag_policies, outputs=outputs, specs=specs)
 
 @app.route('/jobs', methods=['GET'])
 def jobs_page():
@@ -272,6 +275,13 @@ def run():
             "Error": str(e)
         }
 
+    j = request.get_json()
+    if j["save"]:
+        # Save the job as a spec
+        cdb = c.get_cdb()
+        cdb.update_path("specs")
+        cdb.write(request.get_json())
+
     # Run the actual job in the background and return immediately
     jq = JobQueue()
     # Set the job quueue name to the configuration spec name
@@ -309,6 +319,24 @@ def get_job(job_id):
     m.set_from_json(jqstatus)
 
     return m.GetMsg()
+
+
+@app.route('/api/specs/<spec_id>', methods=['GET'])
+def get_job_spec(spec_id):
+    """
+    Get a saved job spec
+    :param spec_id: ID of spec
+    :return: JobSpec type
+    """
+    c = ConfigFile()
+    # First load in all the configuration from the provided configuration file, if it exists
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    cdb = c.get_cdb()
+    cdb.update_path("specs")
+
+    json = cdb.get(spec_id)
+    return json
+
 
 @app.route('/api/jobs/<job_id>/result', methods=['GET'])
 def get_job_result(job_id):

@@ -3,14 +3,41 @@
 
 <div class="container-flex">
 
-    <div class="row no-gutters light-row no-gutters p-3 no-gutters">
-        <div class="col-sm">
+    <div class="no-gutters light-row no-gutters p-3 no-gutters form-row align-items-center">
+        <div class="col-9">
             <label>Name</label>
-            <input name="spec-name" class="form-control spec-name"
-                   aria-describedby="name-help">
+            <div class="input-group">
+
+                <input name="spec-name" class="form-control spec-name"
+                       aria-describedby="name-help">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <input id="save-spec" type="checkbox" value="true"><span class="ml-3">Save</span>
+                    </div>
+                </div>
+            </div>
             <small id="name-help" class="form-text text-muted">Enter a job name.
             </small>
         </div>
+        <div class="text-center col-1">
+            <span>OR</span>
+        </div>
+        <div class="col-2">
+            <div class="dropdown p-4">
+
+                <button class="btn btn-primary dropdown-toggle spec-dropdown" type="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Pick from a previous job
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for spec in specs %}
+                    <button class="dropdown-item select-spec" data-target="{{ spec.id }}">{{ spec.name }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="row no-gutters">

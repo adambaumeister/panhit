@@ -33,7 +33,6 @@ class ModuleOptions:
     """
 
     def __init__(self, module_options):
-
         self.module_options = {}
         for option in module_options:
             self.module_options[option.name] = option
@@ -41,7 +40,6 @@ class ModuleOptions:
         self.options = {}
 
     def parse_dict(self, d):
-        print(d)
         for name, option in self.module_options.items():
             if name not in d:
                 if option.required:

@@ -60,5 +60,7 @@ class Portscan(Module):
                 data[port] = "open"
             except socket.timeout:
                 data[port] = "closed"
+            except socket.gaierror:
+                data[port] = "host lookup failure"
 
         return data
