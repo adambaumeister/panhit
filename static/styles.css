@@ -1,11 +1,3 @@
-.bg-dark {
-    background-color: #4F3A65!important
-}
-.btn-secondary {
-    background-color: #F48256!important;
-    border-color: #F48256!important;
-}
-
 .sidebar {
   z-index: 100; /* Behind the navbar */
   padding: 0px;

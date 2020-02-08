@@ -1,0 +1,10 @@
+$bg-dark: #4F3A65;
+
+$theme-colors: (
+  "primary": #ffb515,
+  "default": #ffb515,
+  "secondary": #ff5700,
+  "dark": #032535
+);
+
+@import "bootstrap/scss/bootstrap";
