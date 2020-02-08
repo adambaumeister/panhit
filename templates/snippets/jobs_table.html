@@ -1,8 +1,8 @@
-<table class="table table-hover">
+<table class="table table-hover ">
     <tr class="clickable-row">
         {% for f in jobs.fields %}
 
-        <th scope="col">{{ f }}</th>
+        <th scope="col" class="thead-dark">{{ f }}</th>
         {% endfor %}
     </tr>
     {% for row in jobs.rows %}

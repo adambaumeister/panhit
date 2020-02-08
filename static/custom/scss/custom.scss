@@ -1,10 +1,11 @@
-$bg-dark: #4F3A65;
+
+$body-bg: #f8f9fa;
 
 $theme-colors: (
-  "primary": #ffb515,
-  "default": #ffb515,
-  "secondary": #ff5700,
-  "dark": #032535
+  "primary": #F18C8E,
+  "secondary": #F0B7A4,
+  "dark": #305F72
 );
 
+$card-cap-bg: #F18C8E;
 @import "bootstrap/scss/bootstrap";
