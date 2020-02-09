@@ -189,6 +189,13 @@ class Panfw(Module):
         """
         Output method for this class allows tagging of address objects
         """
+        tag_color_map = {
+            "#9ACB7B": "color13",
+            "#DA4302FF": "color1",
+            "#FFEA00": "color4",
+            "#303F9F": "color26"
+        }
+
         panos = self.connect_if_not()
         xpath = self.module_options.get_opt('xpath')
         address_xpath = xpath + "/address"
@@ -196,19 +203,26 @@ class Panfw(Module):
 
         tag_element = """
         <entry name="{}">
+            <color>{}</color>
             <comments>Automatically added.</comments>
         </entry>
         """
-        tags = set()
+        tags = {}
 
         for host in host_list.get_all_hosts():
             if host.tag:
+                tag_color = "color11"
+                if host.tag["color"]:
+                    c = host.tag["color"]
+                    if c in tag_color_map:
+                        tag_color = tag_color_map[c]
+
                 tag_name = host.tag["name"] + "-ph"
-                tags.add(tag_name)
+                tags[tag_name] = tag_color
 
         tag_elements = []
-        for tag in tags:
-            tag_elements.append(tag_element.format(tag))
+        for tag, color in tags.items():
+            tag_elements.append(tag_element.format(tag, color))
 
         if tag_elements:
             self.send_objects(panos, tag_elements, tag_xpath, 'set')
