@@ -4,11 +4,12 @@ from xml.etree import ElementTree
 import ipaddress
 import time
 import urllib3
+
 urllib3.disable_warnings()
 
-MAX_REPORT_QUERIES=20
+MAX_REPORT_QUERIES = 20
 
-APPS_BY_IP_REPORT="""
+APPS_BY_IP_REPORT = """
         <type>
           <trsum>
             <sortby>sessions</sortby>
@@ -28,10 +29,12 @@ APPS_BY_IP_REPORT="""
 
 """
 
+
 class Panfw(Module):
     """
     Query a PANOS Firewall for host information.
     """
+
     def __init__(self, mod_opts=None):
         """
         Initialize an instance of the panfw module.
@@ -89,6 +92,7 @@ class Panfw(Module):
 
     def connect_if_not(self):
         if not self.panos:
+            print(self.module_options.get_opt('xpath'))
             panos = Panos(addr=self.module_options.get_opt('addr'),
                           user=self.module_options.get_opt('user'),
                           pw=self.module_options.get_opt('pw'),
@@ -136,7 +140,7 @@ class Panfw(Module):
             report_interval = "last-24-hrs"
 
         report_spec = APPS_BY_IP_REPORT.format(report_interval, host.ip)
-        report_result  = self.run_report(panos, report_spec)
+        report_result = self.run_report(panos, report_spec)
 
         # If there's a result in the cache
         if len(data.keys()) > 0:
@@ -190,9 +194,6 @@ class Panfw(Module):
         address_xpath = xpath + "/address"
         tag_xpath = xpath + "/tag"
 
-        element = """
-            <tag><member>{}</member></tag>
-        """
         tag_element = """
         <entry name="{}">
             <comments>Automatically added.</comments>
@@ -202,21 +203,38 @@ class Panfw(Module):
 
         for host in host_list.get_all_hosts():
             if host.tag:
-                tags.add(host.tag["name"])
+                tag_name = host.tag["name"] + "-ph"
+                tags.add(tag_name)
 
         tag_elements = []
         for tag in tags:
             tag_elements.append(tag_element.format(tag))
 
-        # First we add the tags
-        self.send_objects(panos, tag_elements, tag_xpath, 'set')
+        if tag_elements:
+            self.send_objects(panos, tag_elements, tag_xpath, 'set')
 
         for host in host_list.get_all_hosts():
-            if host.tag:
-                full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
-                e = element.format(host.tag["name"])
-                self.send_objects(panos, e, full_xpath, 'edit')
+            tag_root = ElementTree.Element("tag")
 
+            # If we are to set a tag
+            if host.tag:
+                tag_name = host.tag["name"] + "-ph"
+                panos_tags = []
+                if "panos_tags" in host.attributes:
+                    panos_tags = host.attributes["panos_tags"]
+
+                for t in panos_tags:
+                    # Exclude ph tags from the list
+                    if "-ph" not in t:
+                        tag_member = ElementTree.SubElement(tag_root, "member")
+                        tag_member.text = t
+
+                tag_member = ElementTree.SubElement(tag_root, "member")
+                tag_member.text = tag_name
+
+                full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
+                e = ElementTree.tostring(tag_root)
+                self.send_object(panos, e, full_xpath, 'edit')
 
     def send_objects(self, panos, elements, xpath, set_type):
         params = {
@@ -224,6 +242,18 @@ class Panfw(Module):
             "action": set_type,
             "xpath": xpath,
             "element": "".join(elements),
+        }
+        r = panos.send(params)
+        result = panos.check_resp(r)
+        if not result:
+            print("Error adding elements. {}".format(r.content))
+
+    def send_object(self, panos, element, xpath, set_type):
+        params = {
+            "type": "config",
+            "action": set_type,
+            "xpath": xpath,
+            "element": element
         }
         r = panos.send(params)
         result = panos.check_resp(r)
@@ -290,6 +320,10 @@ class Panfw(Module):
                 ip = ipattr.text
                 e['ip'] = ip
                 e['name'] = name
+                e['panos_tags'] = []
+                tags = entry.findall("./tag/member")
+                for t in tags:
+                    e['panos_tags'].append(t.text)
                 table.append(e)
 
         return table
@@ -312,7 +346,7 @@ class Panfw(Module):
             route['vr'] = vr
             route['flags'] = flags
             if vr not in tables:
-                tables[vr] = { dest: route }
+                tables[vr] = {dest: route}
             else:
                 tables[vr][dest] = route
 
@@ -348,7 +382,7 @@ class Panfw(Module):
             js = status.text
             result = root
             time.sleep(1)
-            run = run+1
+            run = run + 1
 
         report = result.find("./result/report")
         entries = report.findall("./entry")

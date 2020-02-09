@@ -8,8 +8,6 @@ class PanfwInput(Input):
     This is just a convienence class for readability more than anything.
     """
     def __init__(self,  mod_opts=None):
-
-
         self.panfw = Panfw(mod_opts)
         self.module_options = self.panfw.module_options
         self.module_options.remove_option("report_interval")
@@ -26,6 +24,10 @@ class PanfwInput(Input):
 
         self.image = "images/pan-logo-orange.png"
         self.type = "panfw"
+
+        # Tags pulled from the firewall
+        self.panos_tags = []
+
 
     def List(self):
         return self.panfw.List()
