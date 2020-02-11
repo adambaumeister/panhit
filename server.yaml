@@ -6,8 +6,8 @@
 #  path: database
 db:
   type: JsonDB
-  path: database
+  path: /database/db
 
 configdb:
   type: JsonDB
-  path: configdb
+  path: /database/configdb 

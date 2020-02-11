@@ -4,5 +4,10 @@ WORKDIR /app
 
 RUN apk add gcc musl-dev libffi-dev openssl-dev libsass g++ libstdc++ 
 RUN pip install --upgrade pip
-COPY . /app 
+RUN mkdir -p /database/db
+RUN mkdir -p /database/configdb
+COPY . /app
+COPY ssl.conf /etc/nginx/conf.d/ssl.conf
+COPY /certs/nginx.crt /etc/ssl/certs/nginx-selfsigned.crt 
+COPY /certs/nginx.key /etc/ssl/private/nginx-selfsigned.key
 RUN pip install -r /app/requirements.txt
