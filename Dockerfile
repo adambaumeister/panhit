@@ -1,7 +1,8 @@
-FROM python:3.8.0-alpine
+FROM tiangolo/uwsgi-nginx:python3.7-alpine3.9
 
-WORKDIR /opt/panhit
+WORKDIR /app 
 
+RUN apk add gcc musl-dev libffi-dev openssl-dev libsass g++ libstdc++ 
 RUN pip install --upgrade pip
-COPY . /opt/panhit
-RUN pip install -r /opt/panhit/requirements.txt
+COPY . /app 
+RUN pip install -r /app/requirements.txt

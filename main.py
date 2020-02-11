@@ -9,7 +9,7 @@ from phlibs.outputs import JsonOutput
 # Default path to the configuration file for PANHIT
 DEFAULT_CONFIG_FILE="server.yaml"
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 def configure(j):
     """
@@ -50,7 +50,7 @@ def configure(j):
 ################
 # VIEW METHODS #
 ################
-@app.route('/', methods=['GET'])
+@application.route('/', methods=['GET'])
 def index():
     """
     Basic index and welcome page.
@@ -64,7 +64,7 @@ def index():
     summary = db.summary()
     return render_template('index.html', summary=summary)
 
-@app.route('/config/input', methods=['GET'])
+@application.route('/config/input', methods=['GET'])
 def config_input_page():
     """
     Configuration landing page
@@ -91,7 +91,7 @@ def config_input_page():
 
     return render_template('config.html', items=inputs, config_type=config_type, config_descr=config_descr, item_types=input_types)
 
-@app.route('/config/outputs', methods=['GET'])
+@application.route('/config/outputs', methods=['GET'])
 def config_output_page():
     """
     Configuration landing page
@@ -119,7 +119,7 @@ def config_output_page():
 
     return render_template('config.html', items=outputs, config_type=config_type, config_descr=config_descr, item_types=output_types)
 
-@app.route('/config/tags', methods=['GET'])
+@application.route('/config/tags', methods=['GET'])
 def config_tags():
     c = ConfigFile()
     # First load in all the configuration from the provided configuration file, if it exists
@@ -133,7 +133,7 @@ def config_tags():
 
     return render_template('tag_config.html', jobs=j, items=docs)
 
-@app.route('/config/taglist', methods=['GET'])
+@application.route('/config/taglist', methods=['GET'])
 def config_taglist():
     c = ConfigFile()
     # First load in all the configuration from the provided configuration file, if it exists
@@ -149,7 +149,7 @@ def config_taglist():
 
     return render_template('taglist.html', tags=tags, items=docs)
 
-@app.route('/config/modules', methods=['GET'])
+@application.route('/config/modules', methods=['GET'])
 def config_modules_page():
     """
     Configuration landing page
@@ -178,7 +178,7 @@ def config_modules_page():
 
     return render_template('config.html', items=mods, config_type=config_type, config_descr=config_descr, item_types=mod_types)
 
-@app.route('/run', methods=['GET'])
+@application.route('/run', methods=['GET'])
 def spec_page():
     """
     Render the job runner page
@@ -224,7 +224,7 @@ def spec_page():
 
     return render_template('spec.html', inputs=inputs, modules=modules, tag_policies=tag_policies, outputs=outputs, specs=specs)
 
-@app.route('/jobs', methods=['GET'])
+@application.route('/jobs', methods=['GET'])
 def jobs_page():
     """
     Display running, scheduled, and completed jobs.
@@ -238,7 +238,7 @@ def jobs_page():
 
     return render_template('jobs.html', jobs=j)
 
-@app.route('/jobs/<job_id>', methods=['GET'])
+@application.route('/jobs/<job_id>', methods=['GET'])
 def job_page(job_id):
     """
     Return the result of a specific job.
@@ -260,7 +260,7 @@ def job_page(job_id):
 ###############
 # API METHODS #
 ###############
-@app.route('/api/run', methods=['POST'])
+@application.route('/api/run', methods=['POST'])
 def run():
     """
     Primary job schedular
@@ -300,7 +300,7 @@ def run():
     return m.GetMsg()
 
 
-@app.route('/api/jobs/<job_id>', methods=['GET'])
+@application.route('/api/jobs/<job_id>', methods=['GET'])
 def get_job(job_id):
     """
     Individual job retrieval
@@ -321,7 +321,7 @@ def get_job(job_id):
     return m.GetMsg()
 
 
-@app.route('/api/specs/<spec_id>', methods=['GET'])
+@application.route('/api/specs/<spec_id>', methods=['GET'])
 def get_job_spec(spec_id):
     """
     Get a saved job spec
@@ -338,7 +338,7 @@ def get_job_spec(spec_id):
     return json
 
 
-@app.route('/api/jobs/<job_id>/result', methods=['GET'])
+@application.route('/api/jobs/<job_id>/result', methods=['GET'])
 def get_job_result(job_id):
     """
     Job result retrieval
@@ -376,7 +376,7 @@ def get_job_result(job_id):
 
     return m.GetMsg()
 
-@app.route('/api/jobs', methods=['GET'])
+@application.route('/api/jobs', methods=['GET'])
 def list_jobs():
     """
     List all current and past jobs.
@@ -405,7 +405,7 @@ def list_jobs():
 
     return m.GetMsg()
 
-@app.route('/api/jobs/<job_id>/graph', methods=['GET'])
+@application.route('/api/jobs/<job_id>/graph', methods=['GET'])
 def graph_job(job_id):
     """
     Return a graph of host based data for a given job
@@ -423,7 +423,7 @@ def graph_job(job_id):
     m.set_graph(labels,data, bg_colors)
     return m.GetMsg()
 
-@app.route('/api/jobs/<job_id>/tag_spec', methods=['GET'])
+@application.route('/api/jobs/<job_id>/tag_spec', methods=['GET'])
 def get_job_tag_spec(job_id):
     """
     Job tag spec
@@ -447,7 +447,7 @@ def get_job_tag_spec(job_id):
 
     return m.GetMsg()
 
-@app.route('/api/config/<config_type>', methods=['POST'])
+@application.route('/api/config/<config_type>', methods=['POST'])
 def add_config(config_type):
     """
     Add a configuration object of the given type with the given object value
@@ -471,7 +471,7 @@ def add_config(config_type):
     m.long_status = "Sucessfully added {} object.".format(config_type)
     return m.GetMsg()
 
-@app.route('/api/config/<config_type>', methods=['GET'])
+@application.route('/api/config/<config_type>', methods=['GET'])
 def get_config(config_type):
     """
     Retrieve all the configuration objects matching the provided type
@@ -491,7 +491,7 @@ def get_config(config_type):
     m.set_items(names)
     return m.GetMsg()
 
-@app.route('/api/config/<config_type>/<config_name>', methods=['GET'])
+@application.route('/api/config/<config_type>/<config_name>', methods=['GET'])
 def get_config_item(config_type, config_name):
     """
     Retrieve all the configuration objects matching the provided type
@@ -509,7 +509,7 @@ def get_config_item(config_type, config_name):
     m.set_items([item])
     return m.GetMsg()
 
-@app.route('/api/config/<config_type>/<config_name>', methods=['DELETE'])
+@application.route('/api/config/<config_type>/<config_name>', methods=['DELETE'])
 def delete_config_item(config_type, config_name):
     """
     Retrieve all the configuration objects matching the provided type
@@ -530,7 +530,7 @@ def delete_config_item(config_type, config_name):
     return m.GetMsg()
 
 
-@app.route('/api/config/<config_type>/<module_name>/spec', methods=['GET'])
+@application.route('/api/config/<config_type>/<module_name>/spec', methods=['GET'])
 def get_config_spec(config_type, module_name):
     """
     Get the spec of the given configuration type (i.e options etc)
