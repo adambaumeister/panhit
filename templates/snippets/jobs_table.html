@@ -1,0 +1,31 @@
+<table class="table table-hover ">
+    <tr class="clickable-row">
+        {% for f in jobs.fields %}
+
+        <th scope="col" class="thead-dark">{{ f }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in jobs.rows %}
+    <tr class="clickable-row" data-target="/jobs/{{ row[0] }}">
+        {% for field in row %}
+        <td>{{ field }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="row text-center">
+    <div class="col">
+    </div>
+    <div class="col-6 text-center">
+        <button type="button" class="btn btn-primary btn-sm prev-page"><</button>
+        <button type="button" class="btn btn-primary btn-sm next-page">></button>
+    </div>
+    <div class="col text-right">
+        <small>Page
+            <div class="page-number">{{ page }}</div>
+            -
+            <div class="page-max">{{ pages }}</div>
+        </small>
+    </div>
+</div>

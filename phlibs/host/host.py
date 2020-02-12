@@ -2,21 +2,30 @@ import os
 import json
 from phlibs.jqueue import JobQueue, Job
 
+
 class HostList:
     """
     List of Host Entries
     """
-    def __init__(self, input, mods_enabled=None, db=None):
+
+    def __init__(self, input=None, mods_enabled=None, db=None, tags_policy=None, output=None):
         """
         Instantiate a host list based on a given input type.
         :param input: Class of type Input but can be anything with a List() function
         :param mods_enabled: Discovery modules to use
         :param db (optional): Run database. If provided, enables async processing./
+        :param tag_policy (optional): Tag configuration.
         """
         self.mods_enabled = mods_enabled
-        self.hosts = self.hosts_from_list(input.List())
-        self.db = db
+        self.tags_policy = tags_policy
 
+        self.output = output
+        if input:
+            self.hosts = self.hosts_from_list(input.List())
+        else:
+            self.hosts = []
+        self.db = db
+        self.index = []
 
     def hosts_from_list(self, host_dicts):
         hosts = []
@@ -24,50 +33,100 @@ class HostList:
             if 'ip' not in hd:
                 raise ValueError("Missing field ip in host list.")
 
-            h = Host(ip=hd['ip'], mods_enabled=self.mods_enabled)
+            h = Host(ip=hd['ip'], mods_enabled=self.mods_enabled, tag_policy=self.tags_policy)
             h.add_data_dict(hd)
             hosts.append(h)
 
         return hosts
 
+    #def get_host_mod_fields(self):
+    #    for host in self.get_all_hosts():
+
+
     def get_all_hosts(self):
         if self.db:
+            index = self.db.get("index")
+            if not index:
+                index = []
             hosts = []
-            j = self.db.get_all()
-            for host_json in j:
-                h = unpickle_host(host_json)
-                hosts.append(h)
+            for hid in index:
+                host_json = self.db.get(hid)
+                if host_json:
+                    h = unpickle_host(host_json)
+                    hosts.append(h)
 
             self.hosts = hosts
             return hosts
 
         return self.hosts
 
-    def run_all_hosts(self):
+    def run_all_hosts(self, jq=None):
+        """
+        Run all the modules for all hosts
+        if a JobQueue object is specified, this will run async
+        :param jq: JobQueue instance
+        """
         done = 0
         total = len(self.hosts)
         if self.db:
-
-            jq = JobQueue()
+            # Set the path to store this run
             self.db.update_path(jq.get_id())
+            # Pass the db object to the JsonDB so it can write
+            jq.set_db(self.db)
+
             for h in self.hosts:
+                # Create a uid for each host
+                hid = self.db.make_id()
+                self.index.append(str(hid))
+
                 h.set_db(self.db)
-                j = Job(h.run_all_mods, ())
+                h.set_id(hid)
+                j = Job(h.run_all_mods, (hid,))
                 jq.add_job(j)
+
+            self.db.write_id("index", self.index)
 
             jq.empty()
 
+            # If we're passed an output spec, run it
+            if self.output:
+                self.output.Output(self)
             return
 
         for h in self.get_all_hosts():
             h.run_all_mods()
-            done = done+1
+            done = done + 1
             print("Done {}/{}".format(done, total))
+
+    def stats_by_tag(self):
+        tags = {}
+        labels = []
+        data = []
+        color_dict = {}
+        for h in self.get_all_hosts():
+            if h.tag:
+                if h.tag['name'] in tags:
+                    tags[h.tag['name']].append(h)
+                else:
+                    tags[h.tag['name']] = []
+                color_dict[h.tag['name']] = h.tag['color']
+
+        bg_colors = []
+        for tag_name, hosts in tags.items():
+            labels.append(tag_name)
+            data.append(len(hosts))
+            bg_colors.append(color_dict[tag_name])
+
+        return labels, data, bg_colors
+
+
+
 
 def unpickle_host(host_json):
     host = Host(host_json['attributes']['ip'])
     host.unpickle(host_json)
     return host
+
 
 class Host:
     """
@@ -75,22 +134,50 @@ class Host:
 
     Hosts contain data per module that is enabled, such as DNS.
     """
-    def __init__(self, ip, mods_enabled=None):
+
+    def __init__(self, ip, mods_enabled=None, tag_policy=None):
         """
         Create a new host object.
         :param ip: IP address of the host - required.
         :param mods: Mods to enable for this host.
         """
+        self.id = None
         self.mods_enabled = mods_enabled
         self.ip = ip
         self.result = {}
         self.attributes = {}
-        self.tag = ''
+        self.tag = None
         self.db = None
+        self.tag_policy = []
+        if tag_policy:
+            self.tag_policy = tag_policy
+
+    def match_tag(self):
+        match = False
+        for t in reversed(self.tag_policy):
+            if 'match_any' in t:
+                if t['match_any']:
+                    self.set_tag(t)
+                    return
+
+            match = True
+            for match_attr, match_value in t['match'].items():
+                r = self.compare_attr(match_attr, match_value)
+                if not r:
+                    match = False
+
+            if match:
+                self.set_tag(t)
 
     def set_db(self, db):
         self.db = db
 
+    def set_id(self, hid):
+        """
+        Set the Host ID, which is used in various database calls
+        :param hid: (str) UID
+        """
+        self.id = hid
 
     def add_data(self, k, v):
         """
@@ -104,33 +191,43 @@ class Host:
         for k, v in d.items():
             self.attributes[k] = v
 
-    def run_all_mods(self, mod_opts=None):
+    def run_all_mods(self, hid):
         """
         Run all mods and enrich this object with the results
         """
+        # Run the mods
         for mod in self.mods_enabled:
             data = mod.Get(self)
             self.result[mod.get_name()] = data
 
+        # Tag based on said mod response
+        if self.tag_policy:
+            self.match_tag()
+
+        # Optionally, write to the database.
         if self.db:
-            self.db.write(self.pickle())
+            self.db.write_id(str(hid), self.pickle())
 
     def dump_mod_results(self):
         print(self.result)
 
     def dump_attributes(self):
-        return(self.attributes)
+        return (self.attributes)
 
     def pickle(self):
         d = {
+            'id': str(self.id),
             'attributes': self.attributes,
             'mods_enabled': self.result
         }
         return d
 
     def unpickle(self, host_json):
+        self.id = host_json['id']
         self.attributes = host_json['attributes']
         self.result = host_json['mods_enabled']
+        if "tag" in self.attributes:
+            self.tag = self.attributes["tag"]
 
     def compare_attr(self, attr_name, attr_value):
         for mod, results in self.result.items():

@@ -1,5 +1,5 @@
 import socket
-from .mod import Module
+from .mod import Module, ModuleOptions
 
 class DNSHost(Module):
     """
@@ -11,9 +11,16 @@ class DNSHost(Module):
         'hostname'
     """
     def __init__(self, mod_opts=None):
-        self.module_options = None
+        self.module_options = ModuleOptions([])
+
+        self.name = "dns"
         super(DNSHost, self).__init__(mod_opts)
-        self.name = 'dns'
+
+        self.class_name = 'dns'
+        self.pretty_name = "DNS"
+        self.image_small = "images/dns.png"
+        self.image = "images/dns.png"
+        self.type = "dns"
 
     def Get(self, host):
         data = {}

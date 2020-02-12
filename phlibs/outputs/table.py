@@ -7,7 +7,8 @@ class Table():
     def Output(self, host_list):
         headers = []
         rows = []
-        for h in host_list.hosts:
+        for h in host_list.get_all_hosts():
+            print(h.attributes)
             for attr, value in h.attributes.items():
                 if attr not in headers:
                     headers.append(attr)

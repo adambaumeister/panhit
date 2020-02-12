@@ -1,0 +1,57 @@
+<div class="add-tag-div">
+    <div class="form-group">
+        <form id="new-item-form">
+            <div class="row">
+                <div class="col-sm">
+                    <label>Name</label>
+                    <input name="name" class="form-control name"
+                           aria-describedby="name-help">
+                    <small id="name-help" class="form-text text-muted mb-3">Enter a unique tag name.
+                    </small>
+                </div>
+                <div class="col-sm">
+                    <label>Description</label>
+                    <input name="description" class="form-control descr"
+                           aria-describedby="name-help">
+                    <small id="descr-help" class="form-text text-muted mb-3">Describe this tag.
+                    </small>
+                </div>
+                <div class="col-sm">
+                    <label>Tag Color</label><br>
+                    <input class="btn color-picker-button c-input" value="#da4302ff" style="background-color:#da4302ff">
+                    <div class="color-picker-colors" style="display:none;">
+                        <button type="button" class="btn color-button" data-value="#FFEA00"
+                                style="background-color:#FFEA00;"></button>
+                        <button type="button" class="btn color-button" data-value="#9ACB7B"
+                                style="background-color:#64DD17;"></button>
+                        <button type="button" class="btn color-button" data-value="#303F9F"
+                                style="background-color:#303F9F;"></button>
+                        <button type="button" class="btn color-button" data-value="#00BCD4"
+                                style="background-color:#00BCD4;"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm ">
+
+                    {% for mod_name, mod_dict in specs.mods_enabled.items() %}
+                    <h5 class="border-bottom pb-3">{{ mod_name }}</h5>
+                    {% for k, v in mod_dict.items() %}
+                    <label>{{ k }}</label>
+                    <input name="{{ k }}" class="form-control m-input"
+                           aria-describedby="name-help" placeholder="Ex. {{ v }}">
+                    {% endfor %}
+
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-sm text-center">
+                <button class="btn btn-primary save-tag mt-2" data-type="tags">Save</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>

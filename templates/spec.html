@@ -1,0 +1,152 @@
+{% extends "wrapper.html" %}
+{% block content %}
+
+<div class="container-flex">
+
+    <div class="p-3 form-row align-items-center" style="margin-right: 0px;">
+        <div class="col-9">
+            <label>Name</label>
+            <div class="input-group">
+
+                <input name="spec-name" class="form-control spec-name"
+                       aria-describedby="name-help">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <input id="save-spec" type="checkbox" value="true"><span class="ml-3">Save</span>
+                    </div>
+                </div>
+            </div>
+            <small id="name-help" class="form-text text-muted">Enter a job name.
+            </small>
+        </div>
+        <div class="text-center col-1">
+            <span>OR</span>
+        </div>
+        <div class="col-2">
+            <div class="dropdown p-4">
+
+                <button class="btn btn-primary dropdown-toggle spec-dropdown" type="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Pick from a previous job
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for spec in specs %}
+                    <button class="dropdown-item select-spec" data-target="{{ spec.id }}">{{ spec.name }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row no-gutters">
+        <div class="col-sm">
+            <div class="text-center pt-3 pb-2 border-bottom"><h2>Input</h2>
+                <small class="form-text text-muted">Pick a configured input
+                </small>
+            </div>
+            <div class="text-center input-card">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle input-dropdown" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pick your Input!
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for item in inputs %}
+                        <button class="dropdown-item select-input" data-name="{{ item.name }}"><img
+                                src="{{ url_for('static', filename=item.image_small) }}" height="30px" class="pr-2"
+                                alt="">{{ item.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row no-gutters" style="opacity:0;" id="fadein-1">
+        <div class="col-sm text-center module-col">
+            <div class="text-center pt-3 pb-2 border-bottom"><h2>Enabled Modules</h2>
+                <small class="form-text text-muted">Set the lists of modules to enable
+                </small>
+            </div>
+            <div class="selected-module-container"></div>
+            <div class="text-center module-card mb-3">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle module-dropdown" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pick your first module...
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for item in modules %}
+                        <button class="dropdown-item select-module" data-name="{{ item.name }}"><img
+                                src="{{ url_for('static', filename=item.image_small) }}" height="30px" class="pr-2"
+                                alt="">{{ item.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row no-gutters" style="opacity:0;" id="fadein-2">
+
+        <div class="col-sm text-center output-col">
+            <div class="text-center pt-3 pb-2 border-bottom"><h2>Tag policy</h2>
+                <small class="form-text text-muted">Configure the Tag policy
+                </small>
+            </div>
+            <div class="selected-tagp-container"></div>
+            <div class="text-center tagp-card mb-3">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle tagp-dropdown" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pick a tag policy!
+                    </button>
+                    <div class="dropdown-menu">
+                        {% for item in tag_policies %}
+                        <button class="dropdown-item select-tagp" data-name="{{ item.name }}">{{ item.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row no-gutters" style="opacity:0;" id="fadein-3">
+
+        <div class="col-sm text-center output-col">
+            <div class="text-center pt-3 pb-2 mb-3 border-bottom"><h2>Output</h2>
+                <small class="form-text text-muted">Set the destination output - output is always saved locally
+                </small>
+            </div>
+            <div class="selected-output-container"></div>
+            <h3 class="p-4">Local Database</h3>
+            <div class="text-center output-card mb-3">
+                <div class="dropdown p-4">
+                    <button class="btn btn-primary dropdown-toggle select-dropdown" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select another output...
+                    </button>
+                    <div class="dropdown-menu">
+                        {% for item in outputs %}
+                        <button class="dropdown-item select-output" data-name="{{ item.name }}">{{ item.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-sm">
+        </div>
+        <div class="col-sm text-center">
+            <button type="button" class="btn btn-primary d-none run">Run!</button>
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+</div>
+{% endblock %}

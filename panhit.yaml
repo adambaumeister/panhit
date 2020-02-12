@@ -22,7 +22,7 @@ db:
 # FILE example
 input:
   type: file
-  location: ./ipaddr.json
+  location: ipaddr.json
 #input:
 #  type: panfw
 #  user: admin

@@ -1,12 +1,15 @@
-from .mod import Module, ModuleOptions
+from .mod import Module, ModuleOptions, ModuleOption, ResultSpec, StringResultField
 from panos import Panos
 from xml.etree import ElementTree
 import ipaddress
 import time
+import urllib3
 
-MAX_REPORT_QUERIES=20
+urllib3.disable_warnings()
 
-APPS_BY_IP_REPORT="""
+MAX_REPORT_QUERIES = 20
+
+APPS_BY_IP_REPORT = """
         <type>
           <trsum>
             <sortby>sessions</sortby>
@@ -26,20 +29,61 @@ APPS_BY_IP_REPORT="""
 
 """
 
+
 class Panfw(Module):
     """
     Query a PANOS Firewall for host information.
     """
+
     def __init__(self, mod_opts=None):
         """
         Initialize an instance of the panfw module.
         """
-        self.module_options = ModuleOptions(
-            required_opts=['addr', 'user', 'pw'],
-            optional_opts=['xpath', 'report_interval']
-        )
+        # Init the output fields
+        result_spec = ResultSpec()
+        result_spec.new_addr_field("nexthop")
+        result_spec.new_addr_field("destination")
+        result_spec.new_str_field("interface")
+        result_spec.new_str_field("vr")
+        result_spec.new_str_field("flags")
+        result_spec.new_str_field("apps")
+        result_spec.new_str_field("apps_seen")
+
+        # Initialize this modules options
+        addr_option = ModuleOption('addr')
+        addr_option.nice_name = "Address"
+        addr_option.required = True
+        addr_option.help = "Address or FQDN of Panorama or NGFW"
+
+        user_option = ModuleOption('user')
+        user_option.required = True
+        user_option.nice_name = "Username"
+        user_option.help = "Must have READ access to objects"
+
+        pw_option = ModuleOption('pw')
+        pw_option.required = True
+        pw_option.secret = True
+        pw_option.nice_name = "Password"
+
+        report_interval = ModuleOption('report_interval')
+        report_interval.nice_name = "Reporting interval"
+        report_interval.help = "Lower values = faster but less complete results"
+
+        self.module_options = ModuleOptions([
+            addr_option, user_option, pw_option,
+            report_interval,
+        ])
+        self.name = "panfw"
         super(Panfw, self).__init__(mod_opts)
-        self.name = 'panfw'
+
+        self.result_spec = result_spec
+
+        self.class_name = 'panfw'
+        self.pretty_name = "PANOS Device"
+        self.image_small = "images/pan-logo-orange.png"
+        self.image = "images/pan-logo-orange.png"
+        self.type = "panfw"
+
         self.module_options.get_opt('addr')
 
         self.arp_cache = {}
@@ -48,6 +92,7 @@ class Panfw(Module):
 
     def connect_if_not(self):
         if not self.panos:
+            print(self.module_options.get_opt('xpath'))
             panos = Panos(addr=self.module_options.get_opt('addr'),
                           user=self.module_options.get_opt('user'),
                           pw=self.module_options.get_opt('pw'),
@@ -95,7 +140,7 @@ class Panfw(Module):
             report_interval = "last-24-hrs"
 
         report_spec = APPS_BY_IP_REPORT.format(report_interval, host.ip)
-        report_result  = self.run_report(panos, report_spec)
+        report_result = self.run_report(panos, report_spec)
 
         # If there's a result in the cache
         if len(data.keys()) > 0:
@@ -144,36 +189,66 @@ class Panfw(Module):
         """
         Output method for this class allows tagging of address objects
         """
+        tag_color_map = {
+            "#9ACB7B": "color13",
+            "#DA4302FF": "color1",
+            "#FFEA00": "color4",
+            "#303F9F": "color26"
+        }
+
         panos = self.connect_if_not()
         xpath = self.module_options.get_opt('xpath')
         address_xpath = xpath + "/address"
         tag_xpath = xpath + "/tag"
 
-        element = """
-            <tag><member>{}</member></tag>
-        """
         tag_element = """
         <entry name="{}">
+            <color>{}</color>
             <comments>Automatically added.</comments>
         </entry>
         """
-        tags = set()
+        tags = {}
 
-        for host in host_list.hosts:
-            tags.add(host.tag)
+        for host in host_list.get_all_hosts():
+            if host.tag:
+                tag_color = "color11"
+                if host.tag["color"]:
+                    c = host.tag["color"]
+                    if c in tag_color_map:
+                        tag_color = tag_color_map[c]
+
+                tag_name = host.tag["name"] + "-ph"
+                tags[tag_name] = tag_color
 
         tag_elements = []
-        for tag in tags:
-            tag_elements.append(tag_element.format(tag))
+        for tag, color in tags.items():
+            tag_elements.append(tag_element.format(tag, color))
 
-        # First we add the tags
-        self.send_objects(panos, tag_elements, tag_xpath, 'set')
+        if tag_elements:
+            self.send_objects(panos, tag_elements, tag_xpath, 'set')
 
-        for host in host_list.hosts:
-            full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
-            e = element.format(host.tag)
-            self.send_objects(panos, e, full_xpath, 'edit')
+        for host in host_list.get_all_hosts():
+            tag_root = ElementTree.Element("tag")
 
+            # If we are to set a tag
+            if host.tag:
+                tag_name = host.tag["name"] + "-ph"
+                panos_tags = []
+                if "panos_tags" in host.attributes:
+                    panos_tags = host.attributes["panos_tags"]
+
+                for t in panos_tags:
+                    # Exclude ph tags from the list
+                    if "-ph" not in t:
+                        tag_member = ElementTree.SubElement(tag_root, "member")
+                        tag_member.text = t
+
+                tag_member = ElementTree.SubElement(tag_root, "member")
+                tag_member.text = tag_name
+
+                full_xpath = address_xpath + "/entry[@name='{}']/tag".format(host.attributes['name'])
+                e = ElementTree.tostring(tag_root)
+                self.send_object(panos, e, full_xpath, 'edit')
 
     def send_objects(self, panos, elements, xpath, set_type):
         params = {
@@ -185,7 +260,19 @@ class Panfw(Module):
         r = panos.send(params)
         result = panos.check_resp(r)
         if not result:
-            print("Error adding elements.")
+            print("Error adding elements. {}".format(r.content))
+
+    def send_object(self, panos, element, xpath, set_type):
+        params = {
+            "type": "config",
+            "action": set_type,
+            "xpath": xpath,
+            "element": element
+        }
+        r = panos.send(params)
+        result = panos.check_resp(r)
+        if not result:
+            print("Error adding elements. {}".format(r.content))
 
     def route_lookup(self, ip, route_table):
         longest_match = 0
@@ -247,6 +334,10 @@ class Panfw(Module):
                 ip = ipattr.text
                 e['ip'] = ip
                 e['name'] = name
+                e['panos_tags'] = []
+                tags = entry.findall("./tag/member")
+                for t in tags:
+                    e['panos_tags'].append(t.text)
                 table.append(e)
 
         return table
@@ -269,7 +360,7 @@ class Panfw(Module):
             route['vr'] = vr
             route['flags'] = flags
             if vr not in tables:
-                tables[vr] = { dest: route }
+                tables[vr] = {dest: route}
             else:
                 tables[vr][dest] = route
 
@@ -305,7 +396,7 @@ class Panfw(Module):
             js = status.text
             result = root
             time.sleep(1)
-            run = run+1
+            run = run + 1
 
         report = result.find("./result/report")
         entries = report.findall("./entry")

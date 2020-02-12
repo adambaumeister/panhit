@@ -1,12 +1,59 @@
 import json
+from .Input import Input
+from phlibs.modules import ModuleOptions, ModuleOption
 
-class FileInput():
-    def __init__(self, source):
-        self.source = source
+
+class ListInput(Input):
+    def __init__(self, mod_opts=None):
+
+        data_option = ModuleOption('hosts')
+        data_option.required = True
+        data_option.type_str = "list"
+        data_option.nice_name = "Host List"
+        self.module_options = ModuleOptions([data_option])
+
+        super(ListInput, self).__init__(mod_opts)
+
+        self.image = "images/file_icon.png"
+        self.image_small = "images/file_icon.png"
+        self.pretty_name = "Manual"
+        self.type = "dict"
+
+
+    def List(self):
+        self.data = self.module_options.get_opt('hosts')
+        host_dicts = []
+        # Convert into correct format
+        for ip in self.data:
+            host_dicts.append({ "ip": ip})
+        return host_dicts
+
+    def Output(self):
+        pass
+
+class FileInput(Input):
+    def __init__(self, mod_opts=None):
+
+
+        data_option = ModuleOption('location')
+        data_option.required = True
+        data_option.type_str = "file"
+        self.module_options = ModuleOptions([data_option])
+
+        super(FileInput, self).__init__(mod_opts)
+        self.pretty_name = "File"
+
+        self.image = "images/file_icon.png"
+        self.image_small = "images/file_icon.png"
+
+        self.type = "file"
+
+
         pass
 
     def List(self):
-        source = self.source
+        source = self.module_options.get_opt('location')
+
         host_dicts = []
         try:
             # JSON format

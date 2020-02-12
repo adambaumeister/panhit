@@ -2,7 +2,12 @@ from phlibs.jqueue import Job
 from phlibs.modules import Module
 from phlibs.host import HostList
 from phlibs.db import JsonDB
+from phlibs.config import ConfigFile
+from web import DEFAULT_CONFIG_FILE
 
+"""
+Test suite
+"""
 class DummyInput:
     def __init__(self, hosts):
         self.hosts = hosts
@@ -29,17 +34,40 @@ def InstantiateHostList():
 def dummy_function(a,b):
     print(a+b)
 
-def test_jdb():
+def test_jdb_write_encrypted():
     jdb = JsonDB("database")
-    i = jdb.make_id()
-    print(i)
-    jdb.write({})
+    jdb.enable_encryption("spaghetti")
+    id = jdb.write({
+        "test_key": "test_val"
+    })
+    r = jdb.get(id)
+    print(r)
 
+def test_jdb_write_decrypted():
+    jdb = JsonDB("database")
+    id = jdb.write({
+        "test_key": "test_val"
+    })
+    r = jdb.get(id)
+    print(r)
+
+def test_jdb_decrypt_unencrypted():
+    jdb = JsonDB("database")
+    id = jdb.write({
+        "test_key": "test_val"
+    })
+    jdb.enable_encryption("spaghetti")
+    r = jdb.get(id)
+    print(r)
+
+
+def test_get_tags():
+    c = ConfigFile()
+    c.load_from_file(DEFAULT_CONFIG_FILE)
+    c.tags = ["tes5"]
+    t = c.get_tag_policy()
+    print(t)
 
 if __name__ == '__main__':
-    test_jdb()
-
-    hl = InstantiateHostList()
-
-    j = Job(hl.run_all_hosts, ())
-    j.Run()
+    test_jdb_write_encrypted()
+    test_jdb_decrypt_unencrypted()

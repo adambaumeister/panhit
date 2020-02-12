@@ -1,0 +1,61 @@
+<div class="text-center pt-3 pb-2 mb-1"><h2>Hosts</h2></div>
+
+{% for host in hosts %}
+
+{% if 'tag' in host.attributes %}
+<div class="card m-2"
+     style="border: 1px solid {{ host.attributes.tag.color }};">
+    {% else %}
+    <div class="card m-2">
+        {% endif %}
+
+        <div class="card-body clickable-card">
+
+            <h5 class="card-title">
+                <div class="row">
+                    <div class="col">
+                        {{ host.attributes.ip }}
+                    </div>
+                    {% if 'tag' in host.attributes %}
+                    <div class="col text-right" style="color:{{ host.attributes.tag.color }};">
+                        {{ host.attributes.tag.name }}
+                    </div>
+                    {% endif %}
+
+                </div>
+            </h5>
+            <div class="mods" style="display:none;">
+
+                {% for mod_name, mod_data in host.mods_enabled.items() %}
+                <div class="mod-table-name">{{ mod_name }}</div>
+                <table class="mod-table mb-3">
+                    {% for k, v in mod_data.items() %}
+                    <tr>
+                        <td class="pr-2 pl-2"><b>{{ k }}</b></td>
+                        <td>{{ v }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <div class="clearfix"></div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    {% endfor %}
+    <div class="row text-center">
+        <div class="col">
+        </div>
+        <div class="col-6 text-center">
+            <button type="button" class="btn btn-primary btn-sm prev-page"><</button>
+            <button type="button" class="btn btn-primary btn-sm next-page">></button>
+        </div>
+        <div class="col text-right">
+            <small>Page
+                <div class="page-number">{{ page }}</div>
+                -
+                <div class="page-max">{{ pages }}</div>
+            </small>
+        </div>
+    </div>

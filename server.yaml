@@ -1,0 +1,13 @@
+# Database #
+# Database allows panhit to run using multiprocessing, by storing data on disk instead of in-mem.
+# Example
+# db:
+#  type: JsonDB
+#  path: database
+db:
+  type: JsonDB
+  path: /database/db
+
+configdb:
+  type: JsonDB
+  path: /database/configdb 

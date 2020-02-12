@@ -1,0 +1,90 @@
+.sidebar {
+  z-index: 100; /* Behind the navbar */
+  padding: 0px;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: .5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+.row-special {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.save {
+    min-width: 122px;
+}
+
+.save {
+  transition: background-color 0.5s ease;
+}
+
+.h1-input-selected {
+    color: #ff9a00ff;
+}
+
+.card-module-filled {
+    border: 1px solid #da4302ff;
+}
+
+.h1-module-selected {
+    color: #da4302ff;
+}
+
+.light-row {
+    background-color: #f8f9fa;
+}
+
+.page-number {
+    display: inline;
+    padding: 10px;
+}
+
+.page-max {
+    display: inline;
+    padding: 10px;
+}
+
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.mod-button {
+    font-size: smaller;
+}
+
+.color-picker-button {
+    width: 25px;
+    height: 25px;
+    background-color: #da4302ff;
+}
+
+.color-button {
+    width: 25px;
+    height: 25px;
+    background-color: #da4302ff;
+}
+
+.mod-table {
+    border-left: 2px solid #f8f9fa;
+}
+
+.mod-table-name {
+    float: left;
+    margin-right: 5px;
+}
+
+.clickable-card:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}

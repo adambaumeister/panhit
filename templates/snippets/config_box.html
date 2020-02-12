@@ -1,0 +1,51 @@
+<div class="add-tag-div">
+    <div class="card m-2">
+        <div class="card-body">
+            <div class="form-group">
+                <form id="new-item-form">
+                    <labe>Name</labe>
+                    <input name="name" class="form-control n-input"
+                           aria-describedby="name-help" value="{{ source }}">
+                    <small id="name-help" class="form-text text-muted">Enter a unique tag name.
+                    </small>
+                    {% for spec in specs %}
+                    {% if spec.type == "str" %}
+                    <label>{{ spec.nice_name }}</label>
+                    <input name="{{ spec.name }}" class="form-control n-input" {% if spec.value
+                           %} value="{{ spec.value }}" {% endif %} {% if spec.secret %}type="password"{% endif %}>
+                    <small class="form-text text-muted">{{ spec.help }}
+                    </small>
+
+                    {% elif spec.type == "list" %}
+                    <label> {{ spec.nice_name }}</label>
+                    <div class="row">
+                        <div class="col-8" id="{{ spec.name }}-list">
+                            {% if spec.value %}
+                            {% for v in spec.value %}
+                            <input class="form-control mb-2 l-input" name="{{ spec.name }}"
+                                   data-list="{{ spec.name }}" value="{{ v }}">
+                            {% endfor %}
+                            {% else %}
+                            <input class="form-control mb-2 l-input" name="{{ spec.name }}"
+                                   data-list="{{ spec.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-primary add-list-item"
+                                    data-target="{{ spec.name }}-list">+
+                            </button>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">{{
+                        spec.help }}
+                    </small>
+                    {% endif %}
+                    {% endfor %}
+                </form>
+                <button class="save btn btn-primary" data-type="{{ mod_type }}" data-module="{{ mod_name }}">Save
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>

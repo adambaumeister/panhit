@@ -1,12 +1,13 @@
 from phlibs.host import HostList
 from phlibs.config import ConfigFile
-from phlibs.db import JsonDB
-from tabulate import tabulate
+from phlibs.jqueue import JobQueue
 import getpass
 import os
 import argparse
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
 
 def env_or_prompt(prompt, args, prompt_long=None, secret=False):
     k = "PH_{}".format(prompt).upper()
@@ -27,22 +28,6 @@ def env_or_prompt(prompt, args, prompt_long=None, secret=False):
 
     e = input(prompt + ": ")
     return e
-
-def tag(host_list, policy):
-    for h in host_list.get_all_hosts():
-        for t in reversed(policy):
-            if 'match_any' in t:
-                match = True
-            else:
-                match = True
-                for match_attr, match_value in t['match'].items():
-                    r = h.compare_attr(match_attr, match_value)
-                    if not r:
-                        match = False
-
-            if match:
-                h.set_tag(t['name'])
-
 
 if __name__ == '__main__':
 
@@ -67,15 +52,16 @@ if __name__ == '__main__':
 
     print("""Warning: SSL validation of PANOS device is currently disabled. Use --validate to enable it.""")
 
-    c = ConfigFile(path=args.config_file)
+    c = ConfigFile()
+    c.load_from_file(args.config_file)
     mods = c.init_modules(mod_opts)
 
     db = c.get_db()
     input = c.get_input(mod_opts)
-    hl = HostList(input, mods_enabled=mods, db=db)
-    hl.run_all_hosts()
+    hl = HostList(input, mods_enabled=mods, db=db, tags_policy=c.tags)
 
-    tag(hl, c.tags)
+    jq = JobQueue()
+    hl.run_all_hosts(jq)
 
     output = c.get_output(mod_opts)
     output.Output(hl)

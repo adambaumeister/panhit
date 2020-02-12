@@ -1,0 +1,5 @@
+skilletcli
+pyyaml
+pyaescrypt
+flask
+tabulate

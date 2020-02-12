@@ -1,0 +1,49 @@
+{% extends "wrapper.html" %}
+{% block content %}
+<div class="container-flex p-3">
+    <div class="row  mb-3">
+        <div class="col-sm">
+            <div class="progress" style="height:2px;">
+                <div class="progress-bar" role="progressbar" style="width:{{ job.completed_percent }}%"
+                     aria-valuenow="{{ job.completed_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm">
+            <h3>{{ job.name }}<br>
+            </h3>
+            <small class="text-muted">{{ job.queued }} hosts queued for identification<br></small>
+            <small class="text-muted">Started at {{ job.start_time }}</small>
+        </div>
+        <div class="col-sm">
+            <div class="card">
+                <div style="height:300px" class="card-body">
+                    <canvas id="tag-stats"></canvas>
+                </div>
+                <h5 class="text-center">Counts by Tag</h5>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="result bg-light p-2">
+
+        <div class="row text-center">
+            <div class="col">
+            </div>
+            <div class="col-6 text-center">
+                <button type="button" class="btn btn-primary btn-sm prev-page"><</button>
+                <button type="button" class="btn btn-primary btn-sm next-page">></button>
+            </div>
+            <div class="col text-right">
+                <small>Page
+                    <div class="page-number">0</div>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

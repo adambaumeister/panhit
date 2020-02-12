@@ -18,7 +18,16 @@ class JobQueue:
         now = datetime.now()
         self.id = now.strftime("%d-%m-%Y_%H-%M-%S")
         self.limit = 5
+        self.db = None
+        # Default the name of the job to the ID
+        self.name = self.id
 
+    def set_db(self, db):
+        """
+        Takes a Database object and using it to store job information.
+        :param db: Panhit DB instance (such as JsonDB)
+        """
+        self.db = db
 
     def get_id(self):
         """
@@ -31,25 +40,62 @@ class JobQueue:
     def add_job(self, job):
         self.queue.append(job)
 
-    def empty(self):
+    def set_name(self, name):
+        if name:
+            self.name = name
+
+        # Set the initial jqstatus
+        d = {
+            "id": self.id,
+            "name": self.name,
+            "queued": len(self.queue),
+            "start_time": 0,
+            "completed": 0,
+            'completed_percent': 0
+        }
+        self.db.write_id('jqstatus', d)
+
+    def empty(self, nowait=False):
         """
         Run all jobs in the queue.
         """
+        started = datetime.now().timestamp()
+        completed = 0
+
+        d = {
+            "id": self.id,
+            "name": self.name,
+            "queued": len(self.queue),
+            "start_time": started,
+            "completed": 0,
+            'completed_percent': 0
+        }
+        self.db.write_id('jqstatus', d)
+
         processes = []
         for j in self.queue:
             if len(processes) >= self.limit:
                 for process in processes:
-                    print("joining..")
                     process.join()
-                    processes = []
+                    completed = completed+1
+                    completed_percent = round((completed / len(self.queue)) * 100)
+                    d['completed'] = completed
+                    d['completed_percent'] = completed_percent
+                    self.db.write_id('jqstatus', d)
 
-            print("running...")
+                processes = []
+
             process = j.Run()
             processes.append(process)
 
         for process in processes:
-            print("joining..")
             process.join()
+            completed = completed + 1
+            completed_percent = round((completed / len(self.queue)) * 100)
+
+            d['completed'] = completed
+            d['completed_percent'] = completed_percent
+            self.db.write_id('jqstatus', d)
 
 class Job:
     """
