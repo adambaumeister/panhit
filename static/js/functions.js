@@ -542,6 +542,8 @@ function ClickRunButton() {
 
     inputData = ScanSpecSettings();
     obj = ".run"
+    $(obj).attr("disabled", true)
+
     fetch(API_ROUTE + "/run", {
         method: 'POST',
         body: JSON.stringify(inputData),
