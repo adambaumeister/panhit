@@ -624,6 +624,8 @@ function SetInput(moduleName) {
     // Make the next step visible
     $("#fadein-1").fadeTo( "slow" , 1, function() {
     }); 
+
+    $("#input-step").addClass("active");
 }
 
 function SelectInputButton(obj) {
@@ -658,6 +660,9 @@ function SetTagp(tagpName) {
     /* Modify the card appearance to show it's selected */
     $(".tagp-card").html(selectedHTML)
     $(".tagp-card").addClass("card-input-filled")
+
+    $("#tagp-step").addClass("active");
+
 }
 
 function SelectTagpButton(obj) {
@@ -679,6 +684,9 @@ function SetModules(moduleName) {
 
     $("#fadein-3").fadeTo( "slow" , 1, function() {
     }); 
+
+    $("#module-step").addClass("active");
+
 
 }
 
