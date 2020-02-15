@@ -80,9 +80,11 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Tag definitions</h1>
             <div class="dropdown">
+                {% if not jobs %}
                 <small>
-                    At least one job must
+                    At least one job must have already run to start configuring tags.
                 </small>
+                {% endif %}
                 <button class="btn btn-outline-secondary add-tag" type="button" {% if not jobs %}disabled{% endif %}>
                     Add new Tag
                 </button>
