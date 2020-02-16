@@ -1,5 +1,6 @@
 import socket
-from .mod import Module, ModuleOptions
+from phlibs.modules.mod import Module, ModuleOptions
+from phlibs.modules.helpers import is_host
 
 class DNSHost(Module):
     """
@@ -24,13 +25,16 @@ class DNSHost(Module):
 
     def Get(self, host):
         data = {}
-        try:
-            socket.setdefaulttimeout(1)
-            hostname = socket.gethostbyaddr(host.ip)
-            data['hostname'] = hostname[0]
-        except socket.herror as err:
-            data = {}
-        except socket.gaierror as err:
-            data = {}
+        if not is_host(host.ip):
+            data['hostname'] = "Invalid"
+        else:
+            try:
+                socket.setdefaulttimeout(1)
+                hostname = socket.gethostbyaddr(host.ip)
+                data['hostname'] = hostname[0]
+            except socket.herror as err:
+                data = {}
+            except socket.gaierror as err:
+                data = {}
 
-        return data
+            return data

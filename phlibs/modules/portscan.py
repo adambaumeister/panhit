@@ -43,26 +43,26 @@ class Portscan(Module):
         ip = host.ip
         data = {}
 
-        # Don't scan subnet addresses
-        if not is_host(ip):
-            return data
-
         ports = self.module_options.get_opt("ports")
         timeout = self.module_options.get_opt("timeout")
 
         for port in ports:
-            try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # Don't scan subnet addresses
+            if not is_host(ip):
+                data[port] = "Invalid"
+            else:
+                try:
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-                s.settimeout(int(timeout))
-                s.connect((ip, int(port)))
-                s.shutdown(2)
-                data[port] = "open"
-            except socket.timeout:
-                data[port] = "closed"
-            except socket.gaierror:
-                data[port] = "host lookup failure"
-            except OSError:
-                data[port] = "unreachable"
+                    s.settimeout(int(timeout))
+                    s.connect((ip, int(port)))
+                    s.shutdown(2)
+                    data[port] = "open"
+                except socket.timeout:
+                    data[port] = "closed"
+                except socket.gaierror:
+                    data[port] = "host lookup failure"
+                except OSError:
+                    data[port] = "unreachable"
 
         return data
