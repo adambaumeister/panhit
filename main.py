@@ -294,7 +294,6 @@ def run():
     m = JobStarted()
     m.status = "started"
     m.jid = jq.id
-
     j.Run()
 
     return m.GetMsg()

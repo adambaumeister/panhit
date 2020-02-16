@@ -92,7 +92,6 @@ class Panfw(Module):
 
     def connect_if_not(self):
         if not self.panos:
-            print(self.module_options.get_opt('xpath'))
             panos = Panos(addr=self.module_options.get_opt('addr'),
                           user=self.module_options.get_opt('user'),
                           pw=self.module_options.get_opt('pw'),
