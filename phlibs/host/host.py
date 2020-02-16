@@ -1,7 +1,7 @@
 import os
 import json
 from phlibs.jqueue import JobQueue, Job
-
+from phlibs.modules.mod import ModuleError
 
 class HostList:
     """
@@ -197,8 +197,11 @@ class Host:
         """
         # Run the mods
         for mod in self.mods_enabled:
-            data = mod.Get(self)
-            self.result[mod.get_name()] = data
+            try:
+                data = mod.Get(self)
+                self.result[mod.get_name()] = data
+            except ModuleError as e:
+                self.result[mod.get_name()] = {"Error": e}
 
         # Tag based on said mod response
         if self.tag_policy:

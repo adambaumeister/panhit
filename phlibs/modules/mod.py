@@ -1,5 +1,8 @@
 import ipaddress
 
+class ModuleError(Exception):
+    pass
+
 class ModuleOption:
     """
     A single option, passed to a module.

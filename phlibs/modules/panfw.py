@@ -1,4 +1,4 @@
-from .mod import Module, ModuleOptions, ModuleOption, ResultSpec, StringResultField
+from .mod import Module, ModuleOptions, ModuleOption, ResultSpec, StringResultField, ModuleError
 from panos import Panos
 from xml.etree import ElementTree
 import ipaddress
@@ -377,14 +377,21 @@ class Panfw(Module):
             "cmd": report_spec,
         })
 
+        if not panos.check_resp(r):
+            raise ModuleError("Failed to run report!")
+
         root = ElementTree.fromstring(r.content)
         job = root.find("./result/job")
+
+        if not job.text:
+            raise ModuleError("Failed to run report!")
 
         js = "ACT"
         run = 0
         while "ACT" in js:
             if run > MAX_REPORT_QUERIES:
                 return data
+
             r = panos.send(params={
                 "type": "report",
                 "action": "get",
@@ -410,3 +417,4 @@ class Panfw(Module):
 
     def query_arp(self):
         pass
+
