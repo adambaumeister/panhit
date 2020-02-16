@@ -201,7 +201,7 @@ class Host:
                 data = mod.Get(self)
                 self.result[mod.get_name()] = data
             except ModuleError as e:
-                self.result[mod.get_name()] = {"Error": e}
+                self.result[mod.get_name()] = {"Error": str(e) }
 
         # Tag based on said mod response
         if self.tag_policy:
