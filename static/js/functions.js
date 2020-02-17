@@ -542,7 +542,12 @@ function ClickRunButton() {
 
     inputData = ScanSpecSettings();
     obj = ".run"
-    $(obj).attr("disabled", true)
+    //$(obj).attr("disabled", true)
+    $(obj).addClass("btn-secondary").removeClass("btn-primary")
+    $(obj).text("View in job table")
+    $(obj).click(function () {
+        window.location.href = "/jobs";
+    })
 
     fetch(API_ROUTE + "/run", {
         method: 'POST',

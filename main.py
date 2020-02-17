@@ -33,6 +33,7 @@ def configure(j):
 
         db = c.get_db()
         input = c.get_input(mod_opts)
+
         hl = HostList(input, mods_enabled=mods, db=db)
         return c, hl
 

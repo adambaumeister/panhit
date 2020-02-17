@@ -156,7 +156,7 @@ class Panfw(Module):
             "cmd": "<show><arp><entry name='all'/></arp></show>"
         })
         if not panos.check_resp(r):
-            raise ConnectionError("Failed to retrieve response from panfw.")
+            raise ConnectionError("Failed to retrieve response from panfw : {}".format(r.content))
 
         arp_table = self.parse_arp_response(r.content)
 
