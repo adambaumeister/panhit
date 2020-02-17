@@ -545,6 +545,7 @@ function ClickRunButton() {
     //$(obj).attr("disabled", true)
     $(obj).addClass("btn-secondary").removeClass("btn-primary")
     $(obj).text("View in job table")
+    $(obj).unbind();
     $(obj).click(function () {
         window.location.href = "/jobs";
     })
