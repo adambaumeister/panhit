@@ -37,4 +37,5 @@ class DNSHost(Module):
             except socket.gaierror as err:
                 data = {}
 
-            return data
+
+        return data
